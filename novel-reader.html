@@ -132,6 +132,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 #kh{position:fixed;bottom:62px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.8);color:var(--ac2);border-radius:6px;padding:6px 14px;font-size:13px;pointer-events:none;opacity:0;transition:opacity .25s;z-index:50;white-space:nowrap}
 #kh.show{opacity:1}
 
+.inp{flex:1;padding:10px 11px;background:var(--pn);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-size:13px;outline:none;-webkit-appearance:none;min-width:0}
+.inp:focus{border-color:var(--ac)}
 /* Spinner */
 .spin{display:inline-block;width:12px;height:12px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle;margin-right:3px}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -182,34 +184,39 @@ body.tb{--bg:#0c1520;--sf:#101c2a;--pn:#152235;--bd:#1e3045;--tx:#c8dce8;--txd:#
       <div class="wsub">iPad 離線版 · 免費 · 不佔 AI 額度</div>
 
       <!-- How to use -->
+      <!-- URL auto-fetch mode -->
+      <div class="card" id="card-url">
+        <h3>🔗 自動抓取（輸入網址）</h3>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <input id="urlin" class="inp" type="url" placeholder="https://www.xbanxia.cc/books/98237.html" autocorrect="off" autocapitalize="off" spellcheck="false">
+          <button class="gbtn" id="fetchbtn" style="width:auto;padding:10px 16px">抓取</button>
+        </div>
+        <div id="fetchbar-w" style="width:100%;height:4px;background:var(--bd);border-radius:2px;margin-bottom:8px;display:none"><div id="fetchbar-f" style="height:100%;background:var(--ac);border-radius:2px;transition:width .3s;width:0%"></div></div>
+        <div id="fetchlog" style="background:var(--pn);border:1px solid var(--bd);border-radius:7px;padding:9px 11px;font-size:12px;color:var(--txd);max-height:160px;overflow-y:auto;display:none;line-height:1.65;font-family:monospace"></div>
+      </div>
+
+      <div style="text-align:center;font-size:12px;color:var(--txr);margin:4px 0 4px">─── 或 ───</div>
+
       <div class="card">
-        <h3>📥 如何載入小說</h3>
+        <h3>📥 書籤工具（手動複製）</h3>
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-text">
             <strong>安裝書籤工具（只需一次）</strong>
-            長按下方按鈕 → 「加入書籤」→ 儲存到書籤列
+            在 Safari 書籤裡新增一個書籤，把網址改成下方程式碼
           </div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-text">
-            <strong>到小說網站的目錄頁</strong>
-            例如 xbanxia.cc 的小說首頁（含所有章節連結的那頁）
+            <strong>到小說章節頁面點書籤</strong>
+            自動複製全頁文字
           </div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-text">
-            <strong>點書籤 → 自動複製全頁文字</strong>
-            點一下剛加的書籤，出現「已複製」提示即可
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-text">
             <strong>回到閱讀器貼上 → 點解析</strong>
-            貼到下方框框，程式自動識別所有章節並依序載入
           </div>
         </div>
         <div class="bkl-wrap" style="margin-top:14px">
@@ -331,6 +338,15 @@ function parseText(raw) {
     title = text.substring(6, nl).trim();
     text = text.substring(nl + 1).trim();
   }
+  // Also handle if TITLE line itself is encoded
+  try {
+    if (title && title.indexOf('%') !== -1) title = decodeURIComponent(title.replace(/\+/g,' '));
+  } catch(e) {}
+  // Decode URL-encoded text (e.g. %E5%8D%... from some browsers)
+  if (text.indexOf('%') !== -1 && /%[0-9A-Fa-f]{2}/.test(text)) {
+    try { text = decodeURIComponent(text.replace(/\+/g,' ')); } catch(e) {}
+  }
+
   // Strip HTML if someone pasted raw HTML
   if (/<html/i.test(text) || /<body/i.test(text)) {
     const d = document.createElement('div');
@@ -465,6 +481,19 @@ function buildTOC(q) {
   $('sbf').textContent = '已讀 '+G.read.size+' / '+G.novel.chapters.length+' 章';
 }
 $('tcq').addEventListener('input', function(){ buildTOC(this.value); });
+
+// Update single TOC item after chapter loads
+function updateTOCItem(i) {
+  var el = document.querySelector('.ti[data-i="'+i+'"]');
+  if (!el) return;
+  var ch = G.novel.chapters[i];
+  el.className = 'ti' + (i===G.idx?' active':'') + (G.read.has(i)?' read':'');
+  el.innerHTML = '<div class="tin">第'+(i+1)+'章</div>' + esc(ch.title);
+  el.addEventListener('click', function(){
+    showChapter(+this.getAttribute('data-i'));
+    if (window.innerWidth <= 680) closeSB();
+  });
+}
 
 // ── Show chapter ──────────────────────────────────────────────
 function showChapter(i) {
@@ -639,6 +668,243 @@ function restore(){
   var th=localStorage.getItem('nr_th')||'';
   document.body.className=th;
   document.querySelectorAll('.thb').forEach(function(b){b.classList.toggle('on',b.dataset.th===th);});
+}
+
+
+// ── Cloudflare Worker proxy ──────────────────────────────────
+const PROXY = 'https://novel-proxy.runrain.workers.dev/';
+
+function proxyUrl(url) {
+  return PROXY + '?url=' + encodeURIComponent(url);
+}
+
+function fetchPage(url) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', proxyUrl(url), true);
+    xhr.timeout = 15000;
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 400) resolve(xhr.responseText);
+      else reject(new Error('HTTP ' + xhr.status));
+    };
+    xhr.onerror = function() { reject(new Error('網路錯誤')); };
+    xhr.ontimeout = function() { reject(new Error('逾時')); };
+    xhr.send();
+  });
+}
+
+// ── Fetch log UI ─────────────────────────────────────────────
+function flog(msg, cls) {
+  var box = $('fetchlog');
+  box.style.display = 'block';
+  var d = document.createElement('div');
+  d.style.color = cls === 'ok' ? 'var(--ok)' : cls === 'err' ? 'var(--err)' : cls === 'warn' ? 'var(--warn)' : 'var(--txd)';
+  d.innerHTML = msg;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+}
+function flogClear() { var b=$('fetchlog'); b.innerHTML=''; b.style.display='none'; }
+function fbar(pct) {
+  var w = $('fetchbar-w'); w.style.display = pct > 0 ? 'block' : 'none';
+  $('fetchbar-f').style.width = pct + '%';
+}
+
+// ── HTML parser helpers ───────────────────────────────────────
+function domFromHtml(html) {
+  var d = document.createElement('div');
+  d.innerHTML = html;
+  return d;
+}
+
+function extractLinks(html, baseUrl) {
+  // Parse chapter links from index page
+  var dom = domFromHtml(html);
+  var base = new URL(baseUrl);
+  var links = [];
+  var seen = new Set();
+  // Look for links that look like chapter URLs
+  dom.querySelectorAll('a[href]').forEach(function(a) {
+    var href = a.getAttribute('href');
+    if (!href) return;
+    var full;
+    try {
+      full = new URL(href, baseUrl).href;
+    } catch(e) { return; }
+    // Must be same domain, and URL pattern suggests a chapter (has numeric ID)
+    if (full.indexOf(base.hostname) < 0) return;
+    if (seen.has(full)) return;
+    var text = (a.textContent || '').trim();
+    if (!text || text.length > 60 || text.length < 2) return;
+    // Filter out nav/menu links - chapter links usually have chapter-like text
+    if (/首頁|登入|登錄|註冊|搜尋|關於|聯繫|排行|分類|書架|目錄$/.test(text)) return;
+    seen.add(full);
+    links.push({ title: text, url: full });
+  });
+  return links;
+}
+
+function extractChapterContent(html, chapterTitle) {
+  var dom = domFromHtml(html);
+  // Remove noise elements
+  dom.querySelectorAll('script,style,nav,header,footer,.ad,#ad,[class*="ad-"],[id*="ad-"],noscript,aside').forEach(function(e){ e.remove(); });
+
+  // Common content selectors for novel sites
+  var selectors = [
+    '#chaptercontent', '#chapter-content', '.chapter-content',
+    '#content', '.content', '#articlecontent',
+    '.article-content', '#booktext', '.booktext',
+    'article', '.novel-content', '#novel-content',
+    '.text-content', '#text'
+  ];
+
+  var content = '';
+  for (var i = 0; i < selectors.length; i++) {
+    var el = dom.querySelector(selectors[i]);
+    if (el) {
+      content = el.innerText || el.textContent || '';
+      if (content.trim().length > 100) break;
+    }
+  }
+
+  // Fallback: find the largest text block
+  if (content.trim().length < 100) {
+    var best = '', bestLen = 0;
+    dom.querySelectorAll('p,div').forEach(function(el) {
+      var t = (el.innerText || el.textContent || '').trim();
+      if (t.length > bestLen && el.children.length < 20) {
+        bestLen = t.length; best = t;
+      }
+    });
+    content = best;
+  }
+
+  // Clean up
+  content = content
+    .split('\r\n').join('\n').split('\r').join('\n')
+    .replace(/[ \t\u3000]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+
+  // Remove common site noise from content
+  var noisePatterns = ['本章未完', '閱讀.*?txt小說', '手機用戶請瀏覽'];
+  noisePatterns.forEach(function(p) {
+    try { content = content.replace(new RegExp(p + '[^\n]*', 'g'), ''); } catch(e) {}
+  });
+  content = content.trim();
+
+  return content;
+}
+
+// ── Auto-fetch novel from URL ─────────────────────────────────
+$('fetchbtn').addEventListener('click', function() {
+  var url = $('urlin').value.trim();
+  if (!url.startsWith('http')) {
+    flogClear(); flog('❌ 請輸入完整網址（https://…）', 'err'); return;
+  }
+  doAutoFetch(url);
+});
+$('urlin').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') $('fetchbtn').click();
+});
+
+async function doAutoFetch(url) {
+  $('fetchbtn').disabled = true;
+  flogClear();
+  fbar(5);
+  flog('<span class="spin"></span> 抓取目錄頁…');
+
+  var indexHtml;
+  try {
+    indexHtml = await fetchPage(url);
+  } catch(e) {
+    flog('❌ 無法抓取頁面：' + e.message, 'err');
+    flog('請確認 Cloudflare Worker 是否正常運作', 'warn');
+    $('fetchbtn').disabled = false; fbar(0); return;
+  }
+
+  flog('✅ 目錄頁抓取成功', 'ok');
+  fbar(15);
+
+  // Parse title from page
+  var titleMatch = indexHtml.match(/<title[^>]*>([^<]+)<\/title>/i);
+  var novelTitle = titleMatch ? titleMatch[1].replace(/[-_|].*$/, '').trim() : '未命名小說';
+  // Clean up title
+  novelTitle = novelTitle.replace(/小說.*$/, '').replace(/在線.*$/, '').trim();
+
+  flog('📚 小說：' + novelTitle);
+
+  // Extract chapter links
+  var chapters = extractLinks(indexHtml, url);
+
+  if (chapters.length < 2) {
+    flog('⚠️ 目錄頁章節連結太少（' + chapters.length + ' 個），嘗試解析為單章節…', 'warn');
+    var content = extractChapterContent(indexHtml, novelTitle);
+    if (content.length > 200) {
+      loadNovel({ title: novelTitle, chapters: [{ title: novelTitle, content: content }] }, url);
+      flog('✅ 載入完成', 'ok'); fbar(0);
+    } else {
+      flog('❌ 無法識別頁面內容，請改用貼上模式', 'err'); fbar(0);
+    }
+    $('fetchbtn').disabled = false; return;
+  }
+
+  flog('✅ 找到 ' + chapters.length + ' 個章節連結', 'ok');
+  fbar(20);
+
+  // Build novel skeleton immediately
+  var novel = {
+    title: novelTitle, url: url,
+    chapters: chapters.map(function(c) { return { title: c.title, url: c.url, content: null }; })
+  };
+  G.novel = novel;
+  G.idx = 0;
+  G.read = new Set();
+  $('ns').textContent = novelTitle.length > 14 ? novelTitle.substring(0,14)+'…' : novelTitle;
+  buildTOC();
+  $('wc').style.display = 'none';
+  $('rc').style.display = 'block';
+  // Show placeholder
+  $('chhd').textContent = chapters[0].title;
+  $('chtl').textContent = chapters[0].title;
+  $('nt').innerHTML = '<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入第一章中…</p>';
+
+  var total = chapters.length;
+  var done = 0;
+  var BATCH = 2; // fetch 2 at a time to avoid rate limiting
+
+  async function fetchChapter(i) {
+    var ch = novel.chapters[i];
+    if (!ch.url) { ch.content = ''; return; }
+    try {
+      var html = await fetchPage(ch.url);
+      ch.content = extractChapterContent(html, ch.title);
+      if (!ch.content) ch.content = '（本章無法擷取內文）';
+    } catch(e) {
+      ch.content = '（載入失敗：' + e.message + '）';
+    }
+    done++;
+    fbar(20 + Math.round(done / total * 75));
+    if (done % 10 === 0 || done === 1) flog('✅ 已載入 ' + done + ' / ' + total + ' 章', 'ok');
+    updateTOCItem(i);
+    if (i === G.idx) showChapter(i); // refresh if currently viewing
+  }
+
+  // Fetch all chapters in batches
+  for (var i = 0; i < total; i += BATCH) {
+    var batch = [];
+    for (var j = i; j < Math.min(i + BATCH, total); j++) {
+      batch.push(fetchChapter(j));
+    }
+    await Promise.all(batch);
+    // Small delay to be polite to the server
+    if (i + BATCH < total) await new Promise(function(r){ setTimeout(r, 300); });
+  }
+
+  fbar(100);
+  flog('🎉 全部 ' + total + ' 章載入完成！', 'ok');
+  setTimeout(function(){ fbar(0); }, 2000);
+  save();
+  $('fetchbtn').disabled = false;
 }
 
 // ── Init ─────────────────────────────────────────────────────

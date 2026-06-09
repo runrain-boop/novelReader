@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>📖 小說閱讀器</title>
+<style>
+:root{
+  --bg:#18140f;--sf:#221d17;--pn:#2a2318;--bd:#3a3028;
+  --ac:#c9a96e;--ac2:#e8c98a;--tx:#ede3d5;--txd:#9a8f82;--txr:#504540;
+  --err:#d07070;--ok:#70c080;--warn:#c9b070;
+  --serif:'Georgia','Songti SC','Noto Serif TC',serif;
+  --ui:-apple-system,'Segoe UI',system-ui,sans-serif;
+  --sw:290px;--pm:720px;--fs:19px;--lh:2.1;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-family:var(--ui);-webkit-text-size-adjust:100%}
+#app{display:flex;height:100%;height:100dvh}
+
+/* ── Sidebar ── */
+#sb{width:var(--sw);flex-shrink:0;background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;transition:transform .26s ease;z-index:20;position:relative}
+#sb.col{transform:translateX(-100%);position:absolute;height:100%}
+#sbh{padding:16px 14px 11px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:9px}
+#sbh span{font-size:20px}
+#sbh h1{font-size:13px;font-weight:600;color:var(--ac);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;flex:1}
+#tcq{margin:8px 10px;padding:7px 11px;background:var(--pn);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-size:14px;outline:none;width:calc(100% - 20px);-webkit-appearance:none}
+#tcq:focus{border-color:var(--ac)}
+#tcl{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:3px 0}
+.ti{padding:10px 14px;font-size:13px;cursor:pointer;color:var(--txd);border-left:3px solid transparent;line-height:1.45;transition:all .12s;user-select:none}
+.ti:active{background:var(--pn)}
+.ti.active{border-left-color:var(--ac);color:var(--ac2);background:var(--pn)}
+.ti.read{color:var(--txr)}
+.tin{font-size:10px;color:var(--txr);margin-bottom:2px}
+#sbf{padding:10px 14px;border-top:1px solid var(--bd);font-size:11px;color:var(--txr);text-align:center;padding-bottom:calc(10px + var(--safe-b))}
+
+/* ── Main ── */
+#mn{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* ── Topbar ── */
+#topbar{height:50px;background:var(--sf);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:5px;padding:0 12px;flex-shrink:0}
+.btn{background:none;border:1px solid var(--bd);color:var(--txd);padding:5px 9px;border-radius:7px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:3px;transition:all .12s;white-space:nowrap;-webkit-appearance:none;user-select:none}
+.btn:active,.btn:hover{color:var(--tx);border-color:var(--ac)}
+.btn.on{color:var(--ac);border-color:var(--ac);background:rgba(201,169,110,.1)}
+.sep{width:1px;height:22px;background:var(--bd);margin:0 2px;flex-shrink:0}
+#chtl{flex:1;font-size:13px;color:var(--txd);text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+/* ── Reader wrap ── */
+#rw{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;outline:none;position:relative}
+#rw::-webkit-scrollbar{display:none}
+
+/* ── Welcome screen ── */
+#wc{max-width:580px;margin:0 auto;padding:28px 20px;padding-bottom:calc(28px + var(--safe-b))}
+.wlogo{font-size:52px;text-align:center;margin-bottom:10px}
+.wtitle{font-size:22px;color:var(--ac2);font-family:var(--serif);text-align:center;margin-bottom:6px;letter-spacing:.5px}
+.wsub{font-size:13px;color:var(--txd);text-align:center;margin-bottom:22px;line-height:1.6}
+
+/* ── Steps card ── */
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px;margin-bottom:14px}
+.card h3{font-size:13px;color:var(--ac);margin-bottom:14px;font-weight:600}
+.step{display:flex;gap:11px;margin-bottom:13px;align-items:flex-start}
+.step:last-child{margin-bottom:0}
+.step-num{width:24px;height:24px;border-radius:50%;background:var(--ac);color:var(--bg);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text{font-size:13px;color:var(--txd);line-height:1.6;flex:1}
+.step-text strong{color:var(--tx);display:block;margin-bottom:2px}
+.step-text code{background:rgba(255,255,255,.08);padding:2px 6px;border-radius:4px;font-size:12px;color:var(--ac2)}
+
+/* ── Paste area ── */
+#pa{width:100%;height:150px;background:var(--pn);border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:10px;font-size:13px;resize:none;outline:none;font-family:var(--ui);display:block;-webkit-appearance:none;margin-bottom:9px}
+#pa:focus{border-color:var(--ac)}
+#ptitle{width:100%;padding:9px 11px;background:var(--pn);border:1px solid var(--bd);color:var(--tx);border-radius:8px;font-size:13px;outline:none;-webkit-appearance:none;margin-bottom:9px}
+#ptitle:focus{border-color:var(--ac)}
+.gbtn{width:100%;padding:12px;background:var(--ac);color:var(--bg);border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;-webkit-appearance:none;user-select:none;transition:opacity .15s}
+.gbtn:active{opacity:.8}
+#pstat{font-size:13px;color:var(--txd);min-height:20px;margin-top:8px;line-height:1.5}
+#pstat.err{color:var(--err)}
+#pstat.ok{color:var(--ok)}
+#pbar-w{width:100%;height:4px;background:var(--bd);border-radius:2px;margin-top:8px;display:none}
+#pbar-w.show{display:block}
+#pbar-f{height:100%;background:var(--ac);border-radius:2px;transition:width .3s;width:0%}
+
+/* ── Bookmarklet section ── */
+.bkl-wrap{text-align:center;padding:4px 0}
+#bkl{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:linear-gradient(135deg,var(--ac),#b8882a);color:var(--bg);border-radius:9px;font-size:14px;font-weight:700;text-decoration:none;user-select:none}
+.bkl-note{font-size:11.5px;color:var(--txr);margin-top:6px;line-height:1.5}
+
+/* ── Reading content ── */
+#rc{display:none;max-width:var(--pm);margin:0 auto;padding:44px 28px 120px}
+#chhd{font-size:21px;font-family:var(--serif);color:var(--ac2);margin-bottom:28px;line-height:1.5;text-align:center;border-bottom:1px solid var(--bd);padding-bottom:18px}
+#nt{font-family:var(--serif);font-size:var(--fs);line-height:var(--lh);color:var(--tx)}
+#nt p{margin-bottom:1.15em;text-indent:2em}
+
+/* ── Bottom bar ── */
+#bb{height:calc(52px + var(--safe-b));background:var(--sf);border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 14px;padding-bottom:var(--safe-b);flex-shrink:0}
+.nb{background:var(--pn);border:1px solid var(--bd);color:var(--txd);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:14px;transition:all .15s;user-select:none;-webkit-appearance:none}
+.nb:active{background:var(--ac);color:var(--bg);border-color:var(--ac)}
+.nb:disabled{opacity:.25;pointer-events:none}
+#pind{font-size:12px;color:var(--txd);text-align:center}
+#pgw{width:90px;height:3px;background:var(--bd);border-radius:2px;margin-top:4px}
+#pg{height:100%;background:var(--ac);border-radius:2px;transition:width .3s}
+
+/* ── TTS Panel ── */
+#ttp{position:fixed;bottom:62px;right:14px;background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px;width:230px;box-shadow:0 6px 24px rgba(0,0,0,.6);display:none;z-index:40}
+#ttp.show{display:block}
+#ttp h4{font-size:12px;color:var(--ac);margin-bottom:11px;font-weight:600}
+.tr{display:flex;align-items:center;gap:7px;margin-bottom:9px;font-size:12px;color:var(--txd)}
+.tr label{width:46px;flex-shrink:0}
+.tr input[type=range]{flex:1;accent-color:var(--ac);height:20px}
+.tr span{width:30px;text-align:right;font-size:11px;color:var(--tx)}
+#tvsel{width:100%;background:var(--pn);border:1px solid var(--bd);color:var(--tx);padding:5px 8px;border-radius:6px;font-size:12px;margin-bottom:9px;outline:none;-webkit-appearance:none}
+#tplaybtn{width:100%;padding:8px;background:var(--ac);color:var(--bg);border:none;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer}
+
+/* ── Settings Panel ── */
+#setp{position:fixed;top:58px;right:14px;background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px;width:230px;box-shadow:0 6px 24px rgba(0,0,0,.6);display:none;z-index:40}
+#setp.show{display:block}
+#setp h4{font-size:12px;color:var(--ac);margin-bottom:12px;font-weight:600}
+.srow{display:flex;align-items:center;gap:7px;margin-bottom:11px;font-size:12px;color:var(--txd)}
+.srow label{flex:1}
+.srow input[type=range]{width:80px;accent-color:var(--ac);height:20px}
+.srow span{width:28px;font-size:11px;color:var(--tx);text-align:right}
+.thr{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.thb{padding:4px 9px;border-radius:5px;border:1px solid var(--bd);font-size:11px;cursor:pointer;background:var(--pn);color:var(--txd);-webkit-appearance:none}
+.thb.on{border-color:var(--ac);color:var(--ac)}
+
+/* ── Overlay (sidebar backdrop on mobile) ── */
+#overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:15}
+#overlay.show{display:block}
+
+/* ── Key hint ── */
+#kh{position:fixed;bottom:62px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.8);color:var(--ac2);border-radius:6px;padding:6px 14px;font-size:13px;pointer-events:none;opacity:0;transition:opacity .25s;z-index:50;white-space:nowrap}
+#kh.show{opacity:1}
+
+/* Spinner */
+.spin{display:inline-block;width:12px;height:12px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle;margin-right:3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Themes */
+body.tp{--bg:#f2ece0;--sf:#e8e0d0;--pn:#ddd5c3;--bd:#c5baa8;--tx:#201508;--txd:#6b5e4a;--txr:#a08870;--ac:#8b5e28;--ac2:#7a4e1c;--warn:#a07820}
+body.te{--bg:#0e1a0f;--sf:#131f14;--pn:#172518;--bd:#223325;--tx:#c8e8cc;--txd:#68906c;--txr:#38583c;--ac:#58b870;--ac2:#78d090}
+body.tb{--bg:#0c1520;--sf:#101c2a;--pn:#152235;--bd:#1e3045;--tx:#c8dce8;--txd:#6088a8;--txr:#386075;--ac:#58aace;--ac2:#78c2e0}
+
+@media(max-width:680px){
+  :root{--sw:82vw;--fs:17px}
+  #sb{position:absolute;height:100%;transform:translateX(-110%)}
+  #sb.open{transform:translateX(0)}
+  #rc{padding:28px 16px 110px}
+}
+</style>
+</head>
+<body>
+<div id="overlay" onclick="closeSB()"></div>
+<div id="app">
+
+<!-- Sidebar -->
+<div id="sb" id="sb">
+  <div id="sbh"><span>📚</span><h1 id="ns">小說閱讀器</h1></div>
+  <input id="tcq" type="search" placeholder="搜尋章節…" autocomplete="off" autocorrect="off" spellcheck="false">
+  <div id="tcl"></div>
+  <div id="sbf">0 / 0 章</div>
+</div>
+
+<!-- Main -->
+<div id="mn">
+  <div id="topbar">
+    <button class="btn" id="btoc" aria-label="目錄">☰</button>
+    <div class="sep"></div>
+    <button class="btn" id="bnew">＋ 新書</button>
+    <div class="sep"></div>
+    <div id="chtl">—</div>
+    <div class="sep"></div>
+    <button class="btn" id="btts">🔊</button>
+    <button class="btn" id="bset">⚙</button>
+  </div>
+
+  <div id="rw" tabindex="0">
+    <!-- Welcome -->
+    <div id="wc">
+      <div class="wlogo">📖</div>
+      <div class="wtitle">小說閱讀器</div>
+      <div class="wsub">iPad 離線版 · 免費 · 不佔 AI 額度</div>
+
+      <!-- How to use -->
+      <div class="card">
+        <h3>📥 如何載入小說</h3>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <strong>安裝書籤工具（只需一次）</strong>
+            長按下方按鈕 → 「加入書籤」→ 儲存到書籤列
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <strong>到小說網站的目錄頁</strong>
+            例如 xbanxia.cc 的小說首頁（含所有章節連結的那頁）
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <strong>點書籤 → 自動複製全頁文字</strong>
+            點一下剛加的書籤，出現「已複製」提示即可
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <strong>回到閱讀器貼上 → 點解析</strong>
+            貼到下方框框，程式自動識別所有章節並依序載入
+          </div>
+        </div>
+        <div class="bkl-wrap" style="margin-top:14px">
+          <a id="bkl" href="#BOOKMARKLET">📖 複製小說文字</a>
+          <div class="bkl-note">⬆️ 長按此按鈕 → 加入書籤<br>（在 Safari 中才能運作，需長按加入書籤列）</div>
+        </div>
+      </div>
+
+      <!-- Paste area -->
+      <div class="card">
+        <h3>📋 貼上目錄 / 章節文字</h3>
+        <textarea id="pa" placeholder="把複製的小說頁面文字貼在這裡…&#10;&#10;支援：&#10;• 目錄頁（自動列出所有章節名稱）&#10;• 單章節內文（直接閱讀）&#10;• 多章連續文字（自動分割）"></textarea>
+        <input id="ptitle" type="text" placeholder="小說標題（選填，會自動偵測）" autocorrect="off" spellcheck="false">
+        <div id="pbar-w"><div id="pbar-f"></div></div>
+        <div id="pstat"></div>
+        <button class="gbtn" onclick="doParse()">✨ 解析並載入</button>
+      </div>
+
+    </div><!-- /welcome -->
+
+    <!-- Reading -->
+    <div id="rc">
+      <div id="chhd"></div>
+      <div id="nt"></div>
+    </div>
+  </div><!-- /rw -->
+
+  <div id="bb">
+    <button class="nb" id="pvbtn">← 上章</button>
+    <div><div id="pind">—</div><div id="pgw"><div id="pg" style="width:0%"></div></div></div>
+    <button class="nb" id="nxbtn">下章 →</button>
+  </div>
+</div><!-- /mn -->
+</div><!-- /app -->
+
+<!-- TTS -->
+<div id="ttp">
+  <h4>🔊 語音朗讀</h4>
+  <select id="tvsel"></select>
+  <div class="tr"><label>語速</label><input type="range" id="trate" min="0.5" max="2.5" step="0.1" value="1.0"><span id="rv">1.0</span></div>
+  <div class="tr"><label>音調</label><input type="range" id="tpitch" min="0.5" max="2" step="0.1" value="1.0"><span id="pv">1.0</span></div>
+  <div class="tr"><label>音量</label><input type="range" id="tvol" min="0" max="1" step="0.05" value="1.0"><span id="vv">1.0</span></div>
+  <button id="tplaybtn">▶ 開始朗讀</button>
+</div>
+
+<!-- Settings -->
+<div id="setp">
+  <h4>⚙ 閱讀設定</h4>
+  <div class="srow"><label>字體大小</label><input type="range" id="fsr" min="14" max="30" step="1" value="19"><span id="fsv">19</span></div>
+  <div class="srow"><label>行距</label><input type="range" id="lhr" min="1.4" max="3.2" step="0.1" value="2.1"><span id="lhv">2.1</span></div>
+  <div class="srow" style="flex-direction:column;align-items:flex-start;gap:6px">
+    <label>主題</label>
+    <div class="thr">
+      <button class="thb on" data-th="">🌙 深夜</button>
+      <button class="thb" data-th="tp">📜 紙張</button>
+      <button class="thb" data-th="te">🌿 護眼</button>
+      <button class="thb" data-th="tb">🌊 夜藍</button>
+    </div>
+  </div>
+</div>
+
+<div id="kh"></div>
+
+<script>
+// ──────────────────────────────────────────────────────────────
+// 完全不依賴 Claude API，純前端解析
+// ──────────────────────────────────────────────────────────────
+const G = { novel:null, idx:0, read:new Set(), ttsOn:false };
+const $= id => document.getElementById(id);
+const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+// ── Bookmarklet ───────────────────────────────────────────────
+// Set real bookmarklet href on load (can't be inline due to length)
+(function(){
+  var code = '(function(){' +
+    'var t=document.title;' +
+    'var b=document.body.innerText||document.body.textContent;' +
+    'var out="TITLE:"+t+"\\n\\n"+b;' +
+    'if(navigator.clipboard&&navigator.clipboard.writeText){' +
+    '  navigator.clipboard.writeText(out).then(function(){alert("✅ 已複製《"+t+"》\\n請回閱讀器貼上");},function(){fallback(out)});' +
+    '}else{fallback(out);}' +
+    'function fallback(s){var ta=document.createElement("textarea");ta.value=s;ta.style.cssText="position:fixed;top:0;left:0;opacity:0";document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy");alert("✅ 已複製《"+t+"》\\n請回閱讀器貼上");}catch(e){alert("複製失敗，請手動全選後複製");}document.body.removeChild(ta);}' +
+    '})();';
+  $('bkl').href = 'javascript:' + code;
+})();
+
+// ── Status / progress ─────────────────────────────────────────
+function setStat(msg, cls){
+  var e=$('pstat'); e.innerHTML=msg; e.className=cls||'';
+}
+function setBar(pct){
+  var w=$('pbar-w'); w.classList.toggle('show',pct>0&&pct<100);
+  $('pbar-f').style.width=pct+'%';
+}
+
+// ── Chapter pattern detection ─────────────────────────────────
+const CH_PATS = [
+  // 第X章 / 第X節 / 第X話 etc.
+  /^[\s　]*第[\s]*[零○〇一二三四五六七八九十百千萬億\d]+[\s]*[章节節回集話话篇卷部]/m,
+  // Chapter N / CHAPTER N
+  /^[\s]*[Cc]hapter[\s]*\d+/m,
+  // 序章 番外 尾聲 extra
+  /^[\s　]*(序章|序曲|前言|番外|尾聲|終章|終曲|後記|楔子|外傳)/m,
+];
+
+function looksLikeChapterTitle(line) {
+  line = line.trim();
+  if (!line || line.length > 80) return false;
+  return CH_PATS.some(p => p.test(line));
+}
+
+// ── Parse pasted text ─────────────────────────────────────────
+function parseText(raw) {
+  // Strip bookmarklet prefix
+  let text = raw.trim();
+  let title = '';
+  if (text.startsWith('TITLE:')) {
+    const nl = text.indexOf('\n');
+    title = text.substring(6, nl).trim();
+    text = text.substring(nl + 1).trim();
+  }
+  // Strip HTML if someone pasted raw HTML
+  if (/<html/i.test(text) || /<body/i.test(text)) {
+    const d = document.createElement('div');
+    d.innerHTML = text;
+    ['script','style','nav','header','footer'].forEach(t => d.querySelectorAll(t).forEach(e=>e.remove()));
+    text = d.innerText || d.textContent || text;
+  }
+
+  const lines = text.split('\n');
+
+  // Find title if not set
+  if (!title) {
+    // Try first non-empty short line
+    for (const l of lines) {
+      const t = l.trim();
+      if (t && t.length < 50 && t.length > 1) { title = t; break; }
+    }
+  }
+
+  // Detect chapter boundary lines
+  const chStarts = []; // indices of lines that start a chapter
+  for (let i = 0; i < lines.length; i++) {
+    if (looksLikeChapterTitle(lines[i])) chStarts.push(i);
+  }
+
+  if (chStarts.length >= 2) {
+    // Multi-chapter: split at chapter title lines
+    const chapters = [];
+    for (let c = 0; c < chStarts.length; c++) {
+      const start = chStarts[c];
+      const end   = c + 1 < chStarts.length ? chStarts[c+1] : lines.length;
+      const chTitle = lines[start].trim();
+      const content = lines.slice(start + 1, end)
+        .join('\n')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
+      chapters.push({ title: chTitle, content });
+    }
+    return { title: title || chapters[0].title, chapters };
+  }
+
+  if (chStarts.length === 1) {
+    // Single chapter with clear title
+    const chTitle = lines[chStarts[0]].trim();
+    const content = lines.slice(chStarts[0] + 1).join('\n').replace(/\n{3,}/g,'\n\n').trim();
+    return { title: title || chTitle, chapters: [{ title: chTitle, content }] };
+  }
+
+  // No chapter markers — check if it looks like a TOC (many short lines)
+  const shortLines = lines.filter(l => { const t=l.trim(); return t.length>1 && t.length<60; });
+  if (shortLines.length > 5 && shortLines.length / lines.filter(l=>l.trim()).length > 0.6) {
+    // Treat each line as a chapter title placeholder (TOC mode)
+    const chapters = shortLines
+      .filter(l => l.trim().length > 2)
+      .map(l => ({ title: l.trim(), content: '' }));
+    if (chapters.length > 0) {
+      return { title: title || '（目錄）', chapters, isTOC: true };
+    }
+  }
+
+  // Fallback: treat entire text as one chapter, split by blank lines into paragraphs
+  if (text.length > 100) {
+    return {
+      title: title || '未命名',
+      chapters: [{ title: title || '內文', content: text }]
+    };
+  }
+
+  return null;
+}
+
+// ── doParse ───────────────────────────────────────────────────
+window.doParse = function() {
+  const raw = $('pa').value;
+  const titleHint = $('ptitle').value.trim();
+  if (!raw.trim()) { setStat('❌ 請先貼上文字', 'err'); return; }
+
+  setStat('<span class="spin"></span> 解析中…');
+  setBar(30);
+
+  setTimeout(function() { // let UI update
+    let text = raw;
+    if (titleHint && !text.startsWith('TITLE:')) text = 'TITLE:' + titleHint + '\n\n' + text;
+
+    const result = parseText(text);
+    setBar(80);
+
+    if (!result) { setStat('❌ 無法識別小說格式，請確認貼上內容', 'err'); setBar(0); return; }
+
+    if (result.isTOC) {
+      setStat('⚠️ 偵測到目錄頁（' + result.chapters.length + ' 章），章節無內文。<br>請到每個章節頁面，用書籤工具複製後貼上。', 'warn');
+      setBar(0);
+      // Still load so user can see the chapter list
+    } else {
+      setStat('✅ 解析完成：《' + result.title + '》共 ' + result.chapters.length + ' 章', 'ok');
+    }
+    setBar(0);
+    loadNovel(result, '');
+  }, 30);
+};
+
+// ── Load novel ────────────────────────────────────────────────
+function loadNovel(data, url) {
+  G.novel = { ...data, url };
+  G.idx = 0;
+  G.read = new Set();
+  $('ns').textContent = data.title.length > 14 ? data.title.substring(0,14)+'…' : data.title;
+  buildTOC();
+  showChapter(0);
+  $('wc').style.display = 'none';
+  $('rc').style.display = 'block';
+  save();
+}
+
+// ── TOC ───────────────────────────────────────────────────────
+function buildTOC(q) {
+  if (!G.novel) return;
+  const list = $('tcl'); list.innerHTML = '';
+  const ql = (q||'').toLowerCase();
+  G.novel.chapters.forEach(function(ch, i) {
+    if (ql && ch.title.toLowerCase().indexOf(ql) < 0) return;
+    const d = document.createElement('div');
+    d.className = 'ti' + (i===G.idx?' active':'') + (G.read.has(i)?' read':'');
+    d.setAttribute('data-i', i);
+    d.innerHTML = '<div class="tin">第'+(i+1)+'章</div>' + esc(ch.title);
+    d.addEventListener('click', function(){
+      showChapter(+this.getAttribute('data-i'));
+      if (window.innerWidth <= 680) closeSB();
+    });
+    list.appendChild(d);
+  });
+  $('sbf').textContent = '已讀 '+G.read.size+' / '+G.novel.chapters.length+' 章';
+}
+$('tcq').addEventListener('input', function(){ buildTOC(this.value); });
+
+// ── Show chapter ──────────────────────────────────────────────
+function showChapter(i) {
+  if (!G.novel) return;
+  const chs = G.novel.chapters;
+  if (i < 0 || i >= chs.length) return;
+  G.idx = i; G.read.add(i);
+  const ch = chs[i];
+  $('chhd').textContent = ch.title;
+  $('chtl').textContent = ch.title;
+  const paras = (ch.content||'').split('\n').filter(function(l){return l.trim();});
+  if (paras.length) {
+    $('nt').innerHTML = paras.map(function(p){return '<p>'+esc(p)+'</p>';}).join('');
+  } else {
+    $('nt').innerHTML = '<p style="color:var(--txd);text-align:center">（本章無內文）</p>';
+  }
+  $('rw').scrollTop = 0;
+  $('pvbtn').disabled = (i===0);
+  $('nxbtn').disabled = (i===chs.length-1);
+  var pct = chs.length>1 ? Math.round(i/(chs.length-1)*100) : 100;
+  $('pg').style.width = pct+'%';
+  $('pind').textContent = '第'+(i+1)+' / '+chs.length+'章';
+  // Update TOC highlight
+  document.querySelectorAll('.ti').forEach(function(el){
+    var n = +el.getAttribute('data-i');
+    el.className = 'ti'+(n===i?' active':'')+(G.read.has(n)?' read':'');
+    if (n===i) el.scrollIntoView({block:'nearest'});
+  });
+  if (G.ttsOn) stopTTS();
+  save();
+  $('rw').focus();
+}
+
+// ── Nav ───────────────────────────────────────────────────────
+$('pvbtn').addEventListener('click', function(){ showChapter(G.idx-1); });
+$('nxbtn').addEventListener('click', function(){ showChapter(G.idx+1); });
+function scr(dir, big) {
+  $('rw').scrollBy({ top: dir*(big ? $('rw').clientHeight*.8 : 70), behavior:'smooth' });
+}
+
+// ── Swipe support (iPad) ──────────────────────────────────────
+var touchStartX = 0, touchStartY = 0;
+$('rw').addEventListener('touchstart', function(e){ touchStartX=e.touches[0].clientX; touchStartY=e.touches[0].clientY; }, {passive:true});
+$('rw').addEventListener('touchend', function(e){
+  var dx = e.changedTouches[0].clientX - touchStartX;
+  var dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) > Math.abs(dy)*2 && Math.abs(dx) > 60) {
+    // Horizontal swipe
+    if (dx < 0) showChapter(G.idx+1); // swipe left = next
+    else showChapter(G.idx-1);        // swipe right = prev
+  }
+}, {passive:true});
+
+// ── Keyboard ─────────────────────────────────────────────────
+var KH=$('kh'), kht;
+function hint(m){KH.textContent=m;KH.classList.add('show');clearTimeout(kht);kht=setTimeout(function(){KH.classList.remove('show');},1100);}
+document.addEventListener('keydown', function(e){
+  if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
+  switch(e.key){
+    case 'ArrowLeft': e.preventDefault(); showChapter(G.idx-1); hint('← 上一章'); break;
+    case 'ArrowRight': e.preventDefault(); showChapter(G.idx+1); hint('→ 下一章'); break;
+    case 'ArrowUp': e.preventDefault(); scr(-1); break;
+    case 'ArrowDown': e.preventDefault(); scr(1); break;
+    case ' ': case 'PageDown': e.preventDefault(); scr(1,true); hint('▼ 翻頁'); break;
+    case 'PageUp': e.preventDefault(); scr(-1,true); hint('▲ 翻頁'); break;
+    case 'Home': e.preventDefault(); if(G.novel){showChapter(0);hint('⏮ 第一章');} break;
+    case 'End': e.preventDefault(); if(G.novel){showChapter(G.novel.chapters.length-1);hint('⏭ 最後章');} break;
+    case 't': case 'T': togSB(); break;
+    case 's': case 'S': togTTS(); break;
+    case 'AudioVolumeDown': e.preventDefault(); showChapter(G.idx-1); hint('← 上一章'); break;
+    case 'AudioVolumeUp': e.preventDefault(); showChapter(G.idx+1); hint('→ 下一章'); break;
+    case 'MediaTrackPrevious': e.preventDefault(); showChapter(G.idx-1); hint('← 上一章'); break;
+    case 'MediaTrackNext': e.preventDefault(); showChapter(G.idx+1); hint('→ 下一章'); break;
+  }
+});
+
+// ── Sidebar ───────────────────────────────────────────────────
+$('btoc').addEventListener('click', togSB);
+function togSB(){ $('sb').classList.toggle('open'); $('overlay').classList.toggle('show'); }
+function closeSB(){ $('sb').classList.remove('open'); $('overlay').classList.remove('show'); }
+function setSB(v){ if(v) { $('sb').classList.add('open'); $('overlay').classList.add('show'); } else closeSB(); }
+
+$('bnew').addEventListener('click', function(){
+  $('wc').style.display='block'; $('rc').style.display='none';
+  $('pa').value=''; $('ptitle').value=''; setStat(''); setBar(0);
+  $('pa').focus();
+});
+
+// ── TTS ──────────────────────────────────────────────────────
+$('btts').addEventListener('click', function(){
+  $('ttp').classList.toggle('show'); $('setp').classList.remove('show');
+});
+$('tplaybtn').addEventListener('click', togTTS);
+
+function fillVoices(){
+  $('tvsel').innerHTML='';
+  var vs=speechSynthesis.getVoices();
+  var zh=vs.filter(function(v){return v.lang.indexOf('zh')===0||v.lang.indexOf('zh')>-1;});
+  var list=zh.length?zh:vs.slice(0,15);
+  list.forEach(function(v){var o=document.createElement('option');o.value=v.name;o.textContent=v.name+' ('+v.lang+')';$('tvsel').appendChild(o);});
+}
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=fillVoices;
+setTimeout(fillVoices,500);
+
+$('trate').addEventListener('input',function(){$('rv').textContent=parseFloat(this.value).toFixed(1);});
+$('tpitch').addEventListener('input',function(){$('pv').textContent=parseFloat(this.value).toFixed(1);});
+$('tvol').addEventListener('input',function(){$('vv').textContent=parseFloat(this.value).toFixed(1);});
+
+function togTTS(){ G.ttsOn ? stopTTS() : startTTS(); }
+function startTTS(){
+  if(!G.novel)return;
+  speechSynthesis.cancel();
+  var ch=G.novel.chapters[G.idx];
+  var text=(ch.content||ch.title||'').replace(/\n/g,'。');
+  if(!text)return;
+  var u=new SpeechSynthesisUtterance(text);
+  var vn=$('tvsel').value;
+  var v=speechSynthesis.getVoices().find(function(x){return x.name===vn;});
+  if(v)u.voice=v;
+  u.rate=parseFloat($('trate').value); u.pitch=parseFloat($('tpitch').value); u.volume=parseFloat($('tvol').value);
+  u.onend=function(){G.ttsOn=false;$('tplaybtn').textContent='▶ 開始朗讀';$('btts').classList.remove('on');};
+  speechSynthesis.speak(u);
+  G.ttsOn=true; $('tplaybtn').textContent='⏹ 停止朗讀'; $('btts').classList.add('on');
+}
+function stopTTS(){speechSynthesis.cancel();G.ttsOn=false;$('tplaybtn').textContent='▶ 開始朗讀';$('btts').classList.remove('on');}
+
+// ── Settings ─────────────────────────────────────────────────
+$('bset').addEventListener('click', function(){
+  $('setp').classList.toggle('show'); $('ttp').classList.remove('show');
+});
+$('fsr').addEventListener('input',function(){$('fsv').textContent=this.value;document.documentElement.style.setProperty('--fs',this.value+'px');});
+$('lhr').addEventListener('input',function(){$('lhv').textContent=parseFloat(this.value).toFixed(1);document.documentElement.style.setProperty('--lh',this.value);});
+document.querySelectorAll('.thb').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.thb').forEach(function(x){x.classList.remove('on');});
+    this.classList.add('on'); document.body.className=this.dataset.th;
+    localStorage.setItem('nr_th',this.dataset.th);
+  });
+});
+document.addEventListener('click', function(e){
+  if(!$('ttp').contains(e.target)&&!$('btts').contains(e.target)) $('ttp').classList.remove('show');
+  if(!$('setp').contains(e.target)&&!$('bset').contains(e.target)) $('setp').classList.remove('show');
+});
+
+// ── Persist ──────────────────────────────────────────────────
+function save(){
+  if(!G.novel)return;
+  try{
+    var data={title:G.novel.title,url:G.novel.url||'',idx:G.idx,read:[...G.read],
+      chapters:G.novel.chapters.map(function(c){return{title:c.title,content:c.content||''};})};
+    localStorage.setItem('nr5',JSON.stringify(data));
+  }catch(e){
+    // If storage full, save without content
+    try{
+      var slim={title:G.novel.title,url:G.novel.url||'',idx:G.idx,read:[...G.read],
+        chapters:G.novel.chapters.map(function(c){return{title:c.title,content:''};})};
+      localStorage.setItem('nr5',JSON.stringify(slim));
+    }catch(e2){}
+  }
+}
+function restore(){
+  try{
+    var raw=localStorage.getItem('nr5');
+    if(!raw)return;
+    var x=JSON.parse(raw);
+    if(x&&x.chapters&&x.chapters.length){
+      G.read=new Set(x.read||[]);
+      loadNovel(x,x.url||'');
+      showChapter(x.idx||0);
+    }
+  }catch(e){}
+  var th=localStorage.getItem('nr_th')||'';
+  document.body.className=th;
+  document.querySelectorAll('.thb').forEach(function(b){b.classList.toggle('on',b.dataset.th===th);});
+}
+
+// ── Init ─────────────────────────────────────────────────────
+restore();
+$('rw').focus();
+</script>
+</body>
+</html>

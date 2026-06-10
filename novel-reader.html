@@ -7,13 +7,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>📖 小說閱讀器</title>
 <style>
-:root{--bg:#f5f0e8;--sf:#ede7db;--pn:#e4ddd0;--bd:#d0c8b8;--ac:#8b6914;--ac2:#a07820;--tx:#2a2018;--txd:#7a6e5f;--txr:#b8aa98;--err:#c05050;--ok:#4a9060;--warn:#9a7820;--serif:'Georgia','Songti SC','Noto Serif TC',serif;--ui:-apple-system,'PingFang TC','Segoe UI',sans-serif;--sw:270px;--pm:680px;--fs:18px;--lh:1.95;--safe-b:env(safe-area-inset-bottom,0px)}
+:root{--bg:#f5f0e8;--sf:#ede7db;--pn:#e4ddd0;--bd:#d0c8b8;--ac:#8b6914;--tx:#2a2018;--txd:#7a6e5f;--txr:#b8aa98;--err:#c05050;--ok:#4a9060;--warn:#9a7820;--serif:'Georgia','Songti SC','Noto Serif TC',serif;--ui:-apple-system,'PingFang TC','Segoe UI',sans-serif;--sw:270px;--pm:680px;--fs:18px;--lh:1.95;--safe-b:env(safe-area-inset-bottom,0px)}
 body.dk{--bg:#1c1812;--sf:#252018;--pn:#2e2820;--bd:#3e3828;--ac:#c9a96e;--tx:#ede3d5;--txd:#9a8f82;--txr:#504540}
 body.ge{--bg:#d4ecd4;--sf:#c8e4c8;--pn:#bcdabc;--bd:#a0caa0;--ac:#2a6a2a;--tx:#0a200a;--txd:#3a6a3a;--txr:#6a9a6a}
 body.sp{--bg:#f2e8d8;--sf:#e8dccc;--pn:#ddd0bc;--bd:#c8bca8;--ac:#7a4e18;--tx:#2a1808;--txd:#6a5040;--txr:#a89080}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-family:var(--ui);-webkit-text-size-adjust:100%}
 #app{display:flex;height:100%;height:100dvh}
+
+/* Sidebar */
 #sb{width:var(--sw);flex-shrink:0;background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;transition:transform .26s ease;z-index:20}
 #sb.col{transform:translateX(-100%);position:absolute;height:100%}
 #sbh{padding:14px 12px 10px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:7px}
@@ -38,6 +40,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 .ti:hover .ti-del{opacity:.7}
 .ti-del:hover{opacity:1}
 #sbf{padding:9px 12px;border-top:1px solid var(--bd);font-size:13px;color:var(--txd);text-align:center;padding-bottom:calc(9px + var(--safe-b))}
+
+/* Main */
 #mn{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 #topbar{height:50px;background:var(--sf);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:4px;padding:0 10px;flex-shrink:0}
 .btn{background:none;border:1px solid var(--bd);color:var(--txd);padding:5px 8px;border-radius:7px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:3px;white-space:nowrap;-webkit-appearance:none;user-select:none;transition:all .12s}
@@ -45,15 +49,59 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 .btn.on{color:var(--ac);border-color:var(--ac);background:rgba(139,105,20,.1)}
 .sep{width:1px;height:22px;background:var(--bd);margin:0 2px;flex-shrink:0}
 #chtl{flex:1;font-size:13px;color:var(--txd);text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-width:0}
+
+/* Reader */
 #rw{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;outline:none}
 #rw::-webkit-scrollbar{display:none}
 #rc{display:none;max-width:var(--pm);margin:0 auto;padding:32px 24px 100px}
 #chhd{font-size:19px;font-family:var(--serif);color:var(--ac);margin-bottom:22px;line-height:1.5;text-align:center;border-bottom:1px solid var(--bd);padding-bottom:14px}
 #nt{font-family:var(--serif);font-size:var(--fs);line-height:var(--lh);color:var(--tx)}
 #nt p{margin-bottom:.85em;text-indent:2em}
-#wc{max-width:580px;margin:0 auto;padding:20px 16px;padding-bottom:calc(20px + var(--safe-b))}
-.wlogo{font-size:44px;text-align:center;margin-bottom:8px}
-.wtitle{font-size:20px;color:var(--ac);font-family:var(--serif);text-align:center;margin-bottom:16px;font-weight:700}
+
+/* Welcome / Shelf */
+#wc{height:100%;display:flex;flex-direction:column;overflow:hidden}
+
+/* Shelf */
+#shelf-view{flex:1;display:none;flex-direction:column;overflow:hidden}
+#shelf-header{padding:12px 14px 0;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0}
+#shelf-tabs{display:flex;gap:0;border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:10px;width:fit-content}
+.stab{padding:7px 16px;background:var(--pn);border:none;color:var(--txd);font-size:13px;cursor:pointer;-webkit-appearance:none;user-select:none;transition:all .12s;white-space:nowrap}
+.stab.active{background:var(--ac);color:#fff;font-weight:700}
+#shelf-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px;padding-bottom:calc(12px + var(--safe-b))}
+#shelf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px}
+@media(max-width:500px){#shelf-grid{grid-template-columns:repeat(2,1fr);gap:9px}}
+#shelf-empty{text-align:center;padding:40px 16px;color:var(--txd);font-size:14px;display:none;line-height:1.7}
+
+/* Shelf card */
+.sc{background:var(--sf);border:1px solid var(--bd);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .15s;position:relative;display:flex;flex-direction:column}
+.sc:active{transform:scale(.97)}
+.sc.cur{border-color:var(--ac);box-shadow:0 0 0 2px rgba(139,105,20,.2)}
+.sc-cover{height:96px;display:flex;align-items:center;justify-content:center;font-size:42px;background:linear-gradient(135deg,var(--pn),var(--bd));flex-shrink:0}
+.sc-body{padding:9px 10px;flex:1;display:flex;flex-direction:column}
+.sc-title{font-size:14px;font-weight:700;color:var(--tx);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35;margin-bottom:4px;flex:1}
+.sc-author{font-size:11px;color:var(--txd);margin-bottom:5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.sc-bar-wrap{height:3px;background:var(--bd);border-radius:2px;margin-bottom:5px}
+.sc-bar{height:100%;background:var(--ac);border-radius:2px}
+.sc-foot{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.sc-stat{font-size:10px;padding:2px 6px;border-radius:8px;font-weight:600}
+.sc-stat.reading{background:rgba(139,105,20,.15);color:var(--ac)}
+.sc-stat.want{background:rgba(96,96,192,.15);color:#6060c0}
+.sc-stat.done{background:rgba(74,144,96,.15);color:var(--ok)}
+.sc-prog{font-size:10px;color:var(--txr)}
+/* Status buttons inside card */
+.sc-status-row{display:flex;gap:4px}
+.ssb{flex:1;padding:4px 0;border-radius:5px;border:1px solid var(--bd);font-size:11px;cursor:pointer;background:var(--pn);color:var(--txd);-webkit-appearance:none;text-align:center;transition:all .1s}
+.ssb:active{opacity:.7}
+.ssb.sw{border-color:#6060c0;color:#6060c0;background:rgba(96,96,192,.1);font-weight:700}
+.ssb.sr{border-color:var(--ac);color:var(--ac);background:rgba(139,105,20,.1);font-weight:700}
+.ssb.sd{border-color:var(--ok);color:var(--ok);background:rgba(74,144,96,.1);font-weight:700}
+/* Badges */
+.sc-now{position:absolute;top:6px;right:6px;background:var(--ac);color:#fff;font-size:10px;padding:2px 6px;border-radius:5px;font-weight:700}
+.sc-del{position:absolute;top:5px;left:5px;background:rgba(0,0,0,.4);color:#fff;border:none;border-radius:5px;font-size:11px;padding:2px 6px;cursor:pointer;display:none;line-height:1}
+.sc:hover .sc-del{display:block}
+
+/* Add view */
+#add-view{display:none;padding:14px;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(14px + var(--safe-b))}
 .card{background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:15px;margin-bottom:10px}
 .card h3{font-size:13px;color:var(--ac);margin-bottom:11px;font-weight:700}
 .inp{flex:1;padding:10px 11px;background:var(--pn);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-size:13px;outline:none;-webkit-appearance:none;min-width:0}
@@ -61,17 +109,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 .irow{display:flex;gap:7px;margin-bottom:9px}
 .gbtn{padding:10px 15px;background:var(--ac);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;-webkit-appearance:none;user-select:none;flex-shrink:0}
 .gbtn:active{opacity:.8}
-.gbtn.full{width:100%;padding:12px;font-size:14px;border-radius:9px;margin-top:2px}
 #flog{background:var(--pn);border:1px solid var(--bd);border-radius:7px;padding:9px 11px;font-size:12px;color:var(--txd);max-height:130px;overflow-y:auto;display:none;line-height:1.65}
 #fprogw{width:100%;height:4px;background:var(--bd);border-radius:2px;margin:7px 0;display:none}
 #fprogf{height:100%;background:var(--ac);border-radius:2px;transition:width .35s;width:0%}
-#pa{width:100%;height:130px;background:var(--pn);border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:9px;font-size:12.5px;resize:none;outline:none;display:block;-webkit-appearance:none;margin-bottom:8px}
-#pa:focus{border-color:var(--ac)}
-#pstat{font-size:12.5px;min-height:18px;margin-top:7px;color:var(--txd)}
-#pstat.ok{color:var(--ok)}#pstat.err{color:var(--err)}
-.bkl-wrap{text-align:center;margin-top:11px}
-#bkl{display:inline-flex;align-items:center;gap:5px;padding:9px 18px;background:var(--ac);color:#fff;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none}
-.bkl-note{font-size:11px;color:var(--txr);margin-top:5px}
+
+/* Bottom nav (scroll mode) */
 #bb{height:calc(52px + var(--safe-b));background:var(--sf);border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 13px;padding-bottom:var(--safe-b);flex-shrink:0}
 .nb{background:var(--pn);border:1px solid var(--bd);color:var(--txd);padding:8px 18px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;-webkit-appearance:none;user-select:none}
 .nb:active{background:var(--ac);color:#fff;border-color:var(--ac)}
@@ -79,6 +121,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 #pind{font-size:12px;color:var(--txd);text-align:center}
 #pgw{width:90px;height:3px;background:var(--bd);border-radius:2px;margin-top:4px}
 #pg{height:100%;background:var(--ac);border-radius:2px;transition:width .3s}
+
+/* Page mode */
 #pw{display:none;height:100%;flex-direction:column;overflow:hidden;position:relative}
 #pscreen{flex:1;display:flex;flex-direction:column;padding:28px 26px 0;overflow:hidden;transition:transform .18s ease;will-change:transform}
 @media(max-width:680px){#pscreen{padding:18px 16px 0}}
@@ -97,6 +141,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 .pdot.on{background:var(--ac);width:6px;height:6px}
 #tap-l{position:absolute;left:0;top:0;width:28%;height:calc(100% - 58px - var(--safe-b));z-index:5;cursor:pointer}
 #tap-r{position:absolute;right:0;top:0;width:28%;height:calc(100% - 58px - var(--safe-b));z-index:5;cursor:pointer}
+
+/* Panels */
 .panel{position:fixed;background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:15px;box-shadow:0 6px 28px rgba(0,0,0,.15);display:none;z-index:40}
 .panel.show{display:block}
 .panel h4{font-size:13px;color:var(--ac);margin-bottom:12px;font-weight:700}
@@ -121,12 +167,16 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 .ech-del:hover{opacity:1}
 .edit-btns{display:flex;gap:8px;margin-top:14px}
 .edit-btns button{flex:1;padding:10px;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer}
+
+/* TTS */
 .tr{display:flex;align-items:center;gap:7px;margin-bottom:9px;font-size:12px;color:var(--txd)}
 .tr label{width:46px;flex-shrink:0}
 .tr input[type=range]{flex:1;accent-color:var(--ac);height:20px}
 .tr span{width:30px;text-align:right;font-size:11px;color:var(--tx)}
 #tvsel{width:100%;background:var(--pn);border:1px solid var(--bd);color:var(--tx);padding:5px 8px;border-radius:6px;font-size:12px;margin-bottom:9px;outline:none;-webkit-appearance:none}
 #tplaybtn{width:100%;padding:8px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer}
+
+/* Settings */
 .srow{display:flex;align-items:center;gap:7px;margin-bottom:10px;font-size:12.5px;color:var(--txd)}
 .srow label{flex:1}
 .srow input[type=range]{width:82px;accent-color:var(--ac);height:20px}
@@ -137,10 +187,14 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 .color-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;align-items:center}
 .cbtn{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer;flex-shrink:0}
 .cbtn.on{border-color:var(--ac)}
+
+/* Export */
 .exp-sel{width:100%;background:var(--pn);border:1px solid var(--bd);color:var(--tx);padding:7px 9px;border-radius:7px;font-size:13px;outline:none;-webkit-appearance:none;margin-bottom:10px}
 .exp-btns{display:flex;gap:7px}
 .exp-btns button{flex:1;padding:9px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none}
 #exp-stat{font-size:12px;color:var(--txd);margin-top:8px;min-height:16px}
+
+/* Misc */
 #overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:15}
 #overlay.show{display:block}
 #kh{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#fff;border-radius:6px;padding:5px 13px;font-size:12px;pointer-events:none;opacity:0;transition:opacity .25s;z-index:50;white-space:nowrap}
@@ -153,12 +207,16 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 <body>
 <div id="overlay" onclick="closeSB()"></div>
 <div id="app">
+
+<!-- Sidebar -->
 <div id="sb">
   <div id="sbh"><span>📚</span><h1 id="ns">小說閱讀器</h1><span id="fetch-badge"></span></div>
   <input id="tcq" type="search" placeholder="搜尋章節…" autocomplete="off" autocorrect="off" spellcheck="false">
   <div id="tcl"></div>
   <div id="sbf">0 / 0 章</div>
 </div>
+
+<!-- Main -->
 <div id="mn">
   <div id="topbar">
     <button class="btn" id="btoc">☰</button>
@@ -173,26 +231,40 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
     <button class="btn" id="bset">⚙</button>
     <button class="btn" id="bexp">📦</button>
   </div>
+
   <div id="rw" tabindex="0">
+    <!-- Welcome: Shelf + Add -->
     <div id="wc">
-      <div class="wlogo">📖</div>
-      <div class="wtitle">小說閱讀器</div>
-      <div class="card">
-        <h3>🔗 自動抓取（輸入網址）</h3>
-        <div class="irow"><input class="inp" id="urlin" type="url" placeholder="https://www.xbanxia.cc/books/12345.html" autocorrect="off" autocapitalize="off" spellcheck="false"><button class="gbtn" id="fetchbtn">抓取</button></div>
-        <div id="fprogw"><div id="fprogf"></div></div>
-        <div id="flog"></div>
-      </div>
-      <div class="card">
-        <h3>🔖 書籤工具（複製小說文字用）</h3>
-        <div style="font-size:13px;color:var(--txd);line-height:1.7;margin-bottom:10px">
-          把下方按鈕<strong style="color:var(--tx)">長按 → 加入書籤</strong>到 Safari 書籤列。<br>
-          之後到任何小說章節頁，點一下書籤即可自動複製全頁文字。
+      <!-- Bookshelf -->
+      <div id="shelf-view">
+        <div id="shelf-header">
+          <div id="shelf-tabs">
+            <button class="stab active" data-filter="all">全部</button>
+            <button class="stab" data-filter="reading">在讀</button>
+            <button class="stab" data-filter="want">想讀</button>
+            <button class="stab" data-filter="done">完成</button>
+          </div>
         </div>
-        <div class="bkl-wrap"><a id="bkl" href="#BKL">📖 複製小說文字</a><div class="bkl-note">← 長按此按鈕加入書籤列</div></div>
+        <div id="shelf-scroll">
+          <div id="shelf-empty">還沒有書籍，點「＋ 新書」開始新增 📚</div>
+          <div id="shelf-grid"></div>
+        </div>
+      </div>
+      <!-- Add new book -->
+      <div id="add-view">
+        <div class="card">
+          <h3>🔗 新增小說（輸入網址）</h3>
+          <div class="irow"><input class="inp" id="urlin" type="url" placeholder="https://www.xbanxia.cc/books/12345.html" autocorrect="off" autocapitalize="off" spellcheck="false"><button class="gbtn" id="fetchbtn">抓取</button></div>
+          <div id="fprogw"><div id="fprogf"></div></div>
+          <div id="flog"></div>
+        </div>
       </div>
     </div>
+
+    <!-- Scroll reading -->
     <div id="rc"><div id="chhd"></div><div id="nt"></div></div>
+
+    <!-- Page mode -->
     <div id="pw">
       <div id="tap-l" onclick="pagePrev()"></div>
       <div id="tap-r" onclick="pageNext()"></div>
@@ -204,6 +276,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
       </div>
     </div>
   </div>
+
   <div id="bb">
     <button class="nb" id="pvbtn">← 上章</button>
     <div><div id="pind">—</div><div id="pgw"><div id="pg" style="width:0%"></div></div></div>
@@ -211,183 +284,340 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
   </div>
 </div>
 </div>
+
+<!-- TTS -->
 <div id="ttp" class="panel"><h4>🔊 語音朗讀</h4><select id="tvsel"></select><div class="tr"><label>語速</label><input type="range" id="trate" min="0.5" max="2.5" step="0.1" value="1.0"><span id="rv">1.0</span></div><div class="tr"><label>音調</label><input type="range" id="tpitch" min="0.5" max="2" step="0.1" value="1.0"><span id="pv">1.0</span></div><div class="tr"><label>音量</label><input type="range" id="tvol" min="0" max="1" step="0.05" value="1.0"><span id="vv">1.0</span></div><button id="tplaybtn">▶ 開始朗讀</button></div>
 <div id="setp" class="panel"><h4>⚙ 閱讀設定</h4><div class="srow"><label>字體大小</label><input type="range" id="fsr" min="13" max="32" step="1" value="18"><span id="fsv">18</span></div><div class="srow"><label>行距</label><input type="range" id="lhr" min="1.4" max="3.0" step="0.1" value="1.95"><span id="lhv">1.9</span></div><div class="srow"><label>頁面寬度</label><input type="range" id="pmr" min="380" max="900" step="20" value="680"><span id="pmv" style="width:36px">680</span></div><div class="srow" style="flex-direction:column;align-items:flex-start;gap:5px"><label>主題</label><div class="thr"><button class="thb on" data-th="">☀️ 日間</button><button class="thb" data-th="sp">📜 古典</button><button class="thb" data-th="ge">🌿 護眼</button><button class="thb" data-th="dk">🌙 夜間</button></div></div><div class="srow" style="flex-direction:column;align-items:flex-start;gap:5px"><label>自訂底色</label><div class="color-row"><div class="cbtn" data-bg="" style="background:#f5f0e8;border:2px solid #ccc"></div><div class="cbtn" data-bg="#fffef5" style="background:#fffef5"></div><div class="cbtn" data-bg="#e8f0e8" style="background:#e8f0e8"></div><div class="cbtn" data-bg="#e8eaf5" style="background:#e8eaf5"></div><div class="cbtn" data-bg="#f5e8f0" style="background:#f5e8f0"></div><input type="color" id="custom-bg" value="#f5f0e8" style="width:36px;height:26px;border-radius:5px;border:1px solid var(--bd);cursor:pointer;padding:0"></div></div></div>
 <div id="expp" class="panel"><h4>📦 匯出 / 匯入</h4><select class="exp-sel" id="exp-sel"><option value="all">全部小說</option></select><div class="exp-btns"><button onclick="doExport()" style="background:var(--ac);color:#fff">⬆️ 匯出</button><button onclick="$('imp-file').click()" style="background:var(--pn);color:var(--txd);border:1px solid var(--bd)">⬇️ 匯入</button></div><input type="file" id="imp-file" accept=".json" style="display:none"><div id="exp-stat"></div></div>
 <div id="editp"><div id="edit-box"><h4>✏️ 編輯書籍資訊</h4><div class="ef"><label>書名</label><input id="edit-title" type="text"></div><div class="ef"><label>作者</label><input id="edit-author" type="text" placeholder="（選填）"></div><div class="ef"><label>簡介</label><textarea id="edit-intro" placeholder="（選填）"></textarea></div><div class="ef"><label>章節管理（點 🗑 刪除）</label><div class="edit-chlist" id="edit-chlist"></div></div><div class="edit-btns"><button onclick="saveEdit()" style="background:var(--ac);color:#fff">✅ 儲存</button><button onclick="closeEdit()" style="background:var(--pn);color:var(--txd);border:1px solid var(--bd)">取消</button></div></div></div>
 <div id="kh"></div>
+
 <script>
 var G={library:[],cur:-1,idx:0,read:{},ttsOn:false,fetching:false};
 var PM={on:false,pages:[],pageIdx:0,chIdx:-1};
 var SK='nr8',PROXY='https://novel-proxy.runrain.workers.dev/';
 var $=function(id){return document.getElementById(id);};
 var esc=function(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
-(function(){var c='(function(){var t=document.title;var b=document.body.innerText||document.body.textContent;var o="TITLE:"+t+"\\n\\n"+b;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(o).then(function(){alert("✅ 已複製《"+t+"》\\n請回閱讀器貼上");},fb);}else{fb(o);}function fb(s){var a=document.createElement("textarea");a.value=s;a.style.cssText="position:fixed;top:0;left:0;opacity:0";document.body.appendChild(a);a.focus();a.select();try{document.execCommand("copy");alert("✅ 已複製《"+t+"》\\n請回閱讀器貼上");}catch(e){alert("複製失敗");}document.body.removeChild(a);}})();';$('bkl').href='javascript:'+c;})();
+
+// ── Proxy fetch ──────────────────────────────────────────
 function proxyFetch(url,ms){return new Promise(function(resolve,reject){var xhr=new XMLHttpRequest();xhr.open('GET',PROXY+'?url='+encodeURIComponent(url),true);xhr.responseType='arraybuffer';xhr.timeout=ms||15000;xhr.onload=function(){if(xhr.status>=200&&xhr.status<400){var b=new Uint8Array(xhr.response),t='';try{t=new TextDecoder('utf-8',{fatal:true}).decode(b);}catch(e){try{t=new TextDecoder('gbk').decode(b);}catch(e2){t=new TextDecoder('utf-8',{fatal:false}).decode(b);}}resolve(t);}else reject(new Error('HTTP '+xhr.status));};xhr.onerror=function(){reject(new Error('網路錯誤'));};xhr.ontimeout=function(){reject(new Error('連線逾時'));};xhr.send();});}
+
+// ── Log / progress ───────────────────────────────────────
 function flog(msg,cls){var b=$('flog');b.style.display='block';var d=document.createElement('div');d.style.color=cls==='ok'?'var(--ok)':cls==='err'?'var(--err)':cls==='warn'?'var(--warn)':'var(--txd)';d.innerHTML=msg;b.appendChild(d);b.scrollTop=b.scrollHeight;}
 function flogClear(){$('flog').innerHTML='';$('flog').style.display='none';}
 function fbar(p){$('fprogw').style.display=p>0&&p<100?'block':'none';$('fprogf').style.width=p+'%';}
 function setBadge(s,t){var b=$('fetch-badge');b.className=s;b.textContent=t||'';}
+
+// ── HTML extraction ──────────────────────────────────────
 function extractLinks(html,base){var div=document.createElement('div');div.innerHTML=html;var origin='';try{origin=new URL(base).origin;}catch(e){}var links=[],seen={};div.querySelectorAll('a[href]').forEach(function(a){var href=a.getAttribute('href')||'';if(!href||href==='#'||/^javascript/i.test(href))return;var full=href.startsWith('http')?href:origin+(href.startsWith('/')?href:'/'+href);if(seen[full])return;var text=(a.textContent||'').trim().replace(/\s+/g,' ');if(!text||text.length<2||text.length>60)return;if(/^(首頁|登[入錄]|註冊|搜[尋索]|排行|分類|書架|加入|收藏|上[一章]|下[一章]|目錄|返回|關於|聯繫|廣告|反饋|評[論價]|更多|展開|舉報)$/.test(text))return;seen[full]=true;links.push({title:text,url:full});});return links;}
 function extractContent(html,chTitle){var div=document.createElement('div');var bm=html.match(/<body[^>]*>([\s\S]*)<\/body>/i);div.innerHTML=bm?bm[1]:html;try{div.querySelectorAll('script,style,nav,header,footer,aside,iframe,noscript,.ad,.ads,[class*="ad-"],[id*="ad-"],[class*="banner"],[class*="recommend"],[class*="comment"],[class*="pagination"],[class*="nav"]').forEach(function(e){e.remove();});}catch(e){}var sels=['#chaptercontent','#chapter_content','#ChapterContent','#content','#Content','#booktext','#BookText','.chapter-content','.chaptercontent','.read-content','.content-text','#readcontent','#article','.article-body','#articleBody','#novel-content','.novel-text','article .content','main .content'];var content='';for(var i=0;i<sels.length;i++){var el=null;try{el=div.querySelector(sels[i]);}catch(e){}if(el){var t=(el.innerText||el.textContent||'').trim();if(t.length>200){content=t;break;}}}if(content.length<200){var best='',bs=0;div.querySelectorAll('div,section,article').forEach(function(el){if(el.children.length>30)return;var t=(el.innerText||el.textContent||'').trim();var sc=t.length-el.querySelectorAll('a').length*15;if(sc>bs&&t.length>200){bs=sc;best=t;}});content=best;}content=content.split('\r\n').join('\n').split('\r').join('\n').replace(/\t/g,' ').replace(/[^\S\n]{2,}/g,' ').replace(/\n{3,}/g,'\n\n').trim();var bad=[/^本章未完/,/^閱讀.*?txt/,/^手機用戶/,/^請記住.*?網址/,/^如果.*?不錯/,/筆趣閣/,/^上一章$/,/^下一章$/,/^章節目錄$/,/^返回$/,/第.{0,5}頁$/,/^\d+\/\d+$/];content=content.split('\n').filter(function(l){var t=l.trim();if(!t)return true;return!bad.some(function(p){return p.test(t);});}).join('\n').replace(/\n{3,}/g,'\n\n').trim();if(chTitle&&chTitle.length>2){var ti=content.indexOf(chTitle);if(ti>0&&ti<content.length*.25)content=content.substring(ti+chTitle.length).trim();}var cm=content.match(/^[\s\S]{0,400}(第[零一二三四五六七八九十百千\d]+[章節回][^\n]{0,60}\n)/);if(cm){var cut=content.indexOf(cm[1])+cm[1].length;if(cut<content.length*.25)content=content.substring(cut).trim();}return content;}
 function extractTitle(html){var m=html.match(/<title[^>]*>([^<]+)<\/title>/i);if(!m)return'未命名';return m[1].replace(/[-_|丨–—].*$/,'').replace(/最新章節.*$/,'').replace(/在線.*$/,'').replace(/免費.*$/,'').replace(/小說.*$/,'').trim()||'未命名';}
+
+// ── Auto fetch ───────────────────────────────────────────
 $('fetchbtn').addEventListener('click',function(){var url=$('urlin').value.trim();if(!url.startsWith('http')){flogClear();flog('❌ 請輸入完整網址','err');return;}doAutoFetch(url);});
 $('urlin').addEventListener('keydown',function(e){if(e.key==='Enter')$('fetchbtn').click();});
-async function doAutoFetch(url){if(G.fetching)return;G.fetching=true;$('fetchbtn').disabled=true;flogClear();fbar(5);setBadge('loading','抓取中…');flog('<span class="spin"></span> 正在抓取目錄頁…');var ih;try{ih=await proxyFetch(url,15000);}catch(e){flog('❌ 抓取失敗：'+e.message,'err');setBadge('err','失敗');G.fetching=false;$('fetchbtn').disabled=false;fbar(0);return;}var title=extractTitle(ih);flog('✅ 成功（'+Math.round(ih.length/1024)+'KB）','ok');flog('📚 《'+title+'》');fbar(15);var chs=extractLinks(ih,url);if(chs.length<2){var sc=extractContent(ih,title);if(sc.length>200){addToLibrary({title:title,url:url,chapters:[{title:title,content:sc}]});flog('✅ 完成','ok');fbar(0);setBadge('done','完成');G.fetching=false;$('fetchbtn').disabled=false;return;}flog('❌ 找不到章節連結','err');setBadge('err','無章節');G.fetching=false;$('fetchbtn').disabled=false;fbar(0);return;}flog('✅ 找到 '+chs.length+' 章','ok');fbar(20);var novel={title:title,url:url,chapters:chs.map(function(c){return{title:c.title,url:c.url,content:null};})};var nIdx=addToLibrary(novel);switchNovel(nIdx);$('chhd').textContent=chs[0].title;$('nt').innerHTML='<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入第一章…</p>';var total=chs.length,done=0,BATCH=2;async function fetchCh(i){var ch=G.library[nIdx].chapters[i];if(!ch||!ch.url){ch.content='';return;}try{var h=await proxyFetch(ch.url,12000);ch.content=extractContent(h,ch.title);if(!ch.content)ch.content='（無法擷取）';}catch(e){ch.content='（失敗：'+e.message+'）';}done++;fbar(20+Math.round(done/total*75));setBadge('loading',done+'/'+total);updateTOCItem(i);if(i===G.idx&&G.cur===nIdx)showChapter(i);if(done===total){flog('🎉 全部'+total+'章完成！','ok');setBadge('done','全'+total+'章 ✓');fbar(0);save();}}for(var i=0;i<total;i+=BATCH){var batch=[];for(var j=i;j<Math.min(i+BATCH,total);j++)batch.push(fetchCh(j));await Promise.all(batch);if(i+BATCH<total)await new Promise(function(r){setTimeout(r,250);});}G.fetching=false;$('fetchbtn').disabled=false;}
-window.doPaste=function(){var raw=$('pa').value,hint=$('ptitle').value.trim();if(!raw.trim()){setStat('❌ 請先貼上文字','err');return;}setStat('<span class="spin"></span> 解析中…','');setTimeout(function(){var text=raw.trim();if(/%[0-9A-Fa-f]{2}/.test(text)){try{text=decodeURIComponent(text.replace(/\+/g,' '));}catch(e){}}if(/<html/i.test(text)||/<body/i.test(text)){var d=document.createElement('div');d.innerHTML=text;d.querySelectorAll('script,style').forEach(function(e){e.remove();});text=d.innerText||d.textContent||text;}var title=hint;if(text.startsWith('TITLE:')){var nl=text.indexOf('\n');if(!title)title=text.substring(6,nl).trim();try{if(/%/.test(title))title=decodeURIComponent(title.replace(/\+/g,' '));}catch(e){}text=text.substring(nl+1).trim();}var CH=/(?=^[\s　]*第[\s]*[零○一二三四五六七八九十百千萬億\d]+[\s]*[章節回集話篇卷])/m;var parts=text.split(CH).filter(function(x){return x.trim().length>10;});var chapters=parts.length>=2?parts.map(function(p){var ls=p.trim().split('\n');return{title:ls[0].trim().substring(0,60)||'章節',content:ls.slice(1).join('\n').replace(/\n{3,}/g,'\n\n').trim()};}):[{title:title||'內文',content:text}];if(!title&&chapters.length)title=chapters[0].title;addToLibrary({title:title||'未命名',url:'',chapters:chapters});setStat('✅ 載入《'+(title||'未命名')+'》共'+chapters.length+'章','ok');},30);};
-function setStat(msg,cls){var e=$('pstat');e.innerHTML=msg;e.className=cls||'';}
-function addToLibrary(novel){var ex=-1;if(novel.url)for(var i=0;i<G.library.length;i++){if(G.library[i].url===novel.url){ex=i;break;}}if(ex>=0){G.library[ex]=novel;updateExpSel();return ex;}G.library.push(novel);updateExpSel();return G.library.length-1;}
-function switchNovel(nIdx){G.cur=nIdx;G.idx=0;if(!G.read[nIdx])G.read[nIdx]=[];var n=G.library[nIdx];$('ns').textContent=n.title.length>14?n.title.substring(0,14)+'…':n.title;buildTOC();showChapter(0);$('wc').style.display='none';updateExpSel();save();}
-function buildTOC(q){if(G.cur<0||!G.library[G.cur])return;var list=$('tcl');list.innerHTML='';var ql=(q||'').toLowerCase(),n=G.library[G.cur],rs=G.read[G.cur]||[];n.chapters.forEach(function(ch,i){if(ql&&ch.title.toLowerCase().indexOf(ql)<0)return;var isLoad=ch.content===null,isRead=rs.indexOf(i)>=0,isAct=i===G.idx;var d=document.createElement('div');d.className='ti'+(isAct?' active':isRead?' read':isLoad?' loading':'');d.setAttribute('data-i',i);var check=isRead?'<span class="ti-check"> ✓</span>':'';var load=isLoad?'<span style="color:var(--warn)"> ⋯</span>':'';d.innerHTML='<div class="ti-body"><div class="ti-meta">第'+(i+1)+'章'+load+check+'</div><div class="ti-title">'+esc(ch.title)+'</div></div><span class="ti-del" data-di="'+i+'">🗑</span>';d.addEventListener('click',function(e){if(e.target.closest('.ti-del'))return;showChapter(+this.getAttribute('data-i'));if(window.innerWidth<=680)closeSB();});list.appendChild(d);});list.querySelectorAll('.ti-del').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var i=+this.getAttribute('data-di');if(!confirm('確定刪除「'+G.library[G.cur].chapters[i].title+'」？'))return;G.library[G.cur].chapters.splice(i,1);if(G.idx>=G.library[G.cur].chapters.length)G.idx=Math.max(0,G.library[G.cur].chapters.length-1);buildTOC(q);showChapter(G.idx);save();});});$('sbf').textContent='已讀 '+(G.read[G.cur]||[]).length+' / '+n.chapters.length+' 章';}
+
+async function doAutoFetch(url){
+  if(G.fetching)return;G.fetching=true;$('fetchbtn').disabled=true;flogClear();fbar(5);setBadge('loading','抓取中…');flog('<span class="spin"></span> 正在抓取目錄頁…');
+  var ih;try{ih=await proxyFetch(url,15000);}catch(e){flog('❌ 抓取失敗：'+e.message,'err');setBadge('err','失敗');G.fetching=false;$('fetchbtn').disabled=false;fbar(0);return;}
+  var title=extractTitle(ih);flog('✅ 成功（'+Math.round(ih.length/1024)+'KB）','ok');flog('📚 《'+title+'》');fbar(15);
+  var chs=extractLinks(ih,url);
+  if(chs.length<2){var sc=extractContent(ih,title);if(sc.length>200){var ni=addToLibrary({title:title,url:url,chapters:[{title:title,content:sc}]});openNovel(ni);flog('✅ 完成','ok');fbar(0);setBadge('done','完成');G.fetching=false;$('fetchbtn').disabled=false;return;}flog('❌ 找不到章節連結','err');setBadge('err','無章節');G.fetching=false;$('fetchbtn').disabled=false;fbar(0);return;}
+  flog('✅ 找到 '+chs.length+' 章','ok');fbar(20);
+  var novel={title:title,url:url,chapters:chs.map(function(c){return{title:c.title,url:c.url,content:null};})};
+  var nIdx=addToLibrary(novel);openNovel(nIdx);
+  $('chhd').textContent=chs[0].title;$('nt').innerHTML='<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入第一章…</p>';
+  var total=chs.length,done=0,BATCH=2;
+  async function fetchCh(i){var ch=G.library[nIdx].chapters[i];if(!ch||!ch.url){ch.content='';return;}try{var h=await proxyFetch(ch.url,12000);ch.content=extractContent(h,ch.title);if(!ch.content)ch.content='（無法擷取）';}catch(e){ch.content='（失敗：'+e.message+'）';}done++;fbar(20+Math.round(done/total*75));setBadge('loading',done+'/'+total);updateTOCItem(i);if(i===G.idx&&G.cur===nIdx)showChapter(i);if(done===total){flog('🎉 全部'+total+'章完成！','ok');setBadge('done','全'+total+'章 ✓');fbar(0);save();}}
+  for(var i=0;i<total;i+=BATCH){var batch=[];for(var j=i;j<Math.min(i+BATCH,total);j++)batch.push(fetchCh(j));await Promise.all(batch);if(i+BATCH<total)await new Promise(function(r){setTimeout(r,250);});}
+  G.fetching=false;$('fetchbtn').disabled=false;
+}
+
+// ── Library ──────────────────────────────────────────────
+function addToLibrary(novel){
+  if(!novel.status)novel.status='reading';
+  var ex=-1;if(novel.url)for(var i=0;i<G.library.length;i++){if(G.library[i].url===novel.url){ex=i;break;}}
+  if(ex>=0){G.library[ex]=novel;updateExpSel();return ex;}
+  G.library.push(novel);updateExpSel();return G.library.length-1;
+}
+
+// ── Bookshelf ────────────────────────────────────────────
+var COVERS=['📖','📚','📕','📗','📘','📙','🔖','✨','⚔️','🏮','🌙','🌸','🔮','💫','🎭','🌊'];
+var STATUS_LABEL={want:'想讀',reading:'在讀',done:'已完成'};
+
+function coverEmoji(title){var c=0;for(var i=0;i<(title||'').length;i++)c+=title.charCodeAt(i);return COVERS[c%COVERS.length];}
+function novelStatus(n){return n.status||'reading';}
+
+function buildShelf(filter){
+  filter=filter||'all';
+  var grid=$('shelf-grid');grid.innerHTML='';
+  if(!G.library.length){$('shelf-empty').style.display='block';return;}
+  $('shelf-empty').style.display='none';
+  var ord={reading:0,want:1,done:2};
+  var items=G.library.map(function(n,i){return{n:n,i:i};}).sort(function(a,b){
+    if(a.i===G.cur&&b.i!==G.cur)return -1;
+    if(b.i===G.cur&&a.i!==G.cur)return 1;
+    return(ord[novelStatus(a.n)]||0)-(ord[novelStatus(b.n)]||0);
+  });
+  items.forEach(function(item){
+    var n=item.n,i=item.i,st=novelStatus(n);
+    if(filter!=='all'&&st!==filter)return;
+    var rc=(G.read[i]||[]).length,total=n.chapters?n.chapters.length:0;
+    var pct=total>0?Math.round(rc/total*100):0;
+    var isCur=G.cur===i;
+    var card=document.createElement('div');
+    card.className='sc'+(isCur?' cur':'');
+    card.setAttribute('data-ni',i);
+    card.innerHTML=
+      (isCur?'<div class="sc-now">閱讀中</div>':'')+
+      '<button class="sc-del" data-del="'+i+'">✕</button>'+
+      '<div class="sc-cover">'+coverEmoji(n.title)+'</div>'+
+      '<div class="sc-body">'+
+        '<div class="sc-title">'+esc(n.title)+'</div>'+
+        (n.author?'<div class="sc-author">'+esc(n.author)+'</div>':'')+
+        '<div class="sc-bar-wrap"><div class="sc-bar" style="width:'+pct+'%"></div></div>'+
+        '<div class="sc-foot">'+
+          '<span class="sc-stat '+st+'">'+STATUS_LABEL[st]+'</span>'+
+          '<span class="sc-prog">'+rc+'/'+total+'章</span>'+
+        '</div>'+
+        '<div class="sc-status-row">'+
+          '<button class="ssb'+(st==='want'?' sw':'')+'" data-s="want" data-ni="'+i+'">想讀</button>'+
+          '<button class="ssb'+(st==='reading'?' sr':'')+'" data-s="reading" data-ni="'+i+'">在讀</button>'+
+          '<button class="ssb'+(st==='done'?' sd':'')+'" data-s="done" data-ni="'+i+'">完成</button>'+
+        '</div>'+
+      '</div>';
+    // Status buttons
+    card.querySelectorAll('.ssb').forEach(function(btn){
+      btn.addEventListener('click',function(e){
+        e.stopPropagation();
+        G.library[+this.getAttribute('data-ni')].status=this.getAttribute('data-s');
+        save();buildShelf(filter);
+      });
+    });
+    // Delete button
+    card.querySelector('.sc-del').addEventListener('click',function(e){
+      e.stopPropagation();
+      deleteNovel(+this.getAttribute('data-del'));
+    });
+    // Open novel
+    card.addEventListener('click',function(){openNovel(+this.getAttribute('data-ni'));});
+    grid.appendChild(card);
+  });
+  // Update tab labels
+  document.querySelectorAll('.stab').forEach(function(t){
+    var f=t.dataset.filter;
+    if(f==='all')t.textContent='全部('+G.library.length+')';
+    else t.textContent=STATUS_LABEL[f]+'('+G.library.filter(function(n){return novelStatus(n)===f;}).length+')';
+  });
+}
+document.querySelectorAll('.stab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.stab').forEach(function(x){x.classList.remove('active');});
+    this.classList.add('active');buildShelf(this.dataset.filter);
+  });
+});
+function curFilter(){var a=document.querySelector('.stab.active');return a?a.dataset.filter:'all';}
+
+function deleteNovel(ni){
+  if(!confirm('確定刪除《'+G.library[ni].title+'》？'))return;
+  G.library.splice(ni,1);
+  var nr={};Object.keys(G.read).forEach(function(k){var ki=+k;if(ki<ni)nr[ki]=G.read[k];else if(ki>ni)nr[ki-1]=G.read[k];});
+  G.read=nr;
+  if(G.cur===ni)G.cur=-1;else if(G.cur>ni)G.cur--;
+  updateExpSel();save();buildShelf(curFilter());
+  if(!G.library.length)showAddView();
+}
+
+function openNovel(ni){
+  // Switch novel if needed
+  if(G.cur!==ni){
+    G.cur=ni;
+    if(!G.read[ni])G.read[ni]=[];
+    var n=G.library[ni];
+    $('ns').textContent=n.title.length>14?n.title.substring(0,14)+'…':n.title;
+    buildTOC();
+  }
+  // Jump to last read chapter
+  var ch=G.idx||0;
+  if(G.cur===ni&&G.idx>0)ch=G.idx;
+  showChapter(ch);
+  $('wc').style.display='none';
+  updateExpSel();save();
+}
+
+function showShelf(){
+  $('wc').style.display='flex';
+  $('shelf-view').style.display='flex';
+  $('add-view').style.display='none';
+  $('rc').style.display='none';$('pw').style.display='none';$('bb').style.display='none';
+  buildShelf(curFilter());
+}
+function showAddView(){
+  $('wc').style.display='flex';
+  $('shelf-view').style.display=G.library.length?'flex':'none';
+  $('add-view').style.display='block';
+  $('rc').style.display='none';$('pw').style.display='none';$('bb').style.display='none';
+  flogClear();fbar(0);$('urlin').value='';
+  setTimeout(function(){$('urlin').focus();},100);
+}
+
+$('bnew').addEventListener('click',showAddView);
+
+// ── TOC ──────────────────────────────────────────────────
+function buildTOC(q){
+  if(G.cur<0||!G.library[G.cur])return;
+  var list=$('tcl');list.innerHTML='';
+  var ql=(q||'').toLowerCase(),n=G.library[G.cur],rs=G.read[G.cur]||[];
+  n.chapters.forEach(function(ch,i){
+    if(ql&&ch.title.toLowerCase().indexOf(ql)<0)return;
+    var isLoad=ch.content===null,isRead=rs.indexOf(i)>=0,isAct=i===G.idx;
+    var d=document.createElement('div');
+    d.className='ti'+(isAct?' active':isRead?' read':isLoad?' loading':'');
+    d.setAttribute('data-i',i);
+    var ck=isRead?'<span class="ti-check"> ✓</span>':'';
+    var ld=isLoad?'<span style="color:var(--warn)"> ⋯</span>':'';
+    d.innerHTML='<div class="ti-body"><div class="ti-meta">第'+(i+1)+'章'+ld+ck+'</div><div class="ti-title">'+esc(ch.title)+'</div></div><span class="ti-del" data-di="'+i+'">🗑</span>';
+    d.addEventListener('click',function(e){if(e.target.closest('.ti-del'))return;showChapter(+this.getAttribute('data-i'));if(window.innerWidth<=680)closeSB();});
+    list.appendChild(d);
+  });
+  list.querySelectorAll('.ti-del').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var i=+this.getAttribute('data-di');if(!confirm('刪除「'+G.library[G.cur].chapters[i].title+'」？'))return;G.library[G.cur].chapters.splice(i,1);if(G.idx>=G.library[G.cur].chapters.length)G.idx=Math.max(0,G.library[G.cur].chapters.length-1);buildTOC(q);showChapter(G.idx);save();});});
+  $('sbf').textContent='已讀 '+(G.read[G.cur]||[]).length+' / '+n.chapters.length+' 章';
+}
 $('tcq').addEventListener('input',function(){buildTOC(this.value);});
-function updateTOCItem(i){if(G.cur<0)return;var el=document.querySelector('.ti[data-i="'+i+'"]');if(!el)return;var ch=G.library[G.cur].chapters[i];var rs=G.read[G.cur]||[],isRead=rs.indexOf(i)>=0,isAct=i===G.idx;el.className='ti'+(isAct?' active':isRead?' read':'');var ck=isRead?'<span class="ti-check"> ✓</span>':'';el.querySelector('.ti-body').innerHTML='<div class="ti-meta">第'+(i+1)+'章'+ck+'</div><div class="ti-title">'+esc(ch.title)+'</div>';}
-function showChapter(i){if(G.cur<0||!G.library[G.cur])return;var chs=G.library[G.cur].chapters;if(i<0||i>=chs.length)return;G.idx=i;if(!G.read[G.cur])G.read[G.cur]=[];if(G.read[G.cur].indexOf(i)<0)G.read[G.cur].push(i);var ch=chs[i];$('chhd').textContent=ch.title;$('chtl').textContent=ch.title;if(ch.content===null){$('nt').innerHTML='<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入中…</p>';}else{var paras=(ch.content||'').split('\n').filter(function(l){return l.trim();});$('nt').innerHTML=paras.length?paras.map(function(p){return'<p>'+esc(p)+'</p>';}).join(''):'<p style="color:var(--txd);text-align:center">（本章無內文）</p>';}$('rw').scrollTop=0;$('pvbtn').disabled=(i===0);$('nxbtn').disabled=(i===chs.length-1);var pct=chs.length>1?Math.round(i/(chs.length-1)*100):100;$('pg').style.width=pct+'%';$('pind').textContent='第'+(i+1)+' / '+chs.length+'章';document.querySelectorAll('.ti').forEach(function(el){var n=+el.getAttribute('data-i'),rs=G.read[G.cur]||[];el.className='ti'+(n===i?' active':rs.indexOf(n)>=0?' read':'');if(n===i)el.scrollIntoView({block:'nearest'});});$('sbf').textContent='已讀 '+(G.read[G.cur]||[]).length+' / '+chs.length+'章';if(PM.on){$('rc').style.display='none';$('pw').style.display='flex';$('bb').style.display='none';paginateChapter(i,0);}else{$('rc').style.display='block';$('pw').style.display='none';$('bb').style.display='';}if(G.ttsOn)stopTTS();save();$('rw').focus();}
+
+function updateTOCItem(i){
+  if(G.cur<0)return;var el=document.querySelector('.ti[data-i="'+i+'"]');if(!el)return;
+  var ch=G.library[G.cur].chapters[i];var rs=G.read[G.cur]||[],isRead=rs.indexOf(i)>=0,isAct=i===G.idx;
+  el.className='ti'+(isAct?' active':isRead?' read':'');
+  var ck=isRead?'<span class="ti-check"> ✓</span>':'';
+  el.querySelector('.ti-body').innerHTML='<div class="ti-meta">第'+(i+1)+'章'+ck+'</div><div class="ti-title">'+esc(ch.title)+'</div>';
+}
+
+// ── Show chapter ─────────────────────────────────────────
+function showChapter(i){
+  if(G.cur<0||!G.library[G.cur])return;
+  var chs=G.library[G.cur].chapters;if(i<0||i>=chs.length)return;
+  G.idx=i;if(!G.read[G.cur])G.read[G.cur]=[];if(G.read[G.cur].indexOf(i)<0)G.read[G.cur].push(i);
+  var ch=chs[i];$('chhd').textContent=ch.title;$('chtl').textContent=ch.title;
+  if(ch.content===null){$('nt').innerHTML='<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入中…</p>';}
+  else{var ps=(ch.content||'').split('\n').filter(function(l){return l.trim();});$('nt').innerHTML=ps.length?ps.map(function(p){return'<p>'+esc(p)+'</p>';}).join(''):'<p style="color:var(--txd);text-align:center">（本章無內文）</p>';}
+  $('rw').scrollTop=0;$('pvbtn').disabled=(i===0);$('nxbtn').disabled=(i===chs.length-1);
+  var pct=chs.length>1?Math.round(i/(chs.length-1)*100):100;$('pg').style.width=pct+'%';$('pind').textContent='第'+(i+1)+' / '+chs.length+'章';
+  document.querySelectorAll('.ti').forEach(function(el){var n=+el.getAttribute('data-i'),rs=G.read[G.cur]||[];el.className='ti'+(n===i?' active':rs.indexOf(n)>=0?' read':'');if(n===i)el.scrollIntoView({block:'nearest'});});
+  $('sbf').textContent='已讀 '+(G.read[G.cur]||[]).length+' / '+chs.length+'章';
+  if(PM.on){$('rc').style.display='none';$('pw').style.display='flex';$('bb').style.display='none';paginateChapter(i,0);}
+  else{$('rc').style.display='block';$('pw').style.display='none';$('bb').style.display='';}
+  if(G.ttsOn)stopTTS();save();$('rw').focus();
+}
+
+// ── Page mode ────────────────────────────────────────────
 $('bpm').addEventListener('click',togglePM);
 function applyPMState(){$('bpm').classList.toggle('on',PM.on);$('bpm').textContent=PM.on?'📜 捲動':'📄 分頁';if(G.cur>=0&&G.library[G.cur]){$('rc').style.display=PM.on?'none':'block';$('pw').style.display=PM.on?'flex':'none';$('bb').style.display=PM.on?'none':'';}}
 function togglePM(){PM.on=!PM.on;applyPMState();localStorage.setItem('nr_pmstate',PM.on?'1':'0');if(PM.on&&G.cur>=0)paginateChapter(G.idx,0);}
-function paginateChapter(chIdx,startPage){if(G.cur<0||!G.library[G.cur])return;var ch=G.library[G.cur].chapters[chIdx];PM.chIdx=chIdx;if(!ch||ch.content===null){renderPg(chIdx,[],0,1,ch?ch.title:'載入中…');return;}var paras=(ch.content||'').split('\n').filter(function(l){return l.trim();});if(!paras.length){PM.pages=[[]];renderPg(chIdx,[],0,1,ch.title);return;}var pw=$('pw');var fs=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fs'))||18;var lh=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--lh'))||1.95;var narrow=pw.clientWidth<=680;var padT=narrow?18:28,navH=$('pnav').offsetHeight||58,titleH=44;var availH=pw.clientHeight-padT-navH-titleH-10;var availW=pw.clientWidth-(narrow?32:52);var m=document.createElement('div');m.style.cssText='position:absolute;visibility:hidden;pointer-events:none;width:'+availW+'px;font-family:'+getComputedStyle(document.documentElement).getPropertyValue('--serif')+';font-size:'+fs+'px;line-height:'+lh+';';document.body.appendChild(m);var marginPx=fs*0.85;var pages=[],cur=[],curH=0;paras.forEach(function(p){var el=document.createElement('p');el.style.cssText='margin:0 0 '+marginPx+'px 0;text-indent:2em;';el.textContent=p;m.innerHTML='';m.appendChild(el);var ph=m.offsetHeight+marginPx;if(curH+ph>availH&&cur.length>0){pages.push(cur);cur=[p];curH=ph;}else{cur.push(p);curH+=ph;}});document.body.removeChild(m);if(cur.length)pages.push(cur);if(!pages.length)pages=[[]];PM.pages=pages;PM.pageIdx=Math.min(startPage>=pages.length?pages.length-1:startPage,pages.length-1);renderPg(chIdx,PM.pages[PM.pageIdx],PM.pageIdx,pages.length,ch.title);}
-function renderPg(chIdx,paras,pgIdx,total,chTitle){$('pchtitle').textContent=chTitle||'';var t=$('ptext');t.innerHTML='';(paras||[]).forEach(function(p){var el=document.createElement('p');el.textContent=p;t.appendChild(el);});var n=G.library[G.cur],totalCh=n?n.chapters.length:0;$('chtl').textContent=(chTitle||'')+' ('+(pgIdx+1)+'/'+total+')';$('pmid-ch').textContent='第'+(chIdx+1)+'/'+totalCh+'章';$('pmid-pg').textContent='第'+(pgIdx+1)+'/'+total+'頁';var dots=$('pdots');dots.innerHTML='';var md=Math.min(total,9);for(var i=0;i<md;i++){var d=document.createElement('div'),di=total<=9?i:Math.round(i/(md-1)*(total-1));d.className='pdot'+(Math.abs(di-pgIdx)<=Math.max(1,total/md/2)?' on':'');dots.appendChild(d);}$('pnavprev').disabled=(pgIdx===0&&chIdx===0);$('pnavnext').disabled=(pgIdx===total-1&&(!n||chIdx>=n.chapters.length-1));}
+function paginateChapter(chIdx,startPage){
+  if(G.cur<0||!G.library[G.cur])return;var ch=G.library[G.cur].chapters[chIdx];PM.chIdx=chIdx;
+  if(!ch||ch.content===null){renderPg(chIdx,[],0,1,ch?ch.title:'載入中…');return;}
+  var paras=(ch.content||'').split('\n').filter(function(l){return l.trim();});
+  if(!paras.length){PM.pages=[[]];renderPg(chIdx,[],0,1,ch.title);return;}
+  var pw=$('pw'),fs=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fs'))||18;
+  var lh=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--lh'))||1.95;
+  var narrow=pw.clientWidth<=680,padT=narrow?18:28,navH=$('pnav').offsetHeight||58,titleH=44;
+  var availH=pw.clientHeight-padT-navH-titleH-10,availW=pw.clientWidth-(narrow?32:52);
+  var m=document.createElement('div');m.style.cssText='position:absolute;visibility:hidden;pointer-events:none;width:'+availW+'px;font-family:'+getComputedStyle(document.documentElement).getPropertyValue('--serif')+';font-size:'+fs+'px;line-height:'+lh+';';
+  document.body.appendChild(m);var mp=fs*0.85,pages=[],cur=[],curH=0;
+  paras.forEach(function(p){var el=document.createElement('p');el.style.cssText='margin:0 0 '+mp+'px 0;text-indent:2em;';el.textContent=p;m.innerHTML='';m.appendChild(el);var ph=m.offsetHeight+mp;if(curH+ph>availH&&cur.length>0){pages.push(cur);cur=[p];curH=ph;}else{cur.push(p);curH+=ph;}});
+  document.body.removeChild(m);if(cur.length)pages.push(cur);if(!pages.length)pages=[[]];
+  PM.pages=pages;PM.pageIdx=Math.min(startPage>=pages.length?pages.length-1:startPage,pages.length-1);
+  renderPg(chIdx,PM.pages[PM.pageIdx],PM.pageIdx,pages.length,ch.title);
+}
+function renderPg(chIdx,paras,pgIdx,total,chTitle){
+  $('pchtitle').textContent=chTitle||'';var t=$('ptext');t.innerHTML='';
+  (paras||[]).forEach(function(p){var el=document.createElement('p');el.textContent=p;t.appendChild(el);});
+  var n=G.library[G.cur],totalCh=n?n.chapters.length:0;
+  $('chtl').textContent=(chTitle||'')+' ('+(pgIdx+1)+'/'+total+')';
+  $('pmid-ch').textContent='第'+(chIdx+1)+'/'+totalCh+'章';$('pmid-pg').textContent='第'+(pgIdx+1)+'/'+total+'頁';
+  var dots=$('pdots');dots.innerHTML='';var md=Math.min(total,9);
+  for(var i=0;i<md;i++){var d=document.createElement('div'),di=total<=9?i:Math.round(i/(md-1)*(total-1));d.className='pdot'+(Math.abs(di-pgIdx)<=Math.max(1,total/md/2)?' on':'');dots.appendChild(d);}
+  $('pnavprev').disabled=(pgIdx===0&&chIdx===0);$('pnavnext').disabled=(pgIdx===total-1&&(!n||chIdx>=n.chapters.length-1));
+}
 var animating=false;
 function animatePg(dir,cb){if(animating)return;animating=true;var s=$('pscreen');s.style.transition='transform .16s ease-in';s.style.transform=dir==='l'?'translateX(-100%)':'translateX(100%)';setTimeout(function(){s.style.transition='none';s.style.transform=dir==='l'?'translateX(100%)':'translateX(-100%)';cb();s.offsetHeight;s.style.transition='transform .16s ease-out';s.style.transform='translateX(0)';setTimeout(function(){animating=false;},180);},170);}
 window.pageNext=function(){if(!PM.on)return;animatePg('l',function(){if(PM.pageIdx<PM.pages.length-1){PM.pageIdx++;renderPg(PM.chIdx,PM.pages[PM.pageIdx],PM.pageIdx,PM.pages.length,G.library[G.cur].chapters[PM.chIdx].title);}else{var nc=PM.chIdx+1;if(G.library[G.cur]&&nc<G.library[G.cur].chapters.length){G.idx=nc;markRead(nc);paginateChapter(nc,0);updateTOCItem(PM.chIdx);updateTOCItem(nc);save();}}});};
 window.pagePrev=function(){if(!PM.on)return;animatePg('r',function(){if(PM.pageIdx>0){PM.pageIdx--;renderPg(PM.chIdx,PM.pages[PM.pageIdx],PM.pageIdx,PM.pages.length,G.library[G.cur].chapters[PM.chIdx].title);}else{var pc=PM.chIdx-1;if(pc>=0){G.idx=pc;markRead(pc);paginateChapter(pc,99999);updateTOCItem(pc);save();}}});};
 function markRead(i){if(!G.read[G.cur])G.read[G.cur]=[];if(G.read[G.cur].indexOf(i)<0)G.read[G.cur].push(i);}
 var resT;window.addEventListener('resize',function(){clearTimeout(resT);resT=setTimeout(function(){if(PM.on)paginateChapter(PM.chIdx,0);},300);});
-var tx=0,ty=0;
-function addSwipe(el,onL,onR){el.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});el.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)>Math.abs(dy)*1.5&&Math.abs(dx)>50){if(dx<0)onL();else onR();}},{passive:true});}
+function addSwipe(el,onL,onR){el.addEventListener('touchstart',function(e){var t=e.touches[0];el._tx=t.clientX;el._ty=t.clientY;},{passive:true});el.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-el._tx,dy=e.changedTouches[0].clientY-el._ty;if(Math.abs(dx)>Math.abs(dy)*1.5&&Math.abs(dx)>50){if(dx<0)onL();else onR();}},{passive:true});}
 addSwipe($('pw'),pageNext,pagePrev);
 addSwipe($('rw'),function(){if(!PM.on)showChapter(G.idx+1);},function(){if(!PM.on)showChapter(G.idx-1);});
-var KH=$('kh'),kht;function hint(m){KH.textContent=m;KH.classList.add('show');clearTimeout(kht);kht=setTimeout(function(){KH.classList.remove('show');},1100);}
-// ── iPad BT keyboard fix ──────────────────────────────
-// iPad Safari intercepts many keys; we use multiple strategies:
-// 1. keydown on document (capture phase)
-// 2. keyup as fallback
-// 3. A hidden always-focused input to catch keys on iOS
-// 4. Handle both e.key strings AND e.keyCode numbers
 
-function handleKey(key, code, preventDefault) {
-  var tag = document.activeElement ? document.activeElement.tagName : '';
-  if (['INPUT','TEXTAREA','SELECT'].includes(tag) && document.activeElement.id !== 'kb-trap') return;
-  var handled = true;
-  if (PM.on) {
-    // Page mode keys
-    if (key==='ArrowLeft'||key==='ArrowUp'||key==='PageUp'||code===37||code===38||code===33) { pagePrev(); }
-    else if (key==='ArrowRight'||key==='ArrowDown'||key===' '||key==='PageDown'||code===39||code===40||code===32||code===34) { pageNext(); }
-    else if (key==='AudioVolumeDown'||code===174) { pagePrev(); }
-    else if (key==='AudioVolumeUp'||code===175) { pageNext(); }
-    else if (key==='MediaTrackPrevious'||code===177) { pagePrev(); }
-    else if (key==='MediaTrackNext'||code===176) { pageNext(); }
-    else if (key==='t'||key==='T') { togSB(); }
-    else { handled = false; }
-  } else {
-    if (key==='ArrowLeft'||code===37) { showChapter(G.idx-1); hint('← 上一章'); }
-    else if (key==='ArrowRight'||code===39) { showChapter(G.idx+1); hint('→ 下一章'); }
-    else if (key==='ArrowUp'||code===38) { $('rw').scrollBy({top:-70,behavior:'smooth'}); }
-    else if (key==='ArrowDown'||code===40) { $('rw').scrollBy({top:70,behavior:'smooth'}); }
-    else if (key===' '||key==='PageDown'||code===32||code===34) { $('rw').scrollBy({top:$('rw').clientHeight*.8,behavior:'smooth'}); }
-    else if (key==='PageUp'||code===33) { $('rw').scrollBy({top:-$('rw').clientHeight*.8,behavior:'smooth'}); }
-    else if (key==='Home'||code===36) { showChapter(0); }
-    else if (key==='End'||code===35) { if(G.library[G.cur])showChapter(G.library[G.cur].chapters.length-1); }
-    else if (key==='t'||key==='T') { togSB(); }
-    else if (key==='s'||key==='S') { togTTS(); }
-    else if (key==='AudioVolumeDown'||code===174) { showChapter(G.idx-1); }
-    else if (key==='AudioVolumeUp'||code===175) { showChapter(G.idx+1); }
-    else if (key==='MediaTrackPrevious'||code===177) { showChapter(G.idx-1); }
-    else if (key==='MediaTrackNext'||code===176) { showChapter(G.idx+1); }
-    else { handled = false; }
+// ── Keyboard (iPad BT fix) ───────────────────────────────
+function handleKey(key,code,pd){
+  var tag=document.activeElement?document.activeElement.tagName:'';
+  if(['INPUT','TEXTAREA','SELECT'].includes(tag)&&document.activeElement.id!=='kb-trap')return;
+  var handled=true;
+  if(PM.on){
+    if(key==='ArrowLeft'||key==='ArrowUp'||key==='PageUp'||code===37||code===38||code===33)pagePrev();
+    else if(key==='ArrowRight'||key==='ArrowDown'||key===' '||key==='PageDown'||code===39||code===40||code===32||code===34)pageNext();
+    else if(key==='AudioVolumeDown'||code===174)pagePrev();
+    else if(key==='AudioVolumeUp'||code===175)pageNext();
+    else if(key==='MediaTrackPrevious'||code===177)pagePrev();
+    else if(key==='MediaTrackNext'||code===176)pageNext();
+    else if(key==='t'||key==='T')togSB();
+    else handled=false;
+  }else{
+    if(key==='ArrowLeft'||code===37){showChapter(G.idx-1);hint('← 上一章');}
+    else if(key==='ArrowRight'||code===39){showChapter(G.idx+1);hint('→ 下一章');}
+    else if(key==='ArrowUp'||code===38)$('rw').scrollBy({top:-70,behavior:'smooth'});
+    else if(key==='ArrowDown'||code===40)$('rw').scrollBy({top:70,behavior:'smooth'});
+    else if(key===' '||key==='PageDown'||code===32||code===34)$('rw').scrollBy({top:$('rw').clientHeight*.8,behavior:'smooth'});
+    else if(key==='PageUp'||code===33)$('rw').scrollBy({top:-$('rw').clientHeight*.8,behavior:'smooth'});
+    else if(key==='Home'||code===36)showChapter(0);
+    else if(key==='End'||code===35){if(G.library[G.cur])showChapter(G.library[G.cur].chapters.length-1);}
+    else if(key==='t'||key==='T')togSB();
+    else if(key==='s'||key==='S')togTTS();
+    else if(key==='AudioVolumeDown'||code===174)showChapter(G.idx-1);
+    else if(key==='AudioVolumeUp'||code===175)showChapter(G.idx+1);
+    else if(key==='MediaTrackPrevious'||code===177)showChapter(G.idx-1);
+    else if(key==='MediaTrackNext'||code===176)showChapter(G.idx+1);
+    else handled=false;
   }
-  if (handled && preventDefault) preventDefault();
+  if(handled&&pd)pd();
 }
+var kdHandled=false;
+document.addEventListener('keydown',function(e){var skip=document.activeElement&&['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)&&document.activeElement.id!=='kb-trap';if(!skip){kdHandled=true;handleKey(e.key,e.keyCode||e.which,function(){e.preventDefault();e.stopPropagation();});}else kdHandled=false;},true);
+document.addEventListener('keyup',function(e){if(kdHandled){kdHandled=false;return;}var skip=document.activeElement&&['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)&&document.activeElement.id!=='kb-trap';if(!skip)handleKey(e.key,e.keyCode||e.which,null);kdHandled=false;},true);
+// Hidden focus trap for iPad
+var kbTrap=document.createElement('input');kbTrap.id='kb-trap';kbTrap.type='text';['autocomplete','autocorrect','autocapitalize','spellcheck'].forEach(function(a){kbTrap.setAttribute(a,'off');});kbTrap.setAttribute('readonly','true');kbTrap.style.cssText='position:fixed;opacity:0;width:1px;height:1px;top:0;left:0;pointer-events:none;z-index:-1;font-size:16px;border:none;outline:none;background:transparent;color:transparent;';document.body.appendChild(kbTrap);
+kbTrap.addEventListener('keydown',function(e){kdHandled=true;handleKey(e.key,e.keyCode||e.which,function(){e.preventDefault();});},true);
+kbTrap.addEventListener('keyup',function(e){if(kdHandled){kdHandled=false;return;}handleKey(e.key,e.keyCode||e.which,null);kdHandled=false;},true);
+function refocusTrap(){var a=document.activeElement;if(!a||(a.tagName!=='INPUT'&&a.tagName!=='TEXTAREA'&&a.tagName!=='SELECT')||a.id==='kb-trap')kbTrap.focus({preventScroll:true});}
+$('rw').addEventListener('click',refocusTrap);
+$('pw').addEventListener('touchend',function(e){if(!e.target.closest('.pnb'))setTimeout(refocusTrap,50);},{passive:true});
+document.addEventListener('click',function(e){if(!e.target.closest('input')&&!e.target.closest('textarea')&&!e.target.closest('select'))setTimeout(refocusTrap,50);});
+kbTrap.addEventListener('blur',function(){setTimeout(function(){var a=document.activeElement;if(a&&a.id!==kbTrap.id&&a.tagName!=='INPUT'&&a.tagName!=='TEXTAREA'&&a.tagName!=='SELECT')refocusTrap();},100);});
 
-// Primary: keydown capture phase
-// keydownHandled prevents keyup from double-firing on desktop
-var keydownHandled = false;
-document.addEventListener('keydown', function(e) {
-  var skip = document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && document.activeElement.id !== 'kb-trap';
-  if (!skip) {
-    keydownHandled = true;
-    handleKey(e.key, e.keyCode||e.which, function(){ e.preventDefault(); e.stopPropagation(); });
-  } else { keydownHandled = false; }
-}, true);
-
-// Fallback: keyup — only fires if keydown was NOT handled (iPad-only path)
-document.addEventListener('keyup', function(e) {
-  if (keydownHandled) { keydownHandled = false; return; } // desktop: already handled
-  var skip = document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && document.activeElement.id !== 'kb-trap';
-  if (!skip) { handleKey(e.key, e.keyCode||e.which, null); }
-  keydownHandled = false;
-}, true);
-
-// ── Hidden focus trap for iPad ─────────────────────────
-// On iPad, keyboard events only fire if something is focused.
-// We keep a hidden input focused at all times when not in a real input.
-var kbTrap = document.createElement('input');
-kbTrap.id = 'kb-trap';
-kbTrap.setAttribute('type', 'text');
-kbTrap.setAttribute('autocomplete', 'off');
-kbTrap.setAttribute('autocorrect', 'off');
-kbTrap.setAttribute('autocapitalize', 'off');
-kbTrap.setAttribute('spellcheck', 'false');
-kbTrap.setAttribute('readonly', 'true');
-kbTrap.style.cssText = 'position:fixed;opacity:0;width:1px;height:1px;top:0;left:0;pointer-events:none;z-index:-1;font-size:16px;border:none;outline:none;background:transparent;color:transparent;';
-document.body.appendChild(kbTrap);
-
-// The trap listens for keydown/keyup itself too
-kbTrap.addEventListener('keydown', function(e) {
-  keydownHandled = true;
-  handleKey(e.key, e.keyCode||e.which, function(){ e.preventDefault(); });
-}, true);
-kbTrap.addEventListener('keyup', function(e) {
-  if (keydownHandled) { keydownHandled = false; return; }
-  handleKey(e.key, e.keyCode||e.which, null);
-  keydownHandled = false;
-}, true);
-
-// Keep trap focused whenever user is not in a real input
-function refocusTrap() {
-  var active = document.activeElement;
-  if (!active || (active.tagName !== 'INPUT' && active.tagName !== 'TEXTAREA' && active.tagName !== 'SELECT') || active.id === 'kb-trap') {
-    // Only refocus if no panel input is focused
-    kbTrap.focus({ preventScroll: true });
-  }
-}
-// Refocus on any click/touch in the reading area
-$('rw').addEventListener('click', refocusTrap);
-$('pw').addEventListener('click', function(e) {
-  // Don't steal focus from nav buttons
-  if (!e.target.closest('.pnb') && !e.target.closest('#tap-l') && !e.target.closest('#tap-r')) refocusTrap();
-});
-$('pw').addEventListener('touchend', function(e) {
-  if (!e.target.closest('.pnb')) setTimeout(refocusTrap, 50);
-}, {passive:true});
-document.addEventListener('click', function(e) {
-  // Refocus unless user clicked an input/textarea/button inside a panel
-  if (!e.target.closest('input') && !e.target.closest('textarea') && !e.target.closest('select')) {
-    setTimeout(refocusTrap, 50);
-  }
-});
-// Refocus when trap loses focus (unless going to real input)
-kbTrap.addEventListener('blur', function() {
-  setTimeout(function() {
-    var active = document.activeElement;
-    if (!active || active.id === kbTrap.id) return;
-    if (active.tagName !== 'INPUT' && active.tagName !== 'TEXTAREA' && active.tagName !== 'SELECT') {
-      refocusTrap();
-    }
-  }, 100);
-});
-$('btoc').addEventListener('click',togSB);function togSB(){$('sb').classList.toggle('open');$('overlay').classList.toggle('show');}function closeSB(){$('sb').classList.remove('open');$('overlay').classList.remove('show');}
+// ── Navigation ───────────────────────────────────────────
+$('btoc').addEventListener('click',togSB);
+function togSB(){$('sb').classList.toggle('open');$('overlay').classList.toggle('show');}
+function closeSB(){$('sb').classList.remove('open');$('overlay').classList.remove('show');}
 $('pvbtn').addEventListener('click',function(){showChapter(G.idx-1);});$('nxbtn').addEventListener('click',function(){showChapter(G.idx+1);});
-$('bnew').addEventListener('click',function(){$('wc').style.display='block';$('rc').style.display='none';$('pw').style.display='none';$('bb').style.display='none';flogClear();fbar(0);$('pa').value='';$('ptitle').value='';setStat('','');$('urlin').focus();});
+
+// ── Edit novel ───────────────────────────────────────────
 $('bedit').addEventListener('click',openEdit);
-function openEdit(){if(G.cur<0){alert('請先載入小說');return;}var n=G.library[G.cur];$('edit-title').value=n.title||'';$('edit-author').value=n.author||'';$('edit-intro').value=n.intro||'';var cl=$('edit-chlist');cl.innerHTML='';n.chapters.forEach(function(ch,i){var row=document.createElement('div');row.className='ech-row';row.innerHTML='<span class="ech-num">'+(i+1)+'</span><span class="ech-title">'+esc(ch.title)+'</span><button class="ech-del" data-di="'+i+'">🗑</button>';cl.appendChild(row);});cl.querySelectorAll('.ech-del').forEach(function(btn){btn.addEventListener('click',function(){var i=+this.getAttribute('data-di');if(!confirm('刪除「'+G.library[G.cur].chapters[i].title+'」？'))return;G.library[G.cur].chapters.splice(i,1);if(G.idx>=G.library[G.cur].chapters.length)G.idx=Math.max(0,G.library[G.cur].chapters.length-1);openEdit();buildTOC();showChapter(G.idx);save();});});$('editp').classList.add('show');}
+function openEdit(){if(G.cur<0){alert('請先開啟一本小說');return;}var n=G.library[G.cur];$('edit-title').value=n.title||'';$('edit-author').value=n.author||'';$('edit-intro').value=n.intro||'';var cl=$('edit-chlist');cl.innerHTML='';n.chapters.forEach(function(ch,i){var row=document.createElement('div');row.className='ech-row';row.innerHTML='<span class="ech-num">'+(i+1)+'</span><span class="ech-title">'+esc(ch.title)+'</span><button class="ech-del" data-di="'+i+'">🗑</button>';cl.appendChild(row);});cl.querySelectorAll('.ech-del').forEach(function(btn){btn.addEventListener('click',function(){var i=+this.getAttribute('data-di');if(!confirm('刪除「'+G.library[G.cur].chapters[i].title+'」？'))return;G.library[G.cur].chapters.splice(i,1);if(G.idx>=G.library[G.cur].chapters.length)G.idx=Math.max(0,G.library[G.cur].chapters.length-1);openEdit();buildTOC();showChapter(G.idx);save();});});$('editp').classList.add('show');}
 window.saveEdit=function(){if(G.cur<0)return;G.library[G.cur].title=$('edit-title').value.trim()||G.library[G.cur].title;G.library[G.cur].author=$('edit-author').value.trim();G.library[G.cur].intro=$('edit-intro').value.trim();$('ns').textContent=G.library[G.cur].title.length>14?G.library[G.cur].title.substring(0,14)+'…':G.library[G.cur].title;updateExpSel();save();closeEdit();};
 window.closeEdit=function(){$('editp').classList.remove('show');};$('editp').addEventListener('click',function(e){if(e.target===$('editp'))closeEdit();});
+
+// ── TTS ──────────────────────────────────────────────────
 $('btts').addEventListener('click',function(){$('ttp').classList.toggle('show');$('setp').classList.remove('show');$('expp').classList.remove('show');});$('tplaybtn').addEventListener('click',togTTS);
 function fillVoices(){$('tvsel').innerHTML='';var vs=speechSynthesis.getVoices(),zh=vs.filter(function(v){return v.lang.indexOf('zh')===0;});(zh.length?zh:vs.slice(0,15)).forEach(function(v){var o=document.createElement('option');o.value=v.name;o.textContent=v.name+' ('+v.lang+')';$('tvsel').appendChild(o);});}
 if(speechSynthesis.onvoiceschanged!==undefined)speechSynthesis.onvoiceschanged=fillVoices;setTimeout(fillVoices,500);
 $('trate').addEventListener('input',function(){$('rv').textContent=parseFloat(this.value).toFixed(1);});$('tpitch').addEventListener('input',function(){$('pv').textContent=parseFloat(this.value).toFixed(1);});$('tvol').addEventListener('input',function(){$('vv').textContent=parseFloat(this.value).toFixed(1);});
-function togTTS(){G.ttsOn?stopTTS():startTTS();}function startTTS(){if(G.cur<0)return;speechSynthesis.cancel();var ch=G.library[G.cur].chapters[G.idx];var text=(ch.content||ch.title||'').replace(/\n/g,'。');if(!text)return;var u=new SpeechSynthesisUtterance(text);var v=speechSynthesis.getVoices().find(function(x){return x.name===$('tvsel').value;});if(v)u.voice=v;u.rate=parseFloat($('trate').value);u.pitch=parseFloat($('tpitch').value);u.volume=parseFloat($('tvol').value);u.onend=function(){G.ttsOn=false;$('tplaybtn').textContent='▶ 開始朗讀';$('btts').classList.remove('on');};speechSynthesis.speak(u);G.ttsOn=true;$('tplaybtn').textContent='⏹ 停止朗讀';$('btts').classList.add('on');}function stopTTS(){speechSynthesis.cancel();G.ttsOn=false;$('tplaybtn').textContent='▶ 開始朗讀';$('btts').classList.remove('on');}
+function togTTS(){G.ttsOn?stopTTS():startTTS();}
+function startTTS(){if(G.cur<0)return;speechSynthesis.cancel();var ch=G.library[G.cur].chapters[G.idx];var text=(ch.content||ch.title||'').replace(/\n/g,'。');if(!text)return;var u=new SpeechSynthesisUtterance(text);var v=speechSynthesis.getVoices().find(function(x){return x.name===$('tvsel').value;});if(v)u.voice=v;u.rate=parseFloat($('trate').value);u.pitch=parseFloat($('tpitch').value);u.volume=parseFloat($('tvol').value);u.onend=function(){G.ttsOn=false;$('tplaybtn').textContent='▶ 開始朗讀';$('btts').classList.remove('on');};speechSynthesis.speak(u);G.ttsOn=true;$('tplaybtn').textContent='⏹ 停止朗讀';$('btts').classList.add('on');}
+function stopTTS(){speechSynthesis.cancel();G.ttsOn=false;$('tplaybtn').textContent='▶ 開始朗讀';$('btts').classList.remove('on');}
+
+// ── Settings ─────────────────────────────────────────────
 $('bset').addEventListener('click',function(){$('setp').classList.toggle('show');$('ttp').classList.remove('show');$('expp').classList.remove('show');});
 $('fsr').addEventListener('input',function(){$('fsv').textContent=this.value;document.documentElement.style.setProperty('--fs',this.value+'px');if(PM.on)paginateChapter(PM.chIdx,PM.pageIdx);localStorage.setItem('nr_fs',this.value);});
 $('lhr').addEventListener('input',function(){$('lhv').textContent=parseFloat(this.value).toFixed(1);document.documentElement.style.setProperty('--lh',this.value);if(PM.on)paginateChapter(PM.chIdx,PM.pageIdx);localStorage.setItem('nr_lh',this.value);});
@@ -395,57 +625,57 @@ $('pmr').addEventListener('input',function(){$('pmv').textContent=this.value;doc
 document.querySelectorAll('.thb').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.thb').forEach(function(x){x.classList.remove('on');});this.classList.add('on');document.body.className=this.dataset.th;localStorage.setItem('nr_th',this.dataset.th);document.querySelectorAll('.cbtn').forEach(function(c){c.classList.remove('on');});localStorage.removeItem('nr_bg');});});
 document.querySelectorAll('.cbtn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.cbtn').forEach(function(x){x.classList.remove('on');});this.classList.add('on');var bg=this.dataset.bg;if(bg){document.documentElement.style.setProperty('--bg',bg);localStorage.setItem('nr_bg',bg);}else{document.documentElement.style.removeProperty('--bg');localStorage.removeItem('nr_bg');}});});
 $('custom-bg').addEventListener('input',function(){document.querySelectorAll('.cbtn').forEach(function(x){x.classList.remove('on');});document.documentElement.style.setProperty('--bg',this.value);localStorage.setItem('nr_bg',this.value);});
+
+// ── Export / Import ──────────────────────────────────────
 $('bexp').addEventListener('click',function(){$('expp').classList.toggle('show');$('ttp').classList.remove('show');$('setp').classList.remove('show');});
 function updateExpSel(){var s=$('exp-sel');s.innerHTML='<option value="all">全部小說 ('+G.library.length+'本)</option>';G.library.forEach(function(n,i){var o=document.createElement('option');o.value=i;o.textContent=n.title;s.appendChild(o);});}
 window.doExport=function(){
   var sel=$('exp-sel').value,data,fname;
-  // Build progress map: {novelIdx: currentChapterIdx}
-  var progress={};
-  G.library.forEach(function(_,i){ progress[i]=(G.cur===i?G.idx:0); });
-  if(sel==='all'){
-    data={v:3,library:G.library,read:G.read,progress:progress,cur:G.cur,idx:G.idx,at:new Date().toISOString()};
-    fname='novels_all_'+new Date().toISOString().substring(0,10)+'.json';
-  }else{
-    var i=+sel;
-    data={v:3,library:[G.library[i]],read:{'0':G.read[i]||[]},progress:{'0':G.cur===i?G.idx:0},cur:0,idx:G.cur===i?G.idx:0,at:new Date().toISOString()};
-    fname=(G.library[i].title||'novel').replace(/[\/\\:*?"<>|]/g,'_')+'.json';
-  }
-  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;a.click();
-  $('exp-stat').textContent='✅ 已匯出（含閱讀進度）'+fname;
+  if(sel==='all'){data={v:3,library:G.library,read:G.read,cur:G.cur,idx:G.idx,at:new Date().toISOString()};fname='novels_all_'+new Date().toISOString().substring(0,10)+'.json';}
+  else{var i=+sel;data={v:3,library:[G.library[i]],read:{'0':G.read[i]||[]},cur:0,idx:G.cur===i?G.idx:0,at:new Date().toISOString()};fname=(G.library[i].title||'novel').replace(/[\/\\:*?"<>|]/g,'_')+'.json';}
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;a.click();$('exp-stat').textContent='✅ 已匯出（含閱讀進度）'+fname;
 };
-$('imp-file').addEventListener('change',function(e){var file=e.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(ev){try{
-  var d=JSON.parse(ev.target.result),novels=d.library||[];
-  if(!novels.length)throw new Error('無資料');
-  var added=0,startIdx=G.library.length;
-  novels.forEach(function(n,i){
-    if(n&&n.title&&n.chapters){
-      G.library.push(n);
-      var ni=G.library.length-1;
-      if(d.read&&d.read[i]) G.read[ni]=d.read[i];
-      added++;
-    }
-  });
-  updateExpSel();save();
-  $('exp-stat').textContent='✅ 匯入 '+added+' 本（含閱讀進度）';
-  if(added>0){
-    // Restore to last reading position
-    var targetNovel=startIdx; // default: first imported
-    var targetChapter=0;
-    if(d.cur!==undefined&&d.cur!==null) targetNovel=startIdx+(d.cur||0);
-    if(d.idx!==undefined&&d.idx!==null) targetChapter=d.idx||0;
-    if(targetNovel<G.library.length){
-      switchNovel(targetNovel);
-      if(targetChapter>0&&targetChapter<G.library[targetNovel].chapters.length){
-        showChapter(targetChapter);
-      }
-    }
-  }
-}catch(e2){$('exp-stat').textContent='❌ '+e2.message;}};r.readAsText(file);this.value='';});
+$('imp-file').addEventListener('change',function(e){
+  var file=e.target.files[0];if(!file)return;
+  var r=new FileReader();r.onload=function(ev){try{
+    var d=JSON.parse(ev.target.result),novels=d.library||[];if(!novels.length)throw new Error('無資料');
+    var added=0,base=G.library.length;
+    novels.forEach(function(n,i){if(n&&n.title&&n.chapters){G.library.push(n);if(d.read&&d.read[i])G.read[base+added]=d.read[i];added++;}});
+    updateExpSel();save();$('exp-stat').textContent='✅ 匯入 '+added+' 本';
+    if(added>0){var tn=base+(d.cur||0);if(tn<G.library.length){openNovel(tn);if(d.idx&&d.idx>0)showChapter(d.idx);}}
+  }catch(e2){$('exp-stat').textContent='❌ '+e2.message;}};
+  r.readAsText(file);this.value='';
+});
 document.addEventListener('click',function(e){[['ttp','btts'],['setp','bset'],['expp','bexp']].forEach(function(p){if(!$(p[0]).contains(e.target)&&!$(p[1]).contains(e.target))$(p[0]).classList.remove('show');});});
-function save(){try{localStorage.setItem(SK,JSON.stringify({library:G.library,cur:G.cur,idx:G.idx,read:G.read}));}catch(e){try{var slim={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:null};})};  }),cur:G.cur,idx:G.idx,read:G.read};localStorage.setItem(SK,JSON.stringify(slim));}catch(e2){}}}
-function restore(){var th=localStorage.getItem('nr_th')||'';document.body.className=th;document.querySelectorAll('.thb').forEach(function(b){b.classList.toggle('on',b.dataset.th===th);});var fs=localStorage.getItem('nr_fs');if(fs){$('fsr').value=fs;$('fsv').textContent=fs;document.documentElement.style.setProperty('--fs',fs+'px');}var lh=localStorage.getItem('nr_lh');if(lh){$('lhr').value=lh;$('lhv').textContent=parseFloat(lh).toFixed(1);document.documentElement.style.setProperty('--lh',lh);}var pmw=localStorage.getItem('nr_pmw');if(pmw){$('pmr').value=pmw;$('pmv').textContent=pmw;document.documentElement.style.setProperty('--pm',pmw+'px');}var bg=localStorage.getItem('nr_bg');if(bg){document.documentElement.style.setProperty('--bg',bg);$('custom-bg').value=bg;}try{var raw=localStorage.getItem(SK);if(!raw)return;var x=JSON.parse(raw);if(x.library&&x.library.length){G.library=x.library;G.read=x.read||{};G.cur=x.cur||0;G.idx=x.idx||0;updateExpSel();if(G.library[G.cur]){$('ns').textContent=G.library[G.cur].title.length>14?G.library[G.cur].title.substring(0,14)+'…':G.library[G.cur].title;buildTOC();showChapter(G.idx);$('wc').style.display='none';}}}catch(e){}var pmPref=localStorage.getItem('nr_pmstate');if(pmPref===null)pmPref='1';PM.on=(pmPref==='1');applyPMState();if(PM.on&&G.cur>=0)setTimeout(function(){paginateChapter(G.idx,0);},150);}
-restore();setTimeout(refocusTrap,300);
+
+// ── Persist ──────────────────────────────────────────────
+function save(){try{localStorage.setItem(SK,JSON.stringify({library:G.library,cur:G.cur,idx:G.idx,read:G.read}));}catch(e){try{var slim={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:null};})};  }),cur:G.cur,idx:G.idx,read:G.read};localStorage.setItem(SK,JSON.stringify(slim));}catch(e2){}}}
+function restore(){
+  var th=localStorage.getItem('nr_th')||'';document.body.className=th;document.querySelectorAll('.thb').forEach(function(b){b.classList.toggle('on',b.dataset.th===th);});
+  var fs=localStorage.getItem('nr_fs');if(fs){$('fsr').value=fs;$('fsv').textContent=fs;document.documentElement.style.setProperty('--fs',fs+'px');}
+  var lh=localStorage.getItem('nr_lh');if(lh){$('lhr').value=lh;$('lhv').textContent=parseFloat(lh).toFixed(1);document.documentElement.style.setProperty('--lh',lh);}
+  var pmw=localStorage.getItem('nr_pmw');if(pmw){$('pmr').value=pmw;$('pmv').textContent=pmw;document.documentElement.style.setProperty('--pm',pmw+'px');}
+  var bg=localStorage.getItem('nr_bg');if(bg){document.documentElement.style.setProperty('--bg',bg);$('custom-bg').value=bg;}
+  try{var raw=localStorage.getItem(SK);if(!raw)return;var x=JSON.parse(raw);
+    if(x.library&&x.library.length){G.library=x.library;G.read=x.read||{};G.cur=x.cur!=null?x.cur:-1;G.idx=x.idx||0;updateExpSel();}
+  }catch(e){}
+  var pmPref=localStorage.getItem('nr_pmstate');if(pmPref===null)pmPref='1';PM.on=(pmPref==='1');
+}
+
+// ── Init ─────────────────────────────────────────────────
+restore();
+if(G.cur>=0&&G.library[G.cur]){
+  // Restore last reading position
+  var n=G.library[G.cur];
+  $('ns').textContent=n.title.length>14?n.title.substring(0,14)+'…':n.title;
+  buildTOC();showChapter(G.idx);
+  $('wc').style.display='none';
+  applyPMState();
+  if(PM.on)setTimeout(function(){paginateChapter(G.idx,0);},150);
+}else{
+  showShelf();
+}
+setTimeout(refocusTrap,300);
 </script>
 </body>
 </html>

@@ -171,7 +171,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 .ech-row{display:flex;align-items:center;padding:8px 11px;border-bottom:1px solid var(--bd);gap:8px;cursor:pointer;transition:background .1s}
 .ech-row:last-child{border-bottom:none}
 .ech-row.checked{background:rgba(139,105,20,.08)}
-.ech-cb{accent-color:var(--ac);width:15px;height:15px;flex-shrink:0;cursor:pointer}
+.ech-cb{width:20px;height:20px;border:2px solid var(--bd);border-radius:5px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s;background:var(--pn)}
+.ech-cb.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.ech-cb.on::after{content:'✓';font-weight:700}
 .ech-num{font-size:11px;color:var(--txr);width:30px;flex-shrink:0}
 .ech-title{flex:1;font-size:14px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .edit-btns{display:flex;gap:8px;margin-top:14px}
@@ -655,10 +657,14 @@ function renderEditChList(){
     row.className='ech-row';
     row.setAttribute('data-i',i);
     row.style.cssText='display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid var(--bd);gap:8px;cursor:pointer';
-    var cb=document.createElement('input');
-    cb.type='checkbox';cb.className='ech-cb';
-    cb.style.cssText='width:16px;height:16px;accent-color:var(--ac);flex-shrink:0;cursor:pointer';
-    cb.addEventListener('change',updateEchToolbar);
+    var cb=document.createElement('div');
+    cb.className='ech-cb';
+    cb.addEventListener('click',function(e){
+      e.stopPropagation();
+      cb.classList.toggle('on');
+      row.style.background=cb.classList.contains('on')?'rgba(139,105,20,.08)':'';
+      updateEchToolbar();
+    });
     var num=document.createElement('span');
     num.style.cssText='font-size:11px;color:var(--txr);width:30px;flex-shrink:0';
     num.textContent=i+1;
@@ -686,24 +692,23 @@ function renderEditChList(){
     row.appendChild(cb);row.appendChild(num);row.appendChild(titleWrap);row.appendChild(editBtn);
     row.addEventListener('click',function(e){
       if(e.target===cb||e.target===editBtn||e.target.closest('input'))return;
-      cb.checked=!cb.checked;
-      row.style.background=cb.checked?'rgba(139,105,20,.08)':'';
+      cb.classList.toggle('on');
+      row.style.background=cb.classList.contains('on')?'rgba(139,105,20,.08)':'';
       updateEchToolbar();
     });
-    cb.addEventListener('change',function(){row.style.background=cb.checked?'rgba(139,105,20,.08)':'';});
     list.appendChild(row);
   });
   cl.appendChild(list);
   $('ech-selall').addEventListener('click',function(){
     var cbs=cl.querySelectorAll('.ech-cb');
-    var allChk=Array.from(cbs).every(function(c){return c.checked;});
-    cbs.forEach(function(c){c.checked=!allChk;c.closest('.ech-row').style.background=!allChk?'rgba(139,105,20,.08)':'';});
+    var allChk=Array.from(cbs).every(function(c){return c.classList.contains('on');});
+    cbs.forEach(function(c){if(!allChk)c.classList.add('on');else c.classList.remove('on');c.closest('.ech-row').style.background=!allChk?'rgba(139,105,20,.08)':'';});
     this.textContent=allChk?'全選':'取消全選';
     updateEchToolbar();
   });
   $('ech-delbtn').addEventListener('click',function(){
     var cbs=Array.from(cl.querySelectorAll('.ech-cb'));
-    var toDelete=cbs.map(function(c,i){return c.checked?i:-1;}).filter(function(i){return i>=0;});
+    var toDelete=cbs.map(function(c,i){return c.classList.contains('on')?i:-1;}).filter(function(i){return i>=0;});
     if(!toDelete.length)return;
     if(!confirm('確定刪除已選的 '+toDelete.length+' 個章節？'))return;
     toDelete.slice().reverse().forEach(function(i){G.library[G.cur].chapters.splice(i,1);});
@@ -716,7 +721,7 @@ function renderEditChList(){
 function updateEchToolbar(){
   var cl=$('edit-chlist');if(!cl)return;
   var cbs=Array.from(cl.querySelectorAll('.ech-cb'));
-  var count=cbs.filter(function(c){return c.checked;}).length;
+  var count=cbs.filter(function(c){return c.classList.contains('on');}).length;
   var countEl=$('ech-count'),delBtn=$('ech-delbtn'),selAll=$('ech-selall');
   if(countEl)countEl.textContent='已選 '+count+' 章';
   if(delBtn){delBtn.disabled=count===0;delBtn.style.opacity=count>0?'1':'.4';}

@@ -526,9 +526,10 @@ function updateTOCItem(i){
 }
 
 // ── Show chapter ─────────────────────────────────────────
-function showChapter(i){
+function showChapter(i,startPage){
   if(G.cur<0||!G.library[G.cur])return;
   var chs=G.library[G.cur].chapters;if(i<0||i>=chs.length)return;
+  var _sp=startPage||0;
   G.idx=i;if(!G.read[G.cur])G.read[G.cur]=[];if(G.read[G.cur].indexOf(i)<0)G.read[G.cur].push(i);
   var ch=chs[i];$('chhd').textContent=ch.title;$('chtl').textContent=ch.title;
   if(ch.content===null){
@@ -536,8 +537,8 @@ function showChapter(i){
     var _bk=G.cur,_ci=i;
     idbGet(ch.url,function(cached){
       if(G.cur!==_bk||G.idx!==_ci)return;
-      if(cached!==null){ch.content=cached;var ps=cached.split('\n').filter(function(l){return l.trim();});$('nt').innerHTML=ps.length?ps.map(function(p){return'<p>'+esc(p)+'</p>';}).join(''):'<p style="color:var(--txd);text-align:center">（本章無內文）</p>';if(PM.on)paginateChapter(_ci,0);}
-      else if(ch.url){proxyFetch(ch.url,12000).then(function(h){if(G.cur!==_bk||G.idx!==_ci)return;var c=extractContent(h,ch.title);if(!c)c='（無法擷取）';ch.content=c;if(c!=='（無法擷取）')idbSet(ch.url,c);var ps=c.split('\n').filter(function(l){return l.trim();});$('nt').innerHTML=ps.length?ps.map(function(p){return'<p>'+esc(p)+'</p>';}).join(''):'<p style="color:var(--txd);text-align:center">（本章無內文）</p>';updateTOCItem(_ci);if(PM.on)paginateChapter(_ci,0);}).catch(function(e){if(G.cur!==_bk||G.idx!==_ci)return;$('nt').innerHTML='<p style="color:var(--err)">載入失敗：'+esc(e.message)+'</p>';});}
+      if(cached!==null){ch.content=cached;var ps=cached.split('\n').filter(function(l){return l.trim();});$('nt').innerHTML=ps.length?ps.map(function(p){return'<p>'+esc(p)+'</p>';}).join(''):'<p style="color:var(--txd);text-align:center">（本章無內文）</p>';if(PM.on)paginateChapter(_ci,_sp);}
+      else if(ch.url){proxyFetch(ch.url,12000).then(function(h){if(G.cur!==_bk||G.idx!==_ci)return;var c=extractContent(h,ch.title);if(!c)c='（無法擷取）';ch.content=c;if(c!=='（無法擷取）')idbSet(ch.url,c);var ps=c.split('\n').filter(function(l){return l.trim();});$('nt').innerHTML=ps.length?ps.map(function(p){return'<p>'+esc(p)+'</p>';}).join(''):'<p style="color:var(--txd);text-align:center">（本章無內文）</p>';updateTOCItem(_ci);if(PM.on)paginateChapter(_ci,_sp);}).catch(function(e){if(G.cur!==_bk||G.idx!==_ci)return;$('nt').innerHTML='<p style="color:var(--err)">載入失敗：'+esc(e.message)+'</p>';});}
     });
   }
   else{var ps=(ch.content||'').split('\n').filter(function(l){return l.trim();});$('nt').innerHTML=ps.length?ps.map(function(p){return'<p>'+esc(p)+'</p>';}).join(''):'<p style="color:var(--txd);text-align:center">（本章無內文）</p>';}
@@ -545,7 +546,7 @@ function showChapter(i){
   var pct=chs.length>1?Math.round(i/(chs.length-1)*100):100;$('pg').style.width=pct+'%';$('pind').textContent='第'+(i+1)+' / '+chs.length+'章';
   document.querySelectorAll('.ti').forEach(function(el){var n=+el.getAttribute('data-i'),rs=G.read[G.cur]||[];el.className='ti'+(n===i?' active':rs.indexOf(n)>=0?' read':'');if(n===i)el.scrollIntoView({block:'nearest'});});
   $('sbf').textContent='已讀 '+(G.read[G.cur]||[]).length+' / '+chs.length+'章';
-  if(PM.on){$('rc').style.display='none';$('pw').style.display='flex';$('bb').style.display='none';paginateChapter(i,0);}
+  if(PM.on){$('rc').style.display='none';$('pw').style.display='flex';$('bb').style.display='none';paginateChapter(i,_sp);}
   else{$('rc').style.display='block';$('pw').style.display='none';$('bb').style.display='';}
   if(G.ttsOn)stopTTS();save();$('rw').focus();
 }
@@ -849,7 +850,7 @@ try{
     $('ns').textContent=n.title.length>14?n.title.substring(0,14)+'…':n.title;
     buildTOC();
     $('tcl').style.display='';$('sbf').style.display='';$('tcq').style.display='';
-    showChapter(G.idx);
+    showChapter(G.idx,G.pidx||0);
     $('wc').style.display='none';
     applyPMState();
     if(PM.on)setTimeout(function(){paginateChapter(G.idx,G.pidx||0);},150);

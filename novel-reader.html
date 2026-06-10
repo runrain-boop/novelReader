@@ -310,6 +310,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 var G={library:[],cur:-1,idx:0,read:{},ttsOn:false,fetching:false};
 var PM={on:false,pages:[],pageIdx:0,chIdx:-1};
 var SK='nr8',PROXY='https://novel-proxy.runrain.workers.dev/';
+var IDB=null;
+function idbOpen(cb){if(IDB){cb(IDB);return;}var req=indexedDB.open('nr_content',1);req.onupgradeneeded=function(e){e.target.result.createObjectStore('ch');};req.onsuccess=function(e){IDB=e.target.result;cb(IDB);};req.onerror=function(){cb(null);};}
+function idbSet(key,val){if(!key)return;idbOpen(function(db){if(!db)return;try{db.transaction('ch','readwrite').objectStore('ch').put(val,key);}catch(e){}});}
+function idbGet(key,cb){if(!key){cb(null);return;}idbOpen(function(db){if(!db){cb(null);return;}try{var req=db.transaction('ch','readonly').objectStore('ch').get(key);req.onsuccess=function(){cb(req.result!=null?req.result:null);};req.onerror=function(){cb(null);};}catch(e){cb(null);}});}
+function idbDelChapters(chs){idbOpen(function(db){if(!db)return;try{var tx=db.transaction('ch','readwrite'),st=tx.objectStore('ch');(chs||[]).forEach(function(c){if(c.url)st.delete(c.url);});}catch(e){}});}
 var $=function(id){return document.getElementById(id);};
 var esc=function(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
 
@@ -342,7 +347,7 @@ async function doAutoFetch(url){
   var nIdx=addToLibrary(novel);openNovel(nIdx);
   $('chhd').textContent=chs[0].title;$('nt').innerHTML='<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入第一章…</p>';
   var total=chs.length,done=0,BATCH=2;
-  async function fetchCh(i){var ch=G.library[nIdx].chapters[i];if(!ch||!ch.url){ch.content='';return;}try{var h=await proxyFetch(ch.url,12000);ch.content=extractContent(h,ch.title);if(!ch.content)ch.content='（無法擷取）';}catch(e){ch.content='（失敗：'+e.message+'）';}done++;fbar(20+Math.round(done/total*75));setBadge('loading',done+'/'+total);updateTOCItem(i);if(i===G.idx&&G.cur===nIdx)showChapter(i);if(done===total){flog('🎉 全部'+total+'章完成！','ok');setBadge('done','全'+total+'章 ✓');fbar(0);save();}}
+  async function fetchCh(i){var ch=G.library[nIdx].chapters[i];if(!ch||!ch.url){ch.content='';return;}try{var h=await proxyFetch(ch.url,12000);ch.content=extractContent(h,ch.title);if(!ch.content)ch.content='（無法擷取）';else idbSet(ch.url,ch.content);}catch(e){ch.content='（失敗：'+e.message+'）';}done++;fbar(20+Math.round(done/total*75));setBadge('loading',done+'/'+total);updateTOCItem(i);if(i===G.idx&&G.cur===nIdx)showChapter(i);if(done===total){flog('🎉 全部'+total+'章完成！','ok');setBadge('done','全'+total+'章 ✓');fbar(0);save();}}
   for(var i=0;i<total;i+=BATCH){var batch=[];for(var j=i;j<Math.min(i+BATCH,total);j++)batch.push(fetchCh(j));await Promise.all(batch);if(i+BATCH<total)await new Promise(function(r){setTimeout(r,250);});}
   G.fetching=false;$('fetchbtn').disabled=false;
 }
@@ -439,6 +444,7 @@ function curFilter(){var a=document.querySelector('.stab.active');return a?a.dat
 
 function deleteNovel(ni){
   if(!confirm('確定刪除《'+G.library[ni].title+'》？'))return;
+  idbDelChapters(G.library[ni].chapters);
   G.library.splice(ni,1);
   var nr={};Object.keys(G.read).forEach(function(k){var ki=+k;if(ki<ni)nr[ki]=G.read[k];else if(ki>ni)nr[ki-1]=G.read[k];});
   G.read=nr;
@@ -525,7 +531,15 @@ function showChapter(i){
   var chs=G.library[G.cur].chapters;if(i<0||i>=chs.length)return;
   G.idx=i;if(!G.read[G.cur])G.read[G.cur]=[];if(G.read[G.cur].indexOf(i)<0)G.read[G.cur].push(i);
   var ch=chs[i];$('chhd').textContent=ch.title;$('chtl').textContent=ch.title;
-  if(ch.content===null){$('nt').innerHTML='<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入中…</p>';}
+  if(ch.content===null){
+    $('nt').innerHTML='<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入中…</p>';
+    var _bk=G.cur,_ci=i;
+    idbGet(ch.url,function(cached){
+      if(G.cur!==_bk||G.idx!==_ci)return;
+      if(cached!==null){ch.content=cached;var ps=cached.split('\n').filter(function(l){return l.trim();});$('nt').innerHTML=ps.length?ps.map(function(p){return'<p>'+esc(p)+'</p>';}).join(''):'<p style="color:var(--txd);text-align:center">（本章無內文）</p>';if(PM.on)paginateChapter(_ci,0);}
+      else if(ch.url){proxyFetch(ch.url,12000).then(function(h){if(G.cur!==_bk||G.idx!==_ci)return;var c=extractContent(h,ch.title);if(!c)c='（無法擷取）';ch.content=c;if(c!=='（無法擷取）')idbSet(ch.url,c);var ps=c.split('\n').filter(function(l){return l.trim();});$('nt').innerHTML=ps.length?ps.map(function(p){return'<p>'+esc(p)+'</p>';}).join(''):'<p style="color:var(--txd);text-align:center">（本章無內文）</p>';updateTOCItem(_ci);if(PM.on)paginateChapter(_ci,0);}).catch(function(e){if(G.cur!==_bk||G.idx!==_ci)return;$('nt').innerHTML='<p style="color:var(--err)">載入失敗：'+esc(e.message)+'</p>';});}
+    });
+  }
   else{var ps=(ch.content||'').split('\n').filter(function(l){return l.trim();});$('nt').innerHTML=ps.length?ps.map(function(p){return'<p>'+esc(p)+'</p>';}).join(''):'<p style="color:var(--txd);text-align:center">（本章無內文）</p>';}
   $('rw').scrollTop=0;$('pvbtn').disabled=(i===0);$('nxbtn').disabled=(i===chs.length-1);
   var pct=chs.length>1?Math.round(i/(chs.length-1)*100):100;$('pg').style.width=pct+'%';$('pind').textContent='第'+(i+1)+' / '+chs.length+'章';
@@ -806,14 +820,13 @@ document.addEventListener('click',function(e){[['ttp','btts'],['setp','bset'],['
 
 // ── Persist ──────────────────────────────────────────────
 function save(){
-  try{localStorage.setItem(SK,JSON.stringify({library:G.library,cur:G.cur,idx:G.idx,read:G.read}));}
-  catch(e){try{
-    var slim={library:G.library.map(function(n,ni){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:ni===G.cur?c.content:null};})};  }),cur:G.cur,idx:G.idx,read:G.read};
-    localStorage.setItem(SK,JSON.stringify(slim));
-  }catch(e2){try{
+  try{
+    var d={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:c.url?null:c.content};})};  }),cur:G.cur,idx:G.idx,read:G.read};
+    localStorage.setItem(SK,JSON.stringify(d));
+  }catch(e){try{
     var bare={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:null};})};  }),cur:G.cur,idx:G.idx,read:G.read};
     localStorage.setItem(SK,JSON.stringify(bare));
-  }catch(e3){}}}
+  }catch(e2){console.error('save error:',e2);}}
 }
 function restore(){
   var th=localStorage.getItem('nr_th')||'';document.body.className=th;document.querySelectorAll('.thb').forEach(function(b){b.classList.toggle('on',b.dataset.th===th);});
@@ -822,7 +835,8 @@ function restore(){
   var pmw=localStorage.getItem('nr_pmw');if(pmw){$('pmr').value=pmw;$('pmv').textContent=pmw;document.documentElement.style.setProperty('--pm',pmw+'px');}
   var bg=localStorage.getItem('nr_bg');if(bg){document.documentElement.style.setProperty('--bg',bg);$('custom-bg').value=bg;}
   try{var raw=localStorage.getItem(SK);if(!raw)return;var x=JSON.parse(raw);
-    if(x.library&&x.library.length){G.library=x.library;G.read=x.read||{};G.cur=x.cur!=null?x.cur:-1;G.idx=x.idx||0;updateExpSel();}
+    if(x.library&&x.library.length){G.library=x.library;G.read=x.read||{};G.cur=x.cur!=null?x.cur:-1;G.idx=x.idx||0;updateExpSel();
+      G.library.forEach(function(n){n.chapters.forEach(function(c){if(c.content&&c.url)idbSet(c.url,c.content);});});}
   }catch(e){console.error('restore error:',e);}
   var pmPref=localStorage.getItem('nr_pmstate');if(pmPref===null)pmPref='1';PM.on=(pmPref==='1');
 }

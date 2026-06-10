@@ -183,14 +183,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
         <div id="fprogw"><div id="fprogf"></div></div>
         <div id="flog"></div>
       </div>
-      <div style="text-align:center;font-size:12px;color:var(--txr);margin:2px 0">── 或 ──</div>
       <div class="card">
-        <h3>📋 貼上文字</h3>
-        <textarea id="pa" placeholder="把複製的小說文字貼在這裡…"></textarea>
-        <input class="inp" id="ptitle" type="text" placeholder="小說標題（選填）" autocorrect="off" spellcheck="false" style="width:100%;margin-bottom:8px">
-        <button class="gbtn full" onclick="doPaste()">✨ 解析並載入</button>
-        <div id="pstat"></div>
-        <div class="bkl-wrap"><a id="bkl" href="#BKL">📖 複製小說文字</a><div class="bkl-note">長按 → 加入書籤，到小說頁點一下即可複製</div></div>
+        <h3>🔖 書籤工具（複製小說文字用）</h3>
+        <div style="font-size:13px;color:var(--txd);line-height:1.7;margin-bottom:10px">
+          把下方按鈕<strong style="color:var(--tx)">長按 → 加入書籤</strong>到 Safari 書籤列。<br>
+          之後到任何小說章節頁，點一下書籤即可自動複製全頁文字。
+        </div>
+        <div class="bkl-wrap"><a id="bkl" href="#BKL">📖 複製小說文字</a><div class="bkl-note">← 長按此按鈕加入書籤列</div></div>
       </div>
     </div>
     <div id="rc"><div id="chhd"></div><div id="nt"></div></div>
@@ -259,7 +258,124 @@ function addSwipe(el,onL,onR){el.addEventListener('touchstart',function(e){tx=e.
 addSwipe($('pw'),pageNext,pagePrev);
 addSwipe($('rw'),function(){if(!PM.on)showChapter(G.idx+1);},function(){if(!PM.on)showChapter(G.idx-1);});
 var KH=$('kh'),kht;function hint(m){KH.textContent=m;KH.classList.add('show');clearTimeout(kht);kht=setTimeout(function(){KH.classList.remove('show');},1100);}
-document.addEventListener('keydown',function(e){if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;if(PM.on){switch(e.key){case'ArrowLeft':case'ArrowUp':case'PageUp':e.preventDefault();pagePrev();break;case'ArrowRight':case'ArrowDown':case' ':case'PageDown':e.preventDefault();pageNext();break;case'AudioVolumeDown':e.preventDefault();pagePrev();break;case'AudioVolumeUp':e.preventDefault();pageNext();break;case'MediaTrackPrevious':e.preventDefault();pagePrev();break;case'MediaTrackNext':e.preventDefault();pageNext();break;case't':case'T':togSB();break;}}else{switch(e.key){case'ArrowLeft':e.preventDefault();showChapter(G.idx-1);hint('← 上一章');break;case'ArrowRight':e.preventDefault();showChapter(G.idx+1);hint('→ 下一章');break;case'ArrowUp':e.preventDefault();$('rw').scrollBy({top:-70,behavior:'smooth'});break;case'ArrowDown':e.preventDefault();$('rw').scrollBy({top:70,behavior:'smooth'});break;case' ':case'PageDown':e.preventDefault();$('rw').scrollBy({top:$('rw').clientHeight*.8,behavior:'smooth'});break;case'PageUp':e.preventDefault();$('rw').scrollBy({top:-$('rw').clientHeight*.8,behavior:'smooth'});break;case'Home':e.preventDefault();showChapter(0);break;case'End':e.preventDefault();if(G.library[G.cur])showChapter(G.library[G.cur].chapters.length-1);break;case't':case'T':togSB();break;case's':case'S':togTTS();break;case'AudioVolumeDown':e.preventDefault();showChapter(G.idx-1);break;case'AudioVolumeUp':e.preventDefault();showChapter(G.idx+1);break;case'MediaTrackPrevious':e.preventDefault();showChapter(G.idx-1);break;case'MediaTrackNext':e.preventDefault();showChapter(G.idx+1);break;}}},true);
+// ── iPad BT keyboard fix ──────────────────────────────
+// iPad Safari intercepts many keys; we use multiple strategies:
+// 1. keydown on document (capture phase)
+// 2. keyup as fallback
+// 3. A hidden always-focused input to catch keys on iOS
+// 4. Handle both e.key strings AND e.keyCode numbers
+
+function handleKey(key, code, preventDefault) {
+  var tag = document.activeElement ? document.activeElement.tagName : '';
+  if (['INPUT','TEXTAREA','SELECT'].includes(tag) && document.activeElement.id !== 'kb-trap') return;
+  var handled = true;
+  if (PM.on) {
+    // Page mode keys
+    if (key==='ArrowLeft'||key==='ArrowUp'||key==='PageUp'||code===37||code===38||code===33) { pagePrev(); }
+    else if (key==='ArrowRight'||key==='ArrowDown'||key===' '||key==='PageDown'||code===39||code===40||code===32||code===34) { pageNext(); }
+    else if (key==='AudioVolumeDown'||code===174) { pagePrev(); }
+    else if (key==='AudioVolumeUp'||code===175) { pageNext(); }
+    else if (key==='MediaTrackPrevious'||code===177) { pagePrev(); }
+    else if (key==='MediaTrackNext'||code===176) { pageNext(); }
+    else if (key==='t'||key==='T') { togSB(); }
+    else { handled = false; }
+  } else {
+    if (key==='ArrowLeft'||code===37) { showChapter(G.idx-1); hint('← 上一章'); }
+    else if (key==='ArrowRight'||code===39) { showChapter(G.idx+1); hint('→ 下一章'); }
+    else if (key==='ArrowUp'||code===38) { $('rw').scrollBy({top:-70,behavior:'smooth'}); }
+    else if (key==='ArrowDown'||code===40) { $('rw').scrollBy({top:70,behavior:'smooth'}); }
+    else if (key===' '||key==='PageDown'||code===32||code===34) { $('rw').scrollBy({top:$('rw').clientHeight*.8,behavior:'smooth'}); }
+    else if (key==='PageUp'||code===33) { $('rw').scrollBy({top:-$('rw').clientHeight*.8,behavior:'smooth'}); }
+    else if (key==='Home'||code===36) { showChapter(0); }
+    else if (key==='End'||code===35) { if(G.library[G.cur])showChapter(G.library[G.cur].chapters.length-1); }
+    else if (key==='t'||key==='T') { togSB(); }
+    else if (key==='s'||key==='S') { togTTS(); }
+    else if (key==='AudioVolumeDown'||code===174) { showChapter(G.idx-1); }
+    else if (key==='AudioVolumeUp'||code===175) { showChapter(G.idx+1); }
+    else if (key==='MediaTrackPrevious'||code===177) { showChapter(G.idx-1); }
+    else if (key==='MediaTrackNext'||code===176) { showChapter(G.idx+1); }
+    else { handled = false; }
+  }
+  if (handled && preventDefault) preventDefault();
+}
+
+// Primary: keydown capture phase
+// keydownHandled prevents keyup from double-firing on desktop
+var keydownHandled = false;
+document.addEventListener('keydown', function(e) {
+  var skip = document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && document.activeElement.id !== 'kb-trap';
+  if (!skip) {
+    keydownHandled = true;
+    handleKey(e.key, e.keyCode||e.which, function(){ e.preventDefault(); e.stopPropagation(); });
+  } else { keydownHandled = false; }
+}, true);
+
+// Fallback: keyup — only fires if keydown was NOT handled (iPad-only path)
+document.addEventListener('keyup', function(e) {
+  if (keydownHandled) { keydownHandled = false; return; } // desktop: already handled
+  var skip = document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && document.activeElement.id !== 'kb-trap';
+  if (!skip) { handleKey(e.key, e.keyCode||e.which, null); }
+  keydownHandled = false;
+}, true);
+
+// ── Hidden focus trap for iPad ─────────────────────────
+// On iPad, keyboard events only fire if something is focused.
+// We keep a hidden input focused at all times when not in a real input.
+var kbTrap = document.createElement('input');
+kbTrap.id = 'kb-trap';
+kbTrap.setAttribute('type', 'text');
+kbTrap.setAttribute('autocomplete', 'off');
+kbTrap.setAttribute('autocorrect', 'off');
+kbTrap.setAttribute('autocapitalize', 'off');
+kbTrap.setAttribute('spellcheck', 'false');
+kbTrap.setAttribute('readonly', 'true');
+kbTrap.style.cssText = 'position:fixed;opacity:0;width:1px;height:1px;top:0;left:0;pointer-events:none;z-index:-1;font-size:16px;border:none;outline:none;background:transparent;color:transparent;';
+document.body.appendChild(kbTrap);
+
+// The trap listens for keydown/keyup itself too
+kbTrap.addEventListener('keydown', function(e) {
+  keydownHandled = true;
+  handleKey(e.key, e.keyCode||e.which, function(){ e.preventDefault(); });
+}, true);
+kbTrap.addEventListener('keyup', function(e) {
+  if (keydownHandled) { keydownHandled = false; return; }
+  handleKey(e.key, e.keyCode||e.which, null);
+  keydownHandled = false;
+}, true);
+
+// Keep trap focused whenever user is not in a real input
+function refocusTrap() {
+  var active = document.activeElement;
+  if (!active || (active.tagName !== 'INPUT' && active.tagName !== 'TEXTAREA' && active.tagName !== 'SELECT') || active.id === 'kb-trap') {
+    // Only refocus if no panel input is focused
+    kbTrap.focus({ preventScroll: true });
+  }
+}
+// Refocus on any click/touch in the reading area
+$('rw').addEventListener('click', refocusTrap);
+$('pw').addEventListener('click', function(e) {
+  // Don't steal focus from nav buttons
+  if (!e.target.closest('.pnb') && !e.target.closest('#tap-l') && !e.target.closest('#tap-r')) refocusTrap();
+});
+$('pw').addEventListener('touchend', function(e) {
+  if (!e.target.closest('.pnb')) setTimeout(refocusTrap, 50);
+}, {passive:true});
+document.addEventListener('click', function(e) {
+  // Refocus unless user clicked an input/textarea/button inside a panel
+  if (!e.target.closest('input') && !e.target.closest('textarea') && !e.target.closest('select')) {
+    setTimeout(refocusTrap, 50);
+  }
+});
+// Refocus when trap loses focus (unless going to real input)
+kbTrap.addEventListener('blur', function() {
+  setTimeout(function() {
+    var active = document.activeElement;
+    if (!active || active.id === kbTrap.id) return;
+    if (active.tagName !== 'INPUT' && active.tagName !== 'TEXTAREA' && active.tagName !== 'SELECT') {
+      refocusTrap();
+    }
+  }, 100);
+});
 $('btoc').addEventListener('click',togSB);function togSB(){$('sb').classList.toggle('open');$('overlay').classList.toggle('show');}function closeSB(){$('sb').classList.remove('open');$('overlay').classList.remove('show');}
 $('pvbtn').addEventListener('click',function(){showChapter(G.idx-1);});$('nxbtn').addEventListener('click',function(){showChapter(G.idx+1);});
 $('bnew').addEventListener('click',function(){$('wc').style.display='block';$('rc').style.display='none';$('pw').style.display='none';$('bb').style.display='none';flogClear();fbar(0);$('pa').value='';$('ptitle').value='';setStat('','');$('urlin').focus();});
@@ -281,12 +397,55 @@ document.querySelectorAll('.cbtn').forEach(function(b){b.addEventListener('click
 $('custom-bg').addEventListener('input',function(){document.querySelectorAll('.cbtn').forEach(function(x){x.classList.remove('on');});document.documentElement.style.setProperty('--bg',this.value);localStorage.setItem('nr_bg',this.value);});
 $('bexp').addEventListener('click',function(){$('expp').classList.toggle('show');$('ttp').classList.remove('show');$('setp').classList.remove('show');});
 function updateExpSel(){var s=$('exp-sel');s.innerHTML='<option value="all">全部小說 ('+G.library.length+'本)</option>';G.library.forEach(function(n,i){var o=document.createElement('option');o.value=i;o.textContent=n.title;s.appendChild(o);});}
-window.doExport=function(){var sel=$('exp-sel').value,data,fname;if(sel==='all'){data={v:2,library:G.library,read:G.read,at:new Date().toISOString()};fname='novels_all_'+new Date().toISOString().substring(0,10)+'.json';}else{var i=+sel;data={v:2,library:[G.library[i]],read:{'0':G.read[i]||[]},at:new Date().toISOString()};fname=(G.library[i].title||'novel').replace(/[\/\\:*?"<>|]/g,'_')+'.json';}var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;a.click();$('exp-stat').textContent='✅ 已匯出 '+fname;};
-$('imp-file').addEventListener('change',function(e){var file=e.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(ev){try{var d=JSON.parse(ev.target.result),novels=d.library||[];if(!novels.length)throw new Error('無資料');var added=0;novels.forEach(function(n,i){if(n&&n.title&&n.chapters){G.library.push(n);if(d.read&&d.read[i])G.read[G.library.length-1]=d.read[i];added++;}});updateExpSel();save();$('exp-stat').textContent='✅ 匯入 '+added+' 本';if(added>0)switchNovel(G.library.length-1);}catch(e2){$('exp-stat').textContent='❌ '+e2.message;}};r.readAsText(file);this.value='';});
+window.doExport=function(){
+  var sel=$('exp-sel').value,data,fname;
+  // Build progress map: {novelIdx: currentChapterIdx}
+  var progress={};
+  G.library.forEach(function(_,i){ progress[i]=(G.cur===i?G.idx:0); });
+  if(sel==='all'){
+    data={v:3,library:G.library,read:G.read,progress:progress,cur:G.cur,idx:G.idx,at:new Date().toISOString()};
+    fname='novels_all_'+new Date().toISOString().substring(0,10)+'.json';
+  }else{
+    var i=+sel;
+    data={v:3,library:[G.library[i]],read:{'0':G.read[i]||[]},progress:{'0':G.cur===i?G.idx:0},cur:0,idx:G.cur===i?G.idx:0,at:new Date().toISOString()};
+    fname=(G.library[i].title||'novel').replace(/[\/\\:*?"<>|]/g,'_')+'.json';
+  }
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;a.click();
+  $('exp-stat').textContent='✅ 已匯出（含閱讀進度）'+fname;
+};
+$('imp-file').addEventListener('change',function(e){var file=e.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(ev){try{
+  var d=JSON.parse(ev.target.result),novels=d.library||[];
+  if(!novels.length)throw new Error('無資料');
+  var added=0,startIdx=G.library.length;
+  novels.forEach(function(n,i){
+    if(n&&n.title&&n.chapters){
+      G.library.push(n);
+      var ni=G.library.length-1;
+      if(d.read&&d.read[i]) G.read[ni]=d.read[i];
+      added++;
+    }
+  });
+  updateExpSel();save();
+  $('exp-stat').textContent='✅ 匯入 '+added+' 本（含閱讀進度）';
+  if(added>0){
+    // Restore to last reading position
+    var targetNovel=startIdx; // default: first imported
+    var targetChapter=0;
+    if(d.cur!==undefined&&d.cur!==null) targetNovel=startIdx+(d.cur||0);
+    if(d.idx!==undefined&&d.idx!==null) targetChapter=d.idx||0;
+    if(targetNovel<G.library.length){
+      switchNovel(targetNovel);
+      if(targetChapter>0&&targetChapter<G.library[targetNovel].chapters.length){
+        showChapter(targetChapter);
+      }
+    }
+  }
+}catch(e2){$('exp-stat').textContent='❌ '+e2.message;}};r.readAsText(file);this.value='';});
 document.addEventListener('click',function(e){[['ttp','btts'],['setp','bset'],['expp','bexp']].forEach(function(p){if(!$(p[0]).contains(e.target)&&!$(p[1]).contains(e.target))$(p[0]).classList.remove('show');});});
 function save(){try{localStorage.setItem(SK,JSON.stringify({library:G.library,cur:G.cur,idx:G.idx,read:G.read}));}catch(e){try{var slim={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:null};})};  }),cur:G.cur,idx:G.idx,read:G.read};localStorage.setItem(SK,JSON.stringify(slim));}catch(e2){}}}
 function restore(){var th=localStorage.getItem('nr_th')||'';document.body.className=th;document.querySelectorAll('.thb').forEach(function(b){b.classList.toggle('on',b.dataset.th===th);});var fs=localStorage.getItem('nr_fs');if(fs){$('fsr').value=fs;$('fsv').textContent=fs;document.documentElement.style.setProperty('--fs',fs+'px');}var lh=localStorage.getItem('nr_lh');if(lh){$('lhr').value=lh;$('lhv').textContent=parseFloat(lh).toFixed(1);document.documentElement.style.setProperty('--lh',lh);}var pmw=localStorage.getItem('nr_pmw');if(pmw){$('pmr').value=pmw;$('pmv').textContent=pmw;document.documentElement.style.setProperty('--pm',pmw+'px');}var bg=localStorage.getItem('nr_bg');if(bg){document.documentElement.style.setProperty('--bg',bg);$('custom-bg').value=bg;}try{var raw=localStorage.getItem(SK);if(!raw)return;var x=JSON.parse(raw);if(x.library&&x.library.length){G.library=x.library;G.read=x.read||{};G.cur=x.cur||0;G.idx=x.idx||0;updateExpSel();if(G.library[G.cur]){$('ns').textContent=G.library[G.cur].title.length>14?G.library[G.cur].title.substring(0,14)+'…':G.library[G.cur].title;buildTOC();showChapter(G.idx);$('wc').style.display='none';}}}catch(e){}var pmPref=localStorage.getItem('nr_pmstate');if(pmPref===null)pmPref='1';PM.on=(pmPref==='1');applyPMState();if(PM.on&&G.cur>=0)setTimeout(function(){paginateChapter(G.idx,0);},150);}
-restore();$('rw').focus();
+restore();setTimeout(refocusTrap,300);
 </script>
 </body>
 </html>

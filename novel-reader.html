@@ -161,7 +161,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 .ef input,.ef textarea{width:100%;padding:9px 11px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:14px;outline:none;-webkit-appearance:none}
 .ef textarea{height:80px;resize:none;font-family:var(--ui)}
 .ef input:focus,.ef textarea:focus{border-color:var(--ac)}
-.edit-chlist{max-height:240px;overflow-y:auto;border:1px solid var(--bd);border-radius:8px;background:var(--pn);margin-top:6px}
+.edit-chlist{max-height:260px;overflow-y:auto;border:1px solid var(--bd);border-radius:8px;background:var(--pn);margin-top:6px}
 .ech-toolbar{display:flex;align-items:center;gap:8px;padding:7px 11px;border-bottom:1px solid var(--bd);background:var(--sf);position:sticky;top:0;z-index:1}
 .ech-selall{background:var(--pn);border:1px solid var(--bd);border-radius:5px;font-size:12px;padding:4px 9px;cursor:pointer;color:var(--txd);-webkit-appearance:none;white-space:nowrap}
 .ech-selall:active{border-color:var(--ac);color:var(--ac)}
@@ -626,48 +626,101 @@ $('bedit').addEventListener('click',openEdit);
 function openEdit(){
   if(G.cur<0){alert('請先開啟一本小說');return;}
   var n=G.library[G.cur];
-  $('edit-title').value=n.title||'';$('edit-author').value=n.author||'';$('edit-intro').value=n.intro||'';
-  $('edit-url').value=n.url||'（手動輸入）';$('edit-url-btn').style.opacity=n.url?'1':'0.4';
+  $('edit-title').value=n.title||'';
+  $('edit-author').value=n.author||'';
+  $('edit-intro').value=n.intro||'';
+  var urlEl=$('edit-url');
+  if(urlEl){urlEl.value=n.url||'';urlEl.placeholder=n.url?'':'（手動輸入）';}
+  $('edit-url-btn').style.opacity=n.url?'1':'0.4';
   $('edit-url-btn').onclick=n.url?function(){window.open(n.url,'_blank');}:null;
-  var cl=$('edit-chlist');cl.innerHTML='';
-  var tb=document.createElement('div');
-  tb.className='ech-toolbar';
-  tb.innerHTML='<button class="ech-selall" id="ech-selall-btn">全選</button><span class="ech-count" id="ech-count">已選 0 章</span><button class="ech-delbtn" id="ech-delbtn" disabled>🗑 刪除已選</button>';
-  cl.appendChild(tb);
+  renderEditChList();
+  $('editp').classList.add('show');
+}
+function renderEditChList(){
+  var n=G.library[G.cur];
+  var cl=$('edit-chlist');
+  cl.innerHTML='';
+  var toolbar=document.createElement('div');
+  toolbar.id='ech-toolbar';
+  toolbar.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:var(--pn);z-index:1';
+  toolbar.innerHTML=
+    '<button id="ech-selall" style="padding:4px 10px;border:1px solid var(--bd);border-radius:6px;background:var(--sf);color:var(--txd);cursor:pointer;font-size:12px">全選</button>'+
+    '<span id="ech-count" style="font-size:12px;color:var(--txd);flex:1">已選 0 章</span>'+
+    '<button id="ech-delbtn" disabled style="padding:4px 12px;border:none;border-radius:6px;background:var(--err);color:#fff;cursor:pointer;font-size:12px;opacity:.4">🗑 刪除已選</button>';
+  cl.appendChild(toolbar);
+  var list=document.createElement('div');
+  list.id='ech-list';
   n.chapters.forEach(function(ch,i){
     var row=document.createElement('div');
     row.className='ech-row';
-    row.innerHTML='<input type="checkbox" class="ech-cb" data-ci="'+i+'"><span class="ech-num">'+(i+1)+'</span><span class="ech-title">'+esc(ch.title)+'</span>';
-    row.addEventListener('click',function(e){if(e.target.tagName==='INPUT')return;var cb=this.querySelector('.ech-cb');cb.checked=!cb.checked;updateEchState();});
-    row.querySelector('.ech-cb').addEventListener('change',updateEchState);
-    cl.appendChild(row);
+    row.setAttribute('data-i',i);
+    row.style.cssText='display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid var(--bd);gap:8px;cursor:pointer';
+    var cb=document.createElement('input');
+    cb.type='checkbox';cb.className='ech-cb';
+    cb.style.cssText='width:16px;height:16px;accent-color:var(--ac);flex-shrink:0;cursor:pointer';
+    cb.addEventListener('change',updateEchToolbar);
+    var num=document.createElement('span');
+    num.style.cssText='font-size:11px;color:var(--txr);width:30px;flex-shrink:0';
+    num.textContent=i+1;
+    var titleWrap=document.createElement('div');
+    titleWrap.style.cssText='flex:1;overflow:hidden';
+    var titleSpan=document.createElement('span');
+    titleSpan.className='ech-title-span';
+    titleSpan.style.cssText='font-size:13px;display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis';
+    titleSpan.textContent=ch.title;
+    titleWrap.appendChild(titleSpan);
+    var editBtn=document.createElement('button');
+    editBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:13px;color:var(--txd);flex-shrink:0;padding:2px 4px;opacity:.5';
+    editBtn.textContent='✏️';editBtn.title='編輯章節名稱';
+    editBtn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var inp=document.createElement('input');
+      inp.type='text';inp.value=ch.title;
+      inp.style.cssText='width:100%;padding:3px 6px;border:1px solid var(--ac);border-radius:4px;font-size:13px;background:var(--pn);color:var(--tx);outline:none';
+      titleWrap.replaceChild(inp,titleSpan);
+      inp.focus();inp.select();
+      function saveTitle(){var v=inp.value.trim();if(v&&v!==ch.title){G.library[G.cur].chapters[i].title=v;ch.title=v;save();buildTOC();}titleSpan.textContent=ch.title;titleWrap.replaceChild(titleSpan,inp);}
+      inp.addEventListener('blur',saveTitle);
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();saveTitle();}if(e.key==='Escape'){titleWrap.replaceChild(titleSpan,inp);}});
+    });
+    row.appendChild(cb);row.appendChild(num);row.appendChild(titleWrap);row.appendChild(editBtn);
+    row.addEventListener('click',function(e){
+      if(e.target===cb||e.target===editBtn||e.target.closest('input'))return;
+      cb.checked=!cb.checked;
+      row.style.background=cb.checked?'rgba(139,105,20,.08)':'';
+      updateEchToolbar();
+    });
+    cb.addEventListener('change',function(){row.style.background=cb.checked?'rgba(139,105,20,.08)':'';});
+    list.appendChild(row);
   });
-  function updateEchState(){
-    var cbs=Array.from(cl.querySelectorAll('.ech-cb'));
-    var checked=cbs.filter(function(cb){return cb.checked;}).length;
-    cbs.forEach(function(cb){cb.closest('.ech-row').classList.toggle('checked',cb.checked);});
-    $('ech-count').textContent='已選 '+checked+' 章';
-    $('ech-delbtn').disabled=checked===0;
-    $('ech-selall-btn').textContent=(checked===cbs.length&&cbs.length>0)?'取消全選':'全選';
-  }
-  $('ech-selall-btn').addEventListener('click',function(){
+  cl.appendChild(list);
+  $('ech-selall').addEventListener('click',function(){
     var cbs=cl.querySelectorAll('.ech-cb');
-    var allChk=Array.from(cbs).every(function(cb){return cb.checked;});
-    cbs.forEach(function(cb){cb.checked=!allChk;});
-    updateEchState();
+    var allChk=Array.from(cbs).every(function(c){return c.checked;});
+    cbs.forEach(function(c){c.checked=!allChk;c.closest('.ech-row').style.background=!allChk?'rgba(139,105,20,.08)':'';});
+    this.textContent=allChk?'全選':'取消全選';
+    updateEchToolbar();
   });
   $('ech-delbtn').addEventListener('click',function(){
-    var idxs=Array.from(cl.querySelectorAll('.ech-cb:checked')).map(function(cb){return+cb.getAttribute('data-ci');});
-    if(!idxs.length)return;
-    if(!confirm('確定刪除選取的 '+idxs.length+' 個章節？'))return;
-    idxs.sort(function(a,b){return b-a;});
-    idxs.forEach(function(i){G.library[G.cur].chapters.splice(i,1);});
+    var cbs=Array.from(cl.querySelectorAll('.ech-cb'));
+    var toDelete=cbs.map(function(c,i){return c.checked?i:-1;}).filter(function(i){return i>=0;});
+    if(!toDelete.length)return;
+    if(!confirm('確定刪除已選的 '+toDelete.length+' 個章節？'))return;
+    toDelete.slice().reverse().forEach(function(i){G.library[G.cur].chapters.splice(i,1);});
     if(G.idx>=G.library[G.cur].chapters.length)G.idx=Math.max(0,G.library[G.cur].chapters.length-1);
-    buildTOC();
+    save();buildTOC();
     if(G.library[G.cur].chapters.length>0)showChapter(G.idx);
-    save();openEdit();
+    renderEditChList();
   });
-  $('editp').classList.add('show');
+}
+function updateEchToolbar(){
+  var cl=$('edit-chlist');if(!cl)return;
+  var cbs=Array.from(cl.querySelectorAll('.ech-cb'));
+  var count=cbs.filter(function(c){return c.checked;}).length;
+  var countEl=$('ech-count'),delBtn=$('ech-delbtn'),selAll=$('ech-selall');
+  if(countEl)countEl.textContent='已選 '+count+' 章';
+  if(delBtn){delBtn.disabled=count===0;delBtn.style.opacity=count>0?'1':'.4';}
+  if(selAll)selAll.textContent=(count===cbs.length&&cbs.length>0)?'取消全選':'全選';
 }
 window.saveEdit=function(){if(G.cur<0)return;G.library[G.cur].title=$('edit-title').value.trim()||G.library[G.cur].title;G.library[G.cur].author=$('edit-author').value.trim();G.library[G.cur].intro=$('edit-intro').value.trim();$('ns').textContent=G.library[G.cur].title.length>14?G.library[G.cur].title.substring(0,14)+'…':G.library[G.cur].title;updateExpSel();save();closeEdit();};
 window.closeEdit=function(){$('editp').classList.remove('show');};$('editp').addEventListener('click',function(e){if(e.target===$('editp'))closeEdit();});

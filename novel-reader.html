@@ -123,6 +123,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 #fetch-help a{color:var(--acc);text-decoration:none;display:inline-block;margin-right:10px}
 #fetch-help a:hover{text-decoration:underline}
 #fetch-help .fh-note{color:var(--txd);font-size:11px;margin-top:4px}
+#syncp{top:58px;right:12px;width:280px}
+.sync-st{font-size:11px;color:var(--txd);white-space:nowrap;padding:0 2px;flex-shrink:0;line-height:1}
+.sync-ok{color:var(--ok)}.sync-syncing,.sync-pending{color:var(--warn)}.sync-err{color:var(--err)}
 
 /* Bottom nav (scroll mode) */
 #bb{height:calc(52px + var(--safe-b));background:var(--sf);border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 13px;padding-bottom:var(--safe-b);flex-shrink:0}
@@ -225,7 +228,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 #kh.show{opacity:1}
 .spin{display:inline-block;width:12px;height:12px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle;margin-right:3px}
 @keyframes sp{to{transform:rotate(360deg)}}
-@media(max-width:680px){:root{--sw:82vw;--fs:16px}#sb{position:absolute;height:100%;transform:translateX(-110%)}#sb.open{transform:translateX(0)}#rc{padding:22px 15px 100px}#setp,#expp{top:auto;bottom:68px;right:12px;left:12px;width:auto}#topbar{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}#topbar::-webkit-scrollbar{display:none}#topbar .btn{flex-shrink:0}}
+@media(max-width:680px){:root{--sw:82vw;--fs:16px}#sb{position:absolute;height:100%;transform:translateX(-110%)}#sb.open{transform:translateX(0)}#rc{padding:22px 15px 100px}#setp,#expp,#syncp{top:auto;bottom:68px;right:12px;left:12px;width:auto}#topbar{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}#topbar::-webkit-scrollbar{display:none}#topbar .btn{flex-shrink:0}}
 /* Notes */
 #note-popup{position:fixed;background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:11px 12px;box-shadow:0 4px 24px rgba(0,0,0,.18);z-index:65;display:none;width:272px;max-width:92vw}
 .nc{display:inline-block;width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s}
@@ -274,6 +277,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
     <button class="btn" id="btts">🔊</button>
     <button class="btn" id="bset">⚙</button>
     <button class="btn" id="bexp">📦</button>
+    <button class="btn" id="bsync" title="多裝置同步">☁</button><span id="sync-st" class="sync-st"></span>
   </div>
 
   <div id="rw" tabindex="0">
@@ -346,6 +350,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 <!-- TTS -->
 <div id="ttp" class="panel"><h4>🔊 語音朗讀</h4><select id="tvsel"></select><div class="tr"><label>語速</label><input type="range" id="trate" min="0.5" max="2.5" step="0.1" value="1.0"><span id="rv">1.0</span></div><div class="tr"><label>音調</label><input type="range" id="tpitch" min="0.5" max="2" step="0.1" value="1.0"><span id="pv">1.0</span></div><div class="tr"><label>音量</label><input type="range" id="tvol" min="0" max="1" step="0.05" value="1.0"><span id="vv">1.0</span></div><button id="tplaybtn">▶ 開始朗讀</button></div>
 <div id="setp" class="panel"><h4>⚙ 閱讀設定</h4><div class="srow"><label>字體大小</label><input type="range" id="fsr" min="13" max="32" step="1" value="18"><span id="fsv">18</span></div><div class="srow"><label>行距</label><input type="range" id="lhr" min="1.4" max="3.0" step="0.1" value="1.95"><span id="lhv">1.9</span></div><div class="srow"><label>頁面寬度</label><input type="range" id="pmr" min="380" max="900" step="20" value="680"><span id="pmv" style="width:36px">680</span></div><div class="srow" style="flex-direction:column;align-items:flex-start;gap:5px"><label>主題</label><div class="thr"><button class="thb on" data-th="">☀️ 日間</button><button class="thb" data-th="sp">📜 古典</button><button class="thb" data-th="ge">🌿 護眼</button><button class="thb" data-th="dk">🌙 夜間</button></div></div><div class="srow" style="flex-direction:column;align-items:flex-start;gap:5px"><label>自訂底色</label><div class="color-row"><div class="cbtn" data-bg="" style="background:#f5f0e8;border:2px solid #ccc"></div><div class="cbtn" data-bg="#fffef5" style="background:#fffef5"></div><div class="cbtn" data-bg="#e8f0e8" style="background:#e8f0e8"></div><div class="cbtn" data-bg="#e8eaf5" style="background:#e8eaf5"></div><div class="cbtn" data-bg="#f5e8f0" style="background:#f5e8f0"></div><input type="color" id="custom-bg" value="#f5f0e8" style="width:36px;height:26px;border-radius:5px;border:1px solid var(--bd);cursor:pointer;padding:0"></div></div></div>
+<div id="syncp" class="panel"><h4>☁ 多裝置同步</h4><p style="font-size:12px;color:var(--txd);margin-bottom:10px;line-height:1.6">輸入 GitHub Personal Access Token 可將書架、筆記與閱讀進度同步至多裝置。<br>Token 僅存在本機瀏覽器，不會上傳伺服器。</p><div class="srow"><label style="white-space:nowrap;flex-shrink:0">GitHub Token</label><input id="sync-pat" type="password" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" style="flex:1;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:12px;outline:none;font-family:var(--ui)"></div><div style="display:flex;gap:8px;margin-top:10px"><button onclick="savePAT()" style="flex:1;padding:8px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer">儲存並同步</button><button onclick="clearPAT()" style="flex:1;padding:8px;background:var(--pn);color:var(--txd);border:1px solid var(--bd);border-radius:7px;font-size:13px;cursor:pointer">清除 Token</button></div><div id="sync-info" style="font-size:11px;color:var(--txd);margin-top:8px;line-height:1.5"></div></div>
 <div id="expp" class="panel"><h4>📦 匯出 / 匯入</h4><select class="exp-sel" id="exp-sel"><option value="all">全部小說</option></select><div class="exp-btns"><button onclick="doExport()" style="background:var(--ac);color:#fff">⬆️ 匯出</button><button onclick="$('imp-file').click()" style="background:var(--pn);color:var(--txd);border:1px solid var(--bd)">⬇️ 匯入</button></div><input type="file" id="imp-file" accept=".json" style="display:none"><div id="exp-stat"></div></div>
 <div id="editp"><div id="edit-box"><h4>✏️ 編輯書籍資訊</h4><div class="ef"><label>書名</label><input id="edit-title" type="text"></div><div class="ef"><label>來源網址</label><div style="display:flex;gap:6px;align-items:center"><input id="edit-url" type="text" readonly style="flex:1;cursor:default;color:var(--txd);"><button id="edit-url-btn" style="flex-shrink:0;padding:8px 10px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:14px;">🔗</button></div></div><div class="ef"><label>作者</label><input id="edit-author" type="text" placeholder="（選填）"></div><div class="ef"><label>簡介</label><textarea id="edit-intro" placeholder="（選填）"></textarea></div><div class="ef"><label>封面</label><div style="display:flex;gap:12px;align-items:flex-start"><div id="cover-preview" style="width:72px;height:108px;border:1px solid var(--bd);border-radius:7px;overflow:hidden;background:var(--pn);display:flex;align-items:center;justify-content:center;flex-shrink:0"></div><div style="display:flex;flex-direction:column;gap:6px;padding-top:2px"><button id="cover-upload-btn" style="padding:7px 12px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:13px;-webkit-appearance:none">📷 上傳封面</button><button id="cover-clear-btn" style="padding:7px 12px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:13px;color:var(--txd);-webkit-appearance:none">✕ 清除</button><input type="file" id="cover-file" accept="image/*" style="display:none"></div></div></div>
 <div class="ef"><label>書評</label><textarea id="edit-review" placeholder="（選填）讀後感、評分等…" style="height:90px"></textarea></div><div class="ef" style="display:flex;gap:10px"><div style="flex:1"><label style="font-size:12px;color:var(--txd)">開始閱讀</label><input id="edit-start-date" type="date" style="width:100%;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none"></div><div style="flex:1"><label style="font-size:12px;color:var(--txd)">讀完日期</label><input id="edit-finish-date" type="date" style="width:100%;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none"></div></div><div class="ef"><label>章節管理</label><div class="edit-chlist" id="edit-chlist"></div></div><div class="edit-btns"><button onclick="saveEdit()" style="background:var(--ac);color:#fff">✅ 儲存</button><button onclick="closeEdit()" style="background:var(--pn);color:var(--txd);border:1px solid var(--bd)">取消</button></div></div></div>
@@ -1116,7 +1121,7 @@ function showOverview(){
 }
 
 // ── TTS ──────────────────────────────────────────────────
-$('btts').addEventListener('click',function(){$('ttp').classList.toggle('show');$('setp').classList.remove('show');$('expp').classList.remove('show');});$('tplaybtn').addEventListener('click',togTTS);
+$('btts').addEventListener('click',function(){$('ttp').classList.toggle('show');$('setp').classList.remove('show');$('expp').classList.remove('show');$('syncp').classList.remove('show');});$('tplaybtn').addEventListener('click',togTTS);
 function fillVoices(){$('tvsel').innerHTML='';var vs=speechSynthesis.getVoices(),zh=vs.filter(function(v){return v.lang.indexOf('zh')===0;});(zh.length?zh:vs.slice(0,15)).forEach(function(v){var o=document.createElement('option');o.value=v.name;o.textContent=v.name+' ('+v.lang+')';$('tvsel').appendChild(o);});}
 if(speechSynthesis.onvoiceschanged!==undefined)speechSynthesis.onvoiceschanged=fillVoices;setTimeout(fillVoices,500);
 $('trate').addEventListener('input',function(){$('rv').textContent=parseFloat(this.value).toFixed(1);});$('tpitch').addEventListener('input',function(){$('pv').textContent=parseFloat(this.value).toFixed(1);});$('tvol').addEventListener('input',function(){$('vv').textContent=parseFloat(this.value).toFixed(1);});
@@ -1125,7 +1130,7 @@ function startTTS(){if(G.cur<0)return;speechSynthesis.cancel();var ch=G.library[
 function stopTTS(){speechSynthesis.cancel();G.ttsOn=false;$('tplaybtn').textContent='▶ 開始朗讀';$('btts').classList.remove('on');}
 
 // ── Settings ─────────────────────────────────────────────
-$('bset').addEventListener('click',function(){$('setp').classList.toggle('show');$('ttp').classList.remove('show');$('expp').classList.remove('show');});
+$('bset').addEventListener('click',function(){$('setp').classList.toggle('show');$('ttp').classList.remove('show');$('expp').classList.remove('show');$('syncp').classList.remove('show');});
 $('fsr').addEventListener('input',function(){$('fsv').textContent=this.value;document.documentElement.style.setProperty('--fs',this.value+'px');if(PM.on)paginateChapter(PM.chIdx,PM.pageIdx);localStorage.setItem('nr_fs',this.value);});
 $('lhr').addEventListener('input',function(){$('lhv').textContent=parseFloat(this.value).toFixed(1);document.documentElement.style.setProperty('--lh',this.value);if(PM.on)paginateChapter(PM.chIdx,PM.pageIdx);localStorage.setItem('nr_lh',this.value);});
 $('pmr').addEventListener('input',function(){$('pmv').textContent=this.value;document.documentElement.style.setProperty('--pm',this.value+'px');localStorage.setItem('nr_pmw',this.value);});
@@ -1134,7 +1139,11 @@ document.querySelectorAll('.cbtn').forEach(function(b){b.addEventListener('click
 $('custom-bg').addEventListener('input',function(){document.querySelectorAll('.cbtn').forEach(function(x){x.classList.remove('on');});document.documentElement.style.setProperty('--bg',this.value);localStorage.setItem('nr_bg',this.value);});
 
 // ── Export / Import ──────────────────────────────────────
-$('bexp').addEventListener('click',function(){$('expp').classList.toggle('show');$('ttp').classList.remove('show');$('setp').classList.remove('show');});
+$('bexp').addEventListener('click',function(){$('expp').classList.toggle('show');$('ttp').classList.remove('show');$('setp').classList.remove('show');$('syncp').classList.remove('show');});
+$('bsync').addEventListener('click',function(){
+  $('syncp').classList.toggle('show');$('ttp').classList.remove('show');$('setp').classList.remove('show');$('expp').classList.remove('show');
+  if($('syncp').classList.contains('show')){var p=ghPAT();$('sync-pat').value='';$('sync-pat').placeholder=p?'已設定 Token（輸入新的可覆蓋）':'ghp_xxxxxxxxxxxx';$('sync-info').textContent=p?'同步目標：github.com/'+GH_REPO+'/'+GH_DATA_PATH:'';}
+});
 function updateExpSel(){var s=$('exp-sel');s.innerHTML='<option value="all">全部小說 ('+G.library.length+'本)</option>';G.library.forEach(function(n,i){var o=document.createElement('option');o.value=i;o.textContent=n.title;s.appendChild(o);});}
 window.doExport=function(){
   var sel=$('exp-sel').value,data,fname;
@@ -1166,7 +1175,115 @@ var d={library:G.library.map(function(n){return{title:n.title,author:n.author||'
     var bare={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:null};})};  }),cur:G.cur,idx:G.idx,read:G.read};
     localStorage.setItem(SK,JSON.stringify(bare));
   }catch(e2){console.error('save error:',e2);}}
+  scheduleSync();
 }
+
+// ── GitHub Sync ─────────────────────────────────────────
+var GH_REPO='runrain-boop/novelReader';
+var GH_DATA_PATH='data/nr_sync.json';
+var GH_API='https://api.github.com/repos/'+GH_REPO+'/contents/'+GH_DATA_PATH;
+var _ghSha=null,_syncTimer=null;
+function ghPAT(){return localStorage.getItem('gh_pat')||'';}
+function setSyncSt(s,detail){
+  var el=$('sync-st');
+  if(el){var map={ok:'✓ 已同步',syncing:'↻ 同步…',pending:'● 待同步',err:'⚠ 失敗',nopat:''};el.textContent=map[s]||s;el.className='sync-st sync-'+s;}
+  if(detail!==undefined){var di=$('sync-info');if(di)di.textContent=detail;}
+}
+function scheduleSync(){
+  if(!ghPAT()||G.fetching)return;
+  clearTimeout(_syncTimer);setSyncSt('pending');
+  _syncTimer=setTimeout(pushToGH,3000);
+}
+function _buildSyncPayload(){
+  var lib=(G.library||[]).map(function(bk){
+    return{bid:bk.bid||'',title:bk.title||'',author:bk.author||'',intro:bk.intro||'',
+      url:bk.url||'',status:bk.status||'reading',pubStatus:bk.pubStatus||'',
+      startDate:bk.startDate||'',finishDate:bk.finishDate||'',review:bk.review||'',
+      notes:bk.notes||[],chapters:(bk.chapters||[]).map(function(c){return{title:c.title,url:c.url||''};})};
+  });
+  return{v:1,updated_at:new Date().toISOString(),library:lib,read:G.read||{}};
+}
+function _mergeSync(local,remote){
+  var byKey={};
+  (local.library||[]).forEach(function(bk){var k=bk.url||bk.bid;if(k)byKey[k]=bk;});
+  (remote.library||[]).forEach(function(bk){
+    var k=bk.url||bk.bid;if(!k)return;
+    if(byKey[k]){
+      var lo=byKey[k],re=bk;
+      var chs=lo.chapters.length>=re.chapters.length?lo.chapters:re.chapters;
+      var nm={};
+      (lo.notes||[]).forEach(function(n){nm[(n.ts||0)+'|'+(n.quote||'')]=n;});
+      (re.notes||[]).forEach(function(n){nm[(n.ts||0)+'|'+(n.quote||'')]=n;});
+      var notes=Object.keys(nm).map(function(k2){return nm[k2];}).sort(function(a,b){return(b.ts||0)-(a.ts||0);});
+      byKey[k]=Object.assign({},re,lo,{chapters:chs,notes:notes});
+    } else {byKey[k]=bk;}
+  });
+  var library=Object.keys(byKey).map(function(k){return byKey[k];});
+  var read=Object.assign({},remote.read||{});
+  Object.keys(local.read||{}).forEach(function(k){
+    var lr=local.read[k],rr=read[k];
+    if(!rr||(lr.chIdx||0)>(rr.chIdx||0)||(lr.chIdx===rr.chIdx&&(lr.pidx||0)>(rr.pidx||0)))read[k]=lr;
+  });
+  return{library:library,read:read};
+}
+async function _ghFetch(method,body){
+  var pat=ghPAT();
+  var hdrs={'Authorization':'token '+pat,'Accept':'application/vnd.github.v3+json'};
+  var opts={method:method,headers:hdrs};
+  if(body){hdrs['Content-Type']='application/json';opts.body=JSON.stringify(body);}
+  return fetch(PROXY+'?url='+encodeURIComponent(GH_API),opts);
+}
+async function loadFromGH(){
+  var pat=ghPAT();if(!pat){setSyncSt('nopat');return;}
+  setSyncSt('syncing');
+  try{
+    var r=await _ghFetch('GET');
+    if(!r.ok){
+      if(r.status===404){if(G.library&&G.library.length)scheduleSync();else setSyncSt('ok','尚無雲端資料，待首次寫入');}
+      else{setSyncSt('err','HTTP '+r.status);if(r.status>=500)setTimeout(loadFromGH,10000);}
+      return;
+    }
+    var info=await r.json();_ghSha=info.sha;
+    var json;
+    if(info.content){var b=Uint8Array.from(atob(info.content.replace(/\n/g,'')),function(c){return c.charCodeAt(0);});json=new TextDecoder().decode(b);}
+    else if(info.download_url){json=await(await fetch(info.download_url)).text();}
+    else{setSyncSt('err');return;}
+    var remote=JSON.parse(json);
+    if(!remote||!remote.library){if(G.library&&G.library.length)scheduleSync();else setSyncSt('ok');return;}
+    var merged=_mergeSync(_buildSyncPayload(),remote);
+    G.library=merged.library;G.read=merged.read;
+    save();buildShelf();
+    setSyncSt('ok','上次同步：'+new Date().toLocaleTimeString());
+  }catch(e){setSyncSt('err',e.message);setTimeout(loadFromGH,15000);}
+}
+async function pushToGH(){
+  var pat=ghPAT();if(!pat){setSyncSt('nopat');return;}
+  setSyncSt('syncing');
+  try{
+    var sr=await _ghFetch('GET');var remoteData=null;
+    if(sr.ok){var info=await sr.json();_ghSha=info.sha;
+      try{if(info.content){var b=Uint8Array.from(atob(info.content.replace(/\n/g,'')),function(c){return c.charCodeAt(0);});remoteData=JSON.parse(new TextDecoder().decode(b));}}catch(e){}}
+    var local=_buildSyncPayload();
+    var payload=remoteData?_mergeSync(local,remoteData):local;
+    payload.updated_at=new Date().toISOString();
+    var content=btoa(unescape(encodeURIComponent(JSON.stringify(payload,null,2))));
+    var putBody={message:'sync: update nr data',content:content};if(_ghSha)putBody.sha=_ghSha;
+    var r=await _ghFetch('PUT',putBody);
+    if(r.ok){var res=await r.json();_ghSha=res.content.sha;setSyncSt('ok','上次同步：'+new Date().toLocaleTimeString());}
+    else{_ghSha=null;if(r.status===409)setTimeout(pushToGH,1500);else setSyncSt('err','HTTP '+r.status);}
+  }catch(e){setSyncSt('err',e.message);}
+}
+function savePAT(){
+  var v=$('sync-pat').value.trim();if(!v){alert('請輸入 GitHub Token');return;}
+  localStorage.setItem('gh_pat',v);$('syncp').classList.remove('show');
+  loadFromGH();
+}
+function clearPAT(){
+  if(!confirm('確定清除 GitHub Token？同步功能將停止。'))return;
+  localStorage.removeItem('gh_pat');_ghSha=null;clearTimeout(_syncTimer);
+  setSyncSt('nopat','');$('syncp').classList.remove('show');
+}
+
 function restore(){
   var th=localStorage.getItem('nr_th')||'';document.body.className=th;document.querySelectorAll('.thb').forEach(function(b){b.classList.toggle('on',b.dataset.th===th);});
   var fs=localStorage.getItem('nr_fs');if(fs){$('fsr').value=fs;$('fsv').textContent=fs;document.documentElement.style.setProperty('--fs',fs+'px');}
@@ -1197,6 +1314,9 @@ try{
   }
 }catch(e){console.error('init error:',e);showShelf();}
 setTimeout(refocusTrap,300);
+// Sync init: pull on load, auto-pull every 5 min
+setTimeout(function(){if(ghPAT())loadFromGH();else setSyncSt('nopat');},1000);
+setInterval(function(){if(ghPAT())loadFromGH();},300000);
 </script>
 </body>
 </html>

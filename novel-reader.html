@@ -431,7 +431,7 @@ $('urlin').addEventListener('keydown',function(e){if(e.key==='Enter')$('fetchbtn
 
 async function doAutoFetch(url){
   if(G.fetching)return;G.fetching=true;$('fetchbtn').disabled=true;flogClear();fbar(5);setBadge('loading','抓取中…');flog('<span class="spin"></span> 正在抓取目錄頁…');
-  var ih;try{ih=await proxyFetch(url,15000);}catch(e){flog('❌ 抓取失敗：'+e.message,'err');setBadge('err','失敗');G.fetching=false;$('fetchbtn').disabled=false;fbar(0);return;}
+  var ih;try{ih=await proxyFetch(url,15000,function(m){flog(m,'warn');});}catch(e){flog('❌ 抓取失敗：'+e.message,'err');setBadge('err','失敗');G.fetching=false;$('fetchbtn').disabled=false;fbar(0);return;}
   var title=extractTitle(ih);flog('✅ 成功（'+Math.round(ih.length/1024)+'KB）','ok');flog('📚 《'+title+'》');fbar(15);
   var chs=extractLinks(ih,url);
   if(chs.length<2){var sc=extractContent(ih,title);if(sc.length>200){var ni=addToLibrary({title:title,url:url,chapters:[{title:title,content:sc}]});openNovel(ni);flog('✅ 完成','ok');fbar(0);setBadge('done','完成');G.fetching=false;$('fetchbtn').disabled=false;return;}flog('❌ 找不到章節連結','err');setBadge('err','無章節');G.fetching=false;$('fetchbtn').disabled=false;fbar(0);return;}
@@ -440,7 +440,7 @@ async function doAutoFetch(url){
   var nIdx=addToLibrary(novel);openNovel(nIdx);
   $('chhd').textContent=chs[0].title;$('nt').innerHTML='<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入第一章…</p>';
   var total=chs.length,done=0,BATCH=2;
-  async function fetchCh(i){var ch=G.library[nIdx].chapters[i];if(!ch||!ch.url){ch.content='';return;}try{var h=await proxyFetch(ch.url,12000);ch.content=extractContent(h,ch.title);if(!ch.content)ch.content='（無法擷取）';else idbSet(ch.url,ch.content);}catch(e){ch.content='（失敗：'+e.message+'）';}done++;fbar(20+Math.round(done/total*75));setBadge('loading',done+'/'+total);updateTOCItem(i);if(i===G.idx&&G.cur===nIdx)showChapter(i);if(done===total){flog('🎉 全部'+total+'章完成！','ok');setBadge('done','全'+total+'章 ✓');fbar(0);save();}}
+  async function fetchCh(i){var ch=G.library[nIdx].chapters[i];if(!ch||!ch.url){ch.content='';return;}try{var h=await proxyFetch(ch.url,12000,null);ch.content=extractContent(h,ch.title);if(!ch.content)ch.content='（無法擷取）';else idbSet(ch.url,ch.content);}catch(e){ch.content='（失敗：'+e.message+'）';}done++;fbar(20+Math.round(done/total*75));setBadge('loading',done+'/'+total);updateTOCItem(i);if(i===G.idx&&G.cur===nIdx)showChapter(i);if(done===total){flog('🎉 全部'+total+'章完成！','ok');setBadge('done','全'+total+'章 ✓');fbar(0);save();}}
   for(var i=0;i<total;i+=BATCH){var batch=[];for(var j=i;j<Math.min(i+BATCH,total);j++)batch.push(fetchCh(j));await Promise.all(batch);if(i+BATCH<total)await new Promise(function(r){setTimeout(r,250);});}
   G.fetching=false;$('fetchbtn').disabled=false;
 }

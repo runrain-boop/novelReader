@@ -220,6 +220,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 .spin{display:inline-block;width:12px;height:12px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle;margin-right:3px}
 @keyframes sp{to{transform:rotate(360deg)}}
 @media(max-width:680px){:root{--sw:82vw;--fs:16px}#sb{position:absolute;height:100%;transform:translateX(-110%)}#sb.open{transform:translateX(0)}#rc{padding:22px 15px 100px}#setp,#expp{top:auto;bottom:68px;right:12px;left:12px;width:auto}}
+/* Notes */
+#note-popup{position:fixed;background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:11px 12px;box-shadow:0 4px 24px rgba(0,0,0,.18);z-index:65;display:none;width:272px;max-width:92vw}
+.nc{display:inline-block;width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s}
+.nc.on{transform:scale(1.2);border-color:rgba(0,0,0,.35)!important}
+#notep,#overviewp{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:50;display:none;align-items:center;justify-content:center;padding:16px}
+#notep.show,#overviewp.show{display:flex}
+#note-box,#overview-box{background:var(--sf);border-radius:14px;padding:20px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.ncard{border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:var(--pn);cursor:pointer;transition:background .1s}
+.ncard:hover{background:var(--bd)}
 </style>
 </head>
 <body>
@@ -241,6 +250,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
     <div class="sep"></div>
     <button class="btn" id="bnew">🏠 書架</button>
     <button class="btn" id="bedit">✏️ 編輯</button>
+    <button class="btn" id="bnotes">📝 筆記</button>
     <div class="sep"></div>
     <div id="chtl">—</div>
     <div class="sep"></div>
@@ -264,6 +274,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
               <button class="stab" data-filter="done">完成</button>
             </div>
             <button class="btn" id="badd">＋ 新增書籍</button>
+            <button class="btn" id="bnotesov">📋 筆記總覽</button>
           </div>
         </div>
         <div id="shelf-scroll">
@@ -313,7 +324,44 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 <div id="ttp" class="panel"><h4>🔊 語音朗讀</h4><select id="tvsel"></select><div class="tr"><label>語速</label><input type="range" id="trate" min="0.5" max="2.5" step="0.1" value="1.0"><span id="rv">1.0</span></div><div class="tr"><label>音調</label><input type="range" id="tpitch" min="0.5" max="2" step="0.1" value="1.0"><span id="pv">1.0</span></div><div class="tr"><label>音量</label><input type="range" id="tvol" min="0" max="1" step="0.05" value="1.0"><span id="vv">1.0</span></div><button id="tplaybtn">▶ 開始朗讀</button></div>
 <div id="setp" class="panel"><h4>⚙ 閱讀設定</h4><div class="srow"><label>字體大小</label><input type="range" id="fsr" min="13" max="32" step="1" value="18"><span id="fsv">18</span></div><div class="srow"><label>行距</label><input type="range" id="lhr" min="1.4" max="3.0" step="0.1" value="1.95"><span id="lhv">1.9</span></div><div class="srow"><label>頁面寬度</label><input type="range" id="pmr" min="380" max="900" step="20" value="680"><span id="pmv" style="width:36px">680</span></div><div class="srow" style="flex-direction:column;align-items:flex-start;gap:5px"><label>主題</label><div class="thr"><button class="thb on" data-th="">☀️ 日間</button><button class="thb" data-th="sp">📜 古典</button><button class="thb" data-th="ge">🌿 護眼</button><button class="thb" data-th="dk">🌙 夜間</button></div></div><div class="srow" style="flex-direction:column;align-items:flex-start;gap:5px"><label>自訂底色</label><div class="color-row"><div class="cbtn" data-bg="" style="background:#f5f0e8;border:2px solid #ccc"></div><div class="cbtn" data-bg="#fffef5" style="background:#fffef5"></div><div class="cbtn" data-bg="#e8f0e8" style="background:#e8f0e8"></div><div class="cbtn" data-bg="#e8eaf5" style="background:#e8eaf5"></div><div class="cbtn" data-bg="#f5e8f0" style="background:#f5e8f0"></div><input type="color" id="custom-bg" value="#f5f0e8" style="width:36px;height:26px;border-radius:5px;border:1px solid var(--bd);cursor:pointer;padding:0"></div></div></div>
 <div id="expp" class="panel"><h4>📦 匯出 / 匯入</h4><select class="exp-sel" id="exp-sel"><option value="all">全部小說</option></select><div class="exp-btns"><button onclick="doExport()" style="background:var(--ac);color:#fff">⬆️ 匯出</button><button onclick="$('imp-file').click()" style="background:var(--pn);color:var(--txd);border:1px solid var(--bd)">⬇️ 匯入</button></div><input type="file" id="imp-file" accept=".json" style="display:none"><div id="exp-stat"></div></div>
-<div id="editp"><div id="edit-box"><h4>✏️ 編輯書籍資訊</h4><div class="ef"><label>書名</label><input id="edit-title" type="text"></div><div class="ef"><label>來源網址</label><div style="display:flex;gap:6px;align-items:center"><input id="edit-url" type="text" readonly style="flex:1;cursor:default;color:var(--txd);"><button id="edit-url-btn" style="flex-shrink:0;padding:8px 10px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:14px;">🔗</button></div></div><div class="ef"><label>作者</label><input id="edit-author" type="text" placeholder="（選填）"></div><div class="ef"><label>簡介</label><textarea id="edit-intro" placeholder="（選填）"></textarea></div><div class="ef"><label>章節管理</label><div class="edit-chlist" id="edit-chlist"></div></div><div class="edit-btns"><button onclick="saveEdit()" style="background:var(--ac);color:#fff">✅ 儲存</button><button onclick="closeEdit()" style="background:var(--pn);color:var(--txd);border:1px solid var(--bd)">取消</button></div></div></div>
+<div id="editp"><div id="edit-box"><h4>✏️ 編輯書籍資訊</h4><div class="ef"><label>書名</label><input id="edit-title" type="text"></div><div class="ef"><label>來源網址</label><div style="display:flex;gap:6px;align-items:center"><input id="edit-url" type="text" readonly style="flex:1;cursor:default;color:var(--txd);"><button id="edit-url-btn" style="flex-shrink:0;padding:8px 10px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:14px;">🔗</button></div></div><div class="ef"><label>作者</label><input id="edit-author" type="text" placeholder="（選填）"></div><div class="ef"><label>簡介</label><textarea id="edit-intro" placeholder="（選填）"></textarea></div><div class="ef"><label>書評</label><textarea id="edit-review" placeholder="（選填）讀後感、評分等…" style="height:90px"></textarea></div><div class="ef"><label>章節管理</label><div class="edit-chlist" id="edit-chlist"></div></div><div class="edit-btns"><button onclick="saveEdit()" style="background:var(--ac);color:#fff">✅ 儲存</button><button onclick="closeEdit()" style="background:var(--pn);color:var(--txd);border:1px solid var(--bd)">取消</button></div></div></div>
+<!-- Note popup -->
+<div id="note-popup">
+  <div id="np-quote" style="font-size:12px;color:var(--txd);font-style:italic;margin-bottom:7px;max-height:48px;overflow:hidden;line-height:1.4;border-left:3px solid var(--bd);padding-left:8px"></div>
+  <div style="display:flex;gap:6px;align-items:center;margin-bottom:7px">
+    <span style="font-size:12px;color:var(--txd);white-space:nowrap;flex-shrink:0">標色</span>
+    <span class="nc on" data-c="#fff3a3" style="background:#fff3a3;border-color:#ccc"></span>
+    <span class="nc" data-c="#c3f0c3" style="background:#c3f0c3"></span>
+    <span class="nc" data-c="#f0c3c3" style="background:#f0c3c3"></span>
+    <span class="nc" data-c="#c3d8f0" style="background:#c3d8f0"></span>
+    <span class="nc" data-c="#e8c3f0" style="background:#e8c3f0"></span>
+  </div>
+  <textarea id="np-text" rows="2" placeholder="輸入筆記（可留空）…" style="width:100%;resize:none;padding:6px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:6px;color:var(--tx);font-size:12px;outline:none;font-family:var(--ui);line-height:1.5;box-sizing:border-box"></textarea>
+  <div style="display:flex;gap:6px;margin-top:7px">
+    <button id="np-save" style="flex:1;padding:7px;background:var(--ac);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer">儲存</button>
+    <button id="np-cancel" style="flex:1;padding:7px;background:var(--pn);border:1px solid var(--bd);border-radius:6px;font-size:13px;cursor:pointer;color:var(--txd)">取消</button>
+  </div>
+</div>
+<!-- Per-book notes panel -->
+<div id="notep" onclick="if(event.target===this)this.classList.remove('show')">
+  <div id="note-box">
+    <div style="display:flex;align-items:center;margin-bottom:14px">
+      <h4 id="note-box-title" style="flex:1;font-size:15px;font-weight:700;color:var(--ac);margin:0">📝 筆記</h4>
+      <button onclick="$('notep').classList.remove('show')" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--txd);line-height:1;padding:0 4px">×</button>
+    </div>
+    <div id="note-list"></div>
+  </div>
+</div>
+<!-- Overview panel -->
+<div id="overviewp" onclick="if(event.target===this)this.classList.remove('show')">
+  <div id="overview-box">
+    <div style="display:flex;align-items:center;margin-bottom:14px">
+      <h4 style="flex:1;font-size:15px;font-weight:700;color:var(--ac);margin:0">📋 全部筆記</h4>
+      <button onclick="$('overviewp').classList.remove('show')" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--txd);line-height:1;padding:0 4px">×</button>
+    </div>
+    <div id="overview-list"></div>
+  </div>
+</div>
 <div id="kh"></div>
 
 <script>
@@ -688,6 +736,7 @@ function openEdit(){
   $('edit-title').value=n.title||'';
   $('edit-author').value=n.author||'';
   $('edit-intro').value=n.intro||'';
+  $('edit-review').value=n.review||'';
   var urlEl=$('edit-url');
   if(urlEl){urlEl.value=n.url||'';urlEl.placeholder=n.url?'':'（手動輸入）';}
   $('edit-url-btn').style.opacity=n.url?'1':'0.4';
@@ -813,8 +862,91 @@ function updateEchToolbar(){
   if(delBtn){delBtn.disabled=count===0;delBtn.style.opacity=count>0?'1':'.4';}
   if(selAll)selAll.textContent=(count===cbs.length&&cbs.length>0)?'取消全選':'全選';
 }
-window.saveEdit=function(){if(G.cur<0)return;G.library[G.cur].title=$('edit-title').value.trim()||G.library[G.cur].title;G.library[G.cur].author=$('edit-author').value.trim();G.library[G.cur].intro=$('edit-intro').value.trim();$('ns').textContent=G.library[G.cur].title.length>14?G.library[G.cur].title.substring(0,14)+'…':G.library[G.cur].title;updateExpSel();save();closeEdit();};
+window.saveEdit=function(){if(G.cur<0)return;G.library[G.cur].title=$('edit-title').value.trim()||G.library[G.cur].title;G.library[G.cur].author=$('edit-author').value.trim();G.library[G.cur].intro=$('edit-intro').value.trim();G.library[G.cur].review=$('edit-review').value.trim();$('ns').textContent=G.library[G.cur].title.length>14?G.library[G.cur].title.substring(0,14)+'…':G.library[G.cur].title;updateExpSel();save();closeEdit();};
 window.closeEdit=function(){$('editp').classList.remove('show');};$('editp').addEventListener('click',function(e){if(e.target===$('editp'))closeEdit();});
+
+// ── Notes ────────────────────────────────────────────────
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function ensureNotes(ni){if(ni==null)ni=G.cur;if(!G.library[ni])return;if(!G.library[ni].notes)G.library[ni].notes=[];if(G.library[ni].review==null)G.library[ni].review='';}
+var NP_COLOR='#fff3a3',NP_QUOTE='';
+function onSel(){
+  var pn=$('note-popup');
+  if($('notep').classList.contains('show')||$('overviewp').classList.contains('show')||$('editp').classList.contains('show'))return;
+  if($('pw').style.display==='none'&&$('rw').style.display==='none')return;
+  var el=document.activeElement;if(el&&(el.tagName==='INPUT'||el.tagName==='TEXTAREA'))return;
+  var sel=window.getSelection(),q=(sel&&sel.toString()||'').trim();
+  if(!q||q.length<2||G.cur<0){return;}
+  NP_QUOTE=q;
+  var rect=sel.getRangeAt(0).getBoundingClientRect();
+  $('np-quote').textContent='“'+q.substring(0,100)+(q.length>100?'…':'')+'”';
+  $('np-text').value='';
+  pn.style.display='block';
+  var vw=window.innerWidth,vh=window.innerHeight,pw2=275;
+  var x=Math.max(5,Math.min(rect.left+(rect.width/2)-(pw2/2),vw-pw2-5));
+  var y=rect.bottom+8;if(y+230>vh)y=Math.max(5,rect.top-235);
+  pn.style.left=x+'px';pn.style.top=y+'px';
+}
+document.addEventListener('mouseup',onSel);
+document.addEventListener('touchend',onSel);
+document.addEventListener('mousedown',function(e){if($('note-popup').style.display!=='none'&&!$('note-popup').contains(e.target)){hideNP();}});
+function hideNP(){$('note-popup').style.display='none';NP_QUOTE='';}
+document.querySelectorAll('.nc').forEach(function(b){
+  b.addEventListener('click',function(e){e.stopPropagation();document.querySelectorAll('.nc').forEach(function(x){x.classList.remove('on');});this.classList.add('on');NP_COLOR=this.dataset.c;});
+});
+$('np-cancel').addEventListener('click',function(){hideNP();window.getSelection().removeAllRanges();});
+$('np-save').addEventListener('click',function(){
+  if(!NP_QUOTE||G.cur<0)return;ensureNotes();
+  var ch=G.library[G.cur].chapters[G.idx]||{};
+  G.library[G.cur].notes.push({id:Date.now(),chIdx:G.idx,chTitle:ch.title||'',quote:NP_QUOTE,text:$('np-text').value.trim(),color:NP_COLOR,ts:Date.now()});
+  save();hideNP();window.getSelection().removeAllRanges();
+});
+$('bnotes').addEventListener('click',showBookNotes);
+function showBookNotes(){
+  if(G.cur<0){alert('請先開啟一本小說');return;}
+  ensureNotes();
+  $('note-box-title').textContent='📝 '+G.library[G.cur].title+' 的筆記';
+  buildNoteList($('note-list'),G.library[G.cur].notes,G.cur,false);
+  $('notep').classList.add('show');
+}
+function buildNoteList(el,notes,bi,inOverview){
+  el.innerHTML='';
+  if(!notes||!notes.length){el.innerHTML='<p style="color:var(--txd);text-align:center;padding:20px 0;font-size:14px">尚無筆記</p>';return;}
+  notes.slice().reverse().forEach(function(note,rni){
+    var ni=notes.length-1-rni;
+    var d=document.createElement('div');d.className='ncard';
+    d.innerHTML='<div style="display:flex;gap:8px;align-items:flex-start"><div style="width:10px;min-width:10px;height:10px;border-radius:50%;background:'+note.color+';border:1px solid rgba(0,0,0,.18);margin-top:4px"></div><div style="flex:1;min-width:0"><div style="font-size:11px;color:var(--txd);margin-bottom:4px">'+esc(note.chTitle||'')+'</div><div style="font-size:13px;color:var(--txd);font-style:italic;border-left:3px solid '+note.color+';padding-left:8px;margin-bottom:6px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical">“'+esc(note.quote)+'”</div>'+(note.text?'<div style="font-size:13px;color:var(--tx);line-height:1.55">'+esc(note.text)+'</div>':'')+'</div><button data-bi="'+bi+'" data-ni="'+ni+'" data-ov="'+inOverview+'" class="note-del-btn" style="background:none;border:none;color:var(--txr);cursor:pointer;font-size:18px;flex-shrink:0;padding:0 3px;line-height:1">×</button></div>';
+    d.addEventListener('click',function(e){
+      if(e.target.classList.contains('note-del-btn'))return;
+      $('notep').classList.remove('show');$('overviewp').classList.remove('show');
+      var chIdx=note.chIdx,bk=bi;
+      if(bk!==G.cur){openNovel(bk);}
+      showChapter(chIdx);
+    });
+    el.appendChild(d);
+  });
+  el.querySelectorAll('.note-del-btn').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var bi2=+this.dataset.bi,ni2=+this.dataset.ni,ov=this.dataset.ov==='true';
+      if(!confirm('刪除此筆記？'))return;
+      G.library[bi2].notes.splice(ni2,1);save();
+      if(ov){showOverview();}else{showBookNotes();}
+    });
+  });
+}
+$('bnotesov').addEventListener('click',showOverview);
+function showOverview(){
+  var box=$('overview-list');box.innerHTML='';var any=false;
+  G.library.forEach(function(n,bi){
+    ensureNotes(bi);if(!n.notes.length)return;any=true;
+    var sec=document.createElement('div');sec.style.marginBottom='18px';
+    sec.innerHTML='<div style="font-size:13px;font-weight:700;color:var(--ac);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--bd)">📚 '+esc(n.title)+'<span style="font-weight:400;color:var(--txd);font-size:12px;margin-left:6px">('+n.notes.length+'則)</span></div>';
+    buildNoteList(sec,n.notes,bi,true);
+    box.appendChild(sec);
+  });
+  if(!any)box.innerHTML='<p style="color:var(--txd);text-align:center;padding:24px 0;font-size:14px">尚無任何筆記</p>';
+  $('overviewp').classList.add('show');
+}
 
 // ── TTS ──────────────────────────────────────────────────
 $('btts').addEventListener('click',function(){$('ttp').classList.toggle('show');$('setp').classList.remove('show');$('expp').classList.remove('show');});$('tplaybtn').addEventListener('click',togTTS);
@@ -859,7 +991,7 @@ document.addEventListener('click',function(e){[['ttp','btts'],['setp','bset'],['
 // ── Persist ──────────────────────────────────────────────
 function save(){
   try{
-    var d={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:c.url?null:c.content};})};  }),cur:G.cur,idx:G.idx,pidx:PM.pageIdx,read:G.read};
+    var d={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',review:n.review||'',notes:n.notes||[],chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:c.url?null:c.content};})};  }),cur:G.cur,idx:G.idx,pidx:PM.pageIdx,read:G.read};
     localStorage.setItem(SK,JSON.stringify(d));
   }catch(e){try{
     var bare={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:null};})};  }),cur:G.cur,idx:G.idx,read:G.read};

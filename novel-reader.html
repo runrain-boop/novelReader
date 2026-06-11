@@ -742,7 +742,7 @@ window.pageNext=function(){if(!PM.on)return;animatePg('l',function(){var tp=$('p
 window.pagePrev=function(){if(!PM.on)return;animatePg('r',function(){var tp=$('pw').classList.contains('twopage'),step=tp?2:1;if(PM.pageIdx-step>=0){PM.pageIdx-=step;renderPg(PM.chIdx,PM.pages[PM.pageIdx],PM.pageIdx,PM.pages.length,G.library[G.cur].chapters[PM.chIdx].title);save();}else{var pc=PM.chIdx-1;if(pc>=0){G.idx=pc;markRead(pc);paginateChapter(pc,99999);updateTOCItem(pc);save();}}});};
 function markRead(i){if(!G.read[G.cur])G.read[G.cur]=[];if(G.read[G.cur].indexOf(i)<0)G.read[G.cur].push(i);}
 var resT;window.addEventListener('resize',function(){clearTimeout(resT);resT=setTimeout(function(){if(PM.on&&G.cur>=0&&G.library[G.cur])paginateChapter(PM.chIdx,PM.pageIdx);},300);});
-function addSwipe(el,onL,onR){el.addEventListener('touchstart',function(e){var t=e.touches[0];el._tx=t.clientX;el._ty=t.clientY;},{passive:true});el.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-el._tx,dy=e.changedTouches[0].clientY-el._ty;if(Math.abs(dx)>Math.abs(dy)*1.5&&Math.abs(dx)>50){if(dx<0)onL();else onR();}},{passive:true});}
+function addSwipe(el,onL,onR){el.addEventListener('touchstart',function(e){var t=e.touches[0];el._tx=t.clientX;el._ty=t.clientY;},{passive:true});el.addEventListener('touchend',function(e){if(window.getSelection&&window.getSelection().toString())return;var dx=e.changedTouches[0].clientX-el._tx,dy=e.changedTouches[0].clientY-el._ty;if(Math.abs(dx)>Math.abs(dy)*1.5&&Math.abs(dx)>50){if(dx<0)onL();else onR();}},{passive:true});}
 addSwipe($('pw'),pageNext,pagePrev);
 addSwipe($('rw'),function(){if(!PM.on)showChapter(G.idx+1);},function(){if(!PM.on)showChapter(G.idx-1);});
 
@@ -1046,8 +1046,8 @@ function buildNoteList(el,notes,bi,inOverview){
       if(e.target===dbtn)return;
       $('notep').classList.remove('show');$('overviewp').classList.remove('show');
       var chIdx=note.chIdx;
-      _pendingNoteQuote=note.quote||'';
       openNovel(bi);
+      _pendingNoteQuote=note.quote||'';
       showChapter(chIdx,0);
     });
     (function(capBi,capNi,capOv){

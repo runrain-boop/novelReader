@@ -286,6 +286,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
             </div>
             <button class="btn" id="badd">＋ 新增書籍</button>
             <button class="btn" id="bnotesov">📋 筆記總覽</button>
+            <button class="btn" id="bexp-shelf">📦</button>
           </div>
         </div>
         <div id="shelf-scroll">
@@ -700,6 +701,7 @@ function paginateChapter(chIdx,startPage){
   document.body.appendChild(m);var mp=fs*0.85,pages=[],cur=[],curH=0;
   paras.forEach(function(p){var el=document.createElement('p');el.style.cssText='margin:0 0 '+mp+'px 0;text-indent:2em;';el.textContent=p;m.innerHTML='';m.appendChild(el);var ph=m.offsetHeight+mp;if(curH+ph>availH&&cur.length>0){pages.push(cur);cur=[p];curH=ph;}else{cur.push(p);curH+=ph;}});
   document.body.removeChild(m);if(cur.length)pages.push(cur);if(!pages.length)pages=[[]];
+  if(_pendingNoteQuote){var pnq=_pendingNoteQuote;_pendingNoteQuote='';for(var pi=0;pi<pages.length;pi++){if(pages[pi].some(function(p){return p.indexOf(pnq)>=0;})){startPage=pi;break;}}}
   var sp=startPage||0;if(tp&&sp>0)sp=Math.floor(sp/2)*2;
   PM.pages=pages;PM.pageIdx=Math.min(sp>=pages.length?pages.length-1:sp,pages.length-1);
   renderPg(chIdx,PM.pages[PM.pageIdx],PM.pageIdx,pages.length,ch.title);
@@ -985,7 +987,7 @@ $('cover-clear-btn').addEventListener('click',function(){_editCoverUrl='__clear_
 // ── Notes ────────────────────────────────────────────────
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function ensureNotes(ni){if(ni==null)ni=G.cur;if(!G.library[ni])return;if(!G.library[ni].notes)G.library[ni].notes=[];if(G.library[ni].review==null)G.library[ni].review='';}
-var NP_COLOR='#fff3a3',NP_QUOTE='',NP_DISMISSED='',mouseDownInReader=false;
+var NP_COLOR='#fff3a3',NP_QUOTE='',NP_DISMISSED='',mouseDownInReader=false,_pendingNoteQuote='';
 function onReaderMD(){mouseDownInReader=true;if(document.activeElement===kbTrap)kbTrap.blur();}
 $('pbook').addEventListener('mousedown',onReaderMD);
 $('rc').addEventListener('mousedown',onReaderMD);
@@ -1009,8 +1011,9 @@ function onSel(){
   pn.style.left=x+'px';pn.style.top=y+'px';
 }
 document.addEventListener('mouseup',onSel);
-document.addEventListener('touchend',onSel);
+document.addEventListener('touchend',function(){setTimeout(onSel,80);});
 document.addEventListener('mousedown',function(e){if($('note-popup').style.display!=='none'&&!$('note-popup').contains(e.target)){hideNP();}});
+document.addEventListener('touchstart',function(e){if($('note-popup').style.display!=='none'&&!$('note-popup').contains(e.target)){hideNP();}},{passive:true});
 function hideNP(){NP_DISMISSED=NP_QUOTE;$('note-popup').style.display='none';NP_QUOTE='';}
 document.querySelectorAll('.nc').forEach(function(b){
   b.addEventListener('click',function(e){e.stopPropagation();document.querySelectorAll('.nc').forEach(function(x){x.classList.remove('on');});this.classList.add('on');NP_COLOR=this.dataset.c;});
@@ -1042,9 +1045,10 @@ function buildNoteList(el,notes,bi,inOverview){
     d.addEventListener('click',function(e){
       if(e.target===dbtn)return;
       $('notep').classList.remove('show');$('overviewp').classList.remove('show');
-      var chIdx=note.chIdx,pg=note.pageIdx||0;
+      var chIdx=note.chIdx;
+      _pendingNoteQuote=note.quote||'';
       openNovel(bi);
-      showChapter(chIdx,pg);
+      showChapter(chIdx,0);
     });
     (function(capBi,capNi,capOv){
       dbtn.addEventListener('click',function(e){
@@ -1109,7 +1113,8 @@ $('imp-file').addEventListener('change',function(e){
   }catch(e2){$('exp-stat').textContent='❌ '+e2.message;}};
   r.readAsText(file);this.value='';
 });
-document.addEventListener('click',function(e){[['ttp','btts'],['setp','bset'],['expp','bexp']].forEach(function(p){if(!$(p[0]).contains(e.target)&&!$(p[1]).contains(e.target))$(p[0]).classList.remove('show');});});
+$('bexp-shelf').addEventListener('click',function(){$('expp').classList.toggle('show');$('ttp').classList.remove('show');$('setp').classList.remove('show');});
+document.addEventListener('click',function(e){[['ttp','btts'],['setp','bset'],['expp','bexp','bexp-shelf']].forEach(function(p){if(!$(p[0]).contains(e.target)&&p.slice(1).every(function(id){return!$(id).contains(e.target);}))$(p[0]).classList.remove('show');});});
 
 // ── Persist ──────────────────────────────────────────────
 function save(){

@@ -390,7 +390,23 @@ var $=function(id){return document.getElementById(id);};
 var esc=function(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
 
 // ── Proxy fetch ──────────────────────────────────────────
-function proxyFetch(url,ms){return new Promise(function(resolve,reject){var xhr=new XMLHttpRequest();xhr.open('GET',PROXY+'?url='+encodeURIComponent(url),true);xhr.responseType='arraybuffer';xhr.timeout=ms||15000;xhr.onload=function(){if(xhr.status>=200&&xhr.status<400){var b=new Uint8Array(xhr.response),t='';try{t=new TextDecoder('utf-8',{fatal:true}).decode(b);}catch(e){try{t=new TextDecoder('gbk').decode(b);}catch(e2){t=new TextDecoder('utf-8',{fatal:false}).decode(b);}}resolve(t);}else reject(new Error('HTTP '+xhr.status));};xhr.onerror=function(){reject(new Error('網路錯誤'));};xhr.ontimeout=function(){reject(new Error('連線逾時'));};xhr.send();});}
+function proxyFetch(url,ms){
+  return new Promise(function(resolve,reject){
+    var enc=encodeURIComponent(url);
+    var tries=[PROXY+'?url='+enc,'https://api.allorigins.win/raw?url='+enc];
+    var ti=0;
+    function decode(buf){var b=new Uint8Array(buf),t='';try{t=new TextDecoder('utf-8',{fatal:true}).decode(b);}catch(e){try{t=new TextDecoder('gbk').decode(b);}catch(e2){t=new TextDecoder('utf-8',{fatal:false}).decode(b);}}return t;}
+    function doTry(){
+      var xhr=new XMLHttpRequest();xhr.open('GET',tries[ti],true);xhr.responseType='arraybuffer';xhr.timeout=ms||15000;
+      function next(err){ti++;if(ti<tries.length){doTry();}else{reject(err);}}
+      xhr.onload=function(){if(xhr.status>=200&&xhr.status<400){resolve(decode(xhr.response));}else{next(new Error('HTTP '+xhr.status));}};
+      xhr.onerror=function(){next(new Error('網路錯誤'));};
+      xhr.ontimeout=function(){next(new Error('連線逾時'));};
+      xhr.send();
+    }
+    doTry();
+  });
+}
 
 // ── Log / progress ───────────────────────────────────────
 function flog(msg,cls){var b=$('flog');b.style.display='block';var d=document.createElement('div');d.style.color=cls==='ok'?'var(--ok)':cls==='err'?'var(--err)':cls==='warn'?'var(--warn)':'var(--txd)';d.innerHTML=msg;b.appendChild(d);b.scrollTop=b.scrollHeight;}

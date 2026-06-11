@@ -1199,7 +1199,7 @@ function _buildSyncPayload(){
     return{bid:bk.bid||'',title:bk.title||'',author:bk.author||'',intro:bk.intro||'',
       url:bk.url||'',status:bk.status||'reading',pubStatus:bk.pubStatus||'',
       startDate:bk.startDate||'',finishDate:bk.finishDate||'',review:bk.review||'',
-      notes:bk.notes||[],chapters:(bk.chapters||[]).map(function(c){return{title:c.title,url:c.url||''};})};
+      notes:bk.notes||[],chapters:(bk.chapters||[]).map(function(c){var ch={title:c.title,url:c.url||''};if(!c.url&&c.content)ch.content=c.content;return ch;})};
   });
   return{v:1,updated_at:new Date().toISOString(),library:lib,read:G.read||{}};
 }

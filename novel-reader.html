@@ -118,6 +118,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 #flog{background:var(--pn);border:1px solid var(--bd);border-radius:7px;padding:9px 11px;font-size:12px;color:var(--txd);max-height:130px;overflow-y:auto;display:none;line-height:1.65}
 #fprogw{width:100%;height:4px;background:var(--bd);border-radius:2px;margin:7px 0;display:none}
 #fprogf{height:100%;background:var(--ac);border-radius:2px;transition:width .35s;width:0%}
+#fetch-help{font-size:12px;color:var(--txd);margin-top:10px;line-height:1.8;padding:8px 10px;background:var(--pn);border:1px solid var(--bd);border-radius:7px}
+#fetch-help b{color:var(--warn)}
+#fetch-help a{color:var(--acc);text-decoration:none;display:inline-block;margin-right:10px}
+#fetch-help a:hover{text-decoration:underline}
+#fetch-help .fh-note{color:var(--txd);font-size:11px;margin-top:4px}
 
 /* Bottom nav (scroll mode) */
 #bb{height:calc(52px + var(--safe-b));background:var(--sf);border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 13px;padding-bottom:var(--safe-b);flex-shrink:0}
@@ -298,9 +303,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
       <div id="add-view">
         <div class="card">
           <h3>🔗 新增小說（輸入網址）</h3>
-          <div class="irow"><input class="inp" id="urlin" type="url" placeholder="https://www.xbanxia.cc/books/12345.html" autocorrect="off" autocapitalize="off" spellcheck="false"><button class="gbtn" id="fetchbtn">抓取</button></div>
+          <div class="irow"><input class="inp" id="urlin" type="url" placeholder="貼上書籍章節列表頁網址" autocorrect="off" autocapitalize="off" spellcheck="false"><button class="gbtn" id="fetchbtn">抓取</button></div>
           <div id="fprogw"><div id="fprogf"></div></div>
           <div id="flog"></div>
+          <div id="fetch-help">
+            <b>⚠️ 部分網站因防護機制無法抓取</b>，建議使用以下已測試成功的網站：<br>
+            <a href="https://www.twking.org/" target="_blank" rel="noopener">▸ 台灣小說網 (twking.org)</a>
+            <a href="https://www.52shuku.net/" target="_blank" rel="noopener">▸ 52書庫 (52shuku.net)</a>
+            <div class="fh-note">請在書籍「簡介」或「章節目錄」頁面貼上網址後抓取。</div>
+          </div>
         </div>
       </div>
     </div>
@@ -439,9 +450,16 @@ async function doAutoFetch(url){
   var novel={title:title,url:url,chapters:chs.map(function(c){return{title:c.title,url:c.url,content:null};})};
   var nIdx=addToLibrary(novel);openNovel(nIdx);
   $('chhd').textContent=chs[0].title;$('nt').innerHTML='<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入第一章…</p>';
-  var total=chs.length,done=0,BATCH=2;
-  async function fetchCh(i){var ch=G.library[nIdx].chapters[i];if(!ch||!ch.url){ch.content='';return;}try{var h=await proxyFetch(ch.url,12000,null);ch.content=extractContent(h,ch.title);if(!ch.content)ch.content='（無法擷取）';else idbSet(ch.url,ch.content);}catch(e){ch.content='（失敗：'+e.message+'）';}done++;fbar(20+Math.round(done/total*75));setBadge('loading',done+'/'+total);updateTOCItem(i);if(i===G.idx&&G.cur===nIdx)showChapter(i);if(done===total){flog('🎉 全部'+total+'章完成！','ok');setBadge('done','全'+total+'章 ✓');fbar(0);save();}}
-  for(var i=0;i<total;i+=BATCH){var batch=[];for(var j=i;j<Math.min(i+BATCH,total);j++)batch.push(fetchCh(j));await Promise.all(batch);if(i+BATCH<total)await new Promise(function(r){setTimeout(r,250);});}
+  var total=chs.length,done=0,failStreak=0,aborted=false,BATCH=2;
+  async function fetchCh(i){
+    if(aborted)return;
+    var ch=G.library[nIdx].chapters[i];if(!ch||!ch.url){ch.content='';done++;return;}
+    try{var h=await proxyFetch(ch.url,12000,null);ch.content=extractContent(h,ch.title);if(!ch.content)ch.content='（無法擷取）';else{idbSet(ch.url,ch.content);failStreak=0;}}
+    catch(e){ch.content='（失敗：'+e.message+'）';failStreak++;if(failStreak>=5){aborted=true;flog('⛔ 連續 '+failStreak+' 次連線失敗，已中止抓取。書籍已加入書架，可手動刪除。','err');setBadge('err','中止');fbar(0);save();return;}}
+    done++;fbar(20+Math.round(done/total*75));setBadge('loading',done+'/'+total);updateTOCItem(i);if(i===G.idx&&G.cur===nIdx)showChapter(i);
+    if(!aborted&&done===total){flog('🎉 全部'+total+'章完成！','ok');setBadge('done','全'+total+'章 ✓');fbar(0);save();}
+  }
+  for(var i=0;i<total&&!aborted;i+=BATCH){var batch=[];for(var j=i;j<Math.min(i+BATCH,total);j++)batch.push(fetchCh(j));await Promise.all(batch);if(aborted)break;if(i+BATCH<total)await new Promise(function(r){setTimeout(r,250);});}
   G.fetching=false;$('fetchbtn').disabled=false;
 }
 

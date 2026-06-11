@@ -1018,16 +1018,17 @@ function buildNoteList(el,notes,bi,inOverview){
     var ni=notes.length-1-rni;
     var d=document.createElement('div');d.className='ncard';
     var bkName=inOverview&&G.library[bi]?'<div style=”font-size:10px;color:var(--ac);font-weight:700;margin-bottom:3px”>📚 '+esc(G.library[bi].title)+'</div>':'';
-    d.innerHTML='<div style=”display:flex;gap:8px;align-items:flex-start”><div style=”width:10px;min-width:10px;height:10px;border-radius:50%;background:'+note.color+';border:1px solid rgba(0,0,0,.18);margin-top:4px”></div><div style=”flex:1;min-width:0”>'+bkName+'<div style=”font-size:11px;color:var(--txd);margin-bottom:4px”>'+esc(note.chTitle||'')+(note.pageIdx?'  p.'+(note.pageIdx+1):'')+'</div><div style=”font-size:13px;color:var(--txd);font-style:italic;border-left:3px solid '+note.color+';padding-left:8px;margin-bottom:6px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical”>”'+esc(note.quote)+'”</div>'+(note.text?'<div style=”font-size:13px;color:var(--tx);line-height:1.55”>'+esc(note.text)+'</div>':'')+'</div><button class=”note-del-btn” style=”background:none;border:none;color:var(--txr);cursor:pointer;font-size:18px;flex-shrink:0;padding:0 3px;line-height:1”>×</button></div>';
+    d.innerHTML='<div style=”display:flex;gap:8px;align-items:flex-start”><div style=”width:10px;min-width:10px;height:10px;border-radius:50%;background:'+note.color+';border:1px solid rgba(0,0,0,.18);margin-top:4px”></div><div style=”flex:1;min-width:0”>'+bkName+'<div style=”font-size:11px;color:var(--txd);margin-bottom:4px”>'+esc(note.chTitle||'')+(note.pageIdx?'  p.'+(note.pageIdx+1):'')+'</div><div style=”font-size:13px;color:var(--txd);font-style:italic;border-left:3px solid '+note.color+';padding-left:8px;margin-bottom:6px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical”>”'+esc(note.quote)+'”</div>'+(note.text?'<div style=”font-size:13px;color:var(--tx);line-height:1.55”>'+esc(note.text)+'</div>':'')+'</div></div>';
+    var dbtn=document.createElement('button');dbtn.textContent='×';dbtn.style.cssText='background:none;border:none;color:var(--txr);cursor:pointer;font-size:18px;flex-shrink:0;padding:0 3px;line-height:1';d.firstChild.appendChild(dbtn);
     d.addEventListener('click',function(e){
-      if(e.target.classList.contains('note-del-btn'))return;
+      if(e.target===dbtn)return;
       $('notep').classList.remove('show');$('overviewp').classList.remove('show');
       var chIdx=note.chIdx,pg=note.pageIdx||0;
       openNovel(bi);
       showChapter(chIdx,pg);
     });
     (function(capBi,capNi,capOv){
-      d.querySelector('.note-del-btn').addEventListener('click',function(e){
+      dbtn.addEventListener('click',function(e){
         e.stopPropagation();
         if(!confirm('刪除此筆記？'))return;
         G.library[capBi].notes.splice(capNi,1);save();updateUnderlines();

@@ -390,18 +390,24 @@ var $=function(id){return document.getElementById(id);};
 var esc=function(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
 
 // ── Proxy fetch ──────────────────────────────────────────
-function proxyFetch(url,ms){
+function proxyFetch(url,ms,_logCb){
   return new Promise(function(resolve,reject){
     var enc=encodeURIComponent(url);
-    var tries=[PROXY+'?url='+enc,'https://api.allorigins.win/raw?url='+enc];
+    var tries=[
+      {u:PROXY+'?url='+enc,t:ms||12000,n:'主代理'},
+      {u:'https://corsproxy.io/?'+enc,t:10000,n:'corsproxy'},
+      {u:'https://api.allorigins.win/raw?url='+enc,t:10000,n:'allorigins'}
+    ];
     var ti=0;
     function decode(buf){var b=new Uint8Array(buf),t='';try{t=new TextDecoder('utf-8',{fatal:true}).decode(b);}catch(e){try{t=new TextDecoder('gbk').decode(b);}catch(e2){t=new TextDecoder('utf-8',{fatal:false}).decode(b);}}return t;}
     function doTry(){
-      var xhr=new XMLHttpRequest();xhr.open('GET',tries[ti],true);xhr.responseType='arraybuffer';xhr.timeout=ms||15000;
+      var cfg=tries[ti];
+      if(_logCb&&ti>0)_logCb('⚡ 嘗試備援：'+cfg.n+'…');
+      var xhr=new XMLHttpRequest();xhr.open('GET',cfg.u,true);xhr.responseType='arraybuffer';xhr.timeout=cfg.t;
       function next(err){ti++;if(ti<tries.length){doTry();}else{reject(err);}}
-      xhr.onload=function(){if(xhr.status>=200&&xhr.status<400){resolve(decode(xhr.response));}else{next(new Error('HTTP '+xhr.status));}};
-      xhr.onerror=function(){next(new Error('網路錯誤'));};
-      xhr.ontimeout=function(){next(new Error('連線逾時'));};
+      xhr.onload=function(){if(xhr.status>=200&&xhr.status<400){resolve(decode(xhr.response));}else{next(new Error(cfg.n+' HTTP '+xhr.status));}};
+      xhr.onerror=function(){next(new Error(cfg.n+' 網路錯誤'));};
+      xhr.ontimeout=function(){next(new Error(cfg.n+' 逾時'));};
       xhr.send();
     }
     doTry();

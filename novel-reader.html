@@ -1307,7 +1307,9 @@ async function loadFromGH(){
     var remote=JSON.parse(json);
     if(!remote||!remote.library){if(G.library&&G.library.length)scheduleSync();else setSyncSt('ok');return;}
     var merged=_mergeSync(_buildSyncPayload(),remote);
-    G.library=merged.library;G.library.forEach(function(bk){(bk.chapters||[]).forEach(function(ch){if(ch.url&&ch.content===undefined)ch.content=null;});});G.read=merged.read;
+    var inMem={};(G.library||[]).forEach(function(bk){var k=bk.url||bk.bid;if(k){inMem[k]={};(bk.chapters||[]).forEach(function(ch){if(ch.url&&ch.content!=null)inMem[k][ch.url]=ch.content;});}});
+    merged.library.forEach(function(bk){var k=bk.url||bk.bid,cm=inMem[k]||{};(bk.chapters||[]).forEach(function(ch){if(ch.url)ch.content=cm[ch.url]!=null?cm[ch.url]:null;});});
+    G.library=merged.library;G.read=merged.read;
     save();buildShelf();
     setSyncSt('ok','上次同步：'+new Date().toLocaleTimeString());
   }catch(e){setSyncSt('err',e.message);setTimeout(loadFromGH,15000);}

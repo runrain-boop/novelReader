@@ -427,8 +427,9 @@ async function checkAndShowDLNotice(bi){
 
 async function reFetchAll(bi){
   var bk=G.library[bi];if(!bk||G.fetching)return;
+  G.fetching=true;
   var chs=(bk.chapters||[]).filter(function(c){return c.url;});
-  if(!chs.length)return;
+  if(!chs.length){G.fetching=false;return;}
   var btn=$('dl-btn'),prog=$('dl-prog');
   btn.disabled=true;btn.textContent='下載中…';
   prog.style.display='block';
@@ -450,6 +451,7 @@ async function reFetchAll(bi){
     await Promise.all(batch);
     if(i+BATCH<chs.length)await new Promise(function(r){setTimeout(r,250);});
   }
+  G.fetching=false;
   save();
   btn.textContent='✅ 完成';
   prog.textContent='全部 '+total+' 章下載完成！';
@@ -1291,6 +1293,7 @@ async function _ghFetch(method,body){
 }
 async function loadFromGH(){
   var pat=ghPAT();if(!pat){setSyncSt('nopat');return;}
+  if(G.fetching){setSyncSt('pending');return;}
   setSyncSt('syncing');
   try{
     var r=await _ghFetch('GET');

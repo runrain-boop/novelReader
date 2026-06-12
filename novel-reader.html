@@ -1259,10 +1259,11 @@ function _buildSyncPayload(){
   return{v:1,updated_at:new Date().toISOString(),library:lib,read:G.read||{}};
 }
 function _mergeSync(local,remote){
-  var byKey={};
-  (local.library||[]).forEach(function(bk){var k=bk.url||bk.bid;if(k)byKey[k]=bk;});
+  var byKey={},importedTitles={};
+  (local.library||[]).forEach(function(bk){var k=bk.url||bk.bid;if(k)byKey[k]=bk;if(!bk.url&&bk.title){var tk=(bk.title.trim()+'|'+(bk.author||'').trim()).toLowerCase();importedTitles[tk]=k;}});
   (remote.library||[]).forEach(function(bk){
     var k=bk.url||bk.bid;if(!k)return;
+    if(!byKey[k]&&!bk.url&&bk.title){var tk=(bk.title.trim()+'|'+(bk.author||'').trim()).toLowerCase();if(importedTitles[tk])k=importedTitles[tk];}
     if(byKey[k]){
       var lo=byKey[k],re=bk;
       var chs=lo.chapters.length>=re.chapters.length?lo.chapters:re.chapters;
@@ -1306,7 +1307,7 @@ async function loadFromGH(){
     var remote=JSON.parse(json);
     if(!remote||!remote.library){if(G.library&&G.library.length)scheduleSync();else setSyncSt('ok');return;}
     var merged=_mergeSync(_buildSyncPayload(),remote);
-    G.library=merged.library;G.read=merged.read;
+    G.library=merged.library;G.library.forEach(function(bk){(bk.chapters||[]).forEach(function(ch){if(ch.url&&ch.content===undefined)ch.content=null;});});G.read=merged.read;
     save();buildShelf();
     setSyncSt('ok','上次同步：'+new Date().toLocaleTimeString());
   }catch(e){setSyncSt('err',e.message);setTimeout(loadFromGH,15000);}

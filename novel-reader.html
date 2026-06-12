@@ -832,7 +832,7 @@ function animatePg(dir,cb){
   ss.forEach(function(s){s.style.transition='transform .16s ease-in';s.style.transform=dir==='l'?'translateX(-100%)':'translateX(100%)';});
   setTimeout(function(){
     ss.forEach(function(s){s.style.transition='none';s.style.transform=dir==='l'?'translateX(100%)':'translateX(-100%)';});
-    cb();ss[0].offsetHeight;
+    try{cb();}catch(e){}ss[0].offsetHeight;
     ss.forEach(function(s){s.style.transition='transform .16s ease-out';s.style.transform='translateX(0)';});
     setTimeout(function(){animating=false;},180);
   },170);
@@ -1309,7 +1309,8 @@ async function loadFromGH(){
     var merged=_mergeSync(_buildSyncPayload(),remote);
     var inMem={};(G.library||[]).forEach(function(bk){var k=bk.url||bk.bid;if(k){inMem[k]={};(bk.chapters||[]).forEach(function(ch){if(ch.url&&ch.content!=null)inMem[k][ch.url]=ch.content;});}});
     merged.library.forEach(function(bk){var k=bk.url||bk.bid,cm=inMem[k]||{};(bk.chapters||[]).forEach(function(ch){if(ch.url)ch.content=cm[ch.url]!=null?cm[ch.url]:null;});});
-    G.library=merged.library;G.read=merged.read;
+    var curKey=G.cur>=0&&G.library[G.cur]?G.library[G.cur].url||G.library[G.cur].bid:null;
+    G.library=merged.library;if(curKey){var ni=G.library.findIndex(function(bk){return(bk.url||bk.bid)===curKey;});if(ni>=0)G.cur=ni;}G.read=merged.read;
     save();buildShelf();
     setSyncSt('ok','上次同步：'+new Date().toLocaleTimeString());
   }catch(e){setSyncSt('err',e.message);setTimeout(loadFromGH,15000);}

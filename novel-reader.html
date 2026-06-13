@@ -420,7 +420,7 @@ async function checkAndShowDLNotice(bi){
   for(var i=0;i<sample;i++){var v=await idbGetP(urlChs[i].url);if(v)cached++;}
   if(cached<sample){
     $('dl-prog').style.display='none';$('dl-prog').textContent='';
-    $('dl-btn').disabled=false;$('dl-btn').textContent='⬇️ 下載所有章節';
+    $('dl-btn').disabled=false;$('dl-btn').textContent='⬇️ 下載所有章節';$('dl-btn').removeAttribute('data-retry');
     notice.style.display='block';
   }
 }
@@ -456,7 +456,7 @@ async function reFetchAll(bi){
   var failedRf=chs.filter(function(c){return c.content==='（無法擷取）'||/^（失敗：/.test(c.content||'');}).length;
   if(failedRf>0){
     btn.disabled=false;btn.textContent='↻ 重試失敗章節';
-    btn.onclick=function(){retryFailed(bi);};
+    btn.setAttribute('data-retry',bi);
     prog.textContent='⚠️ '+failedRf+'/'+total+' 章失敗，可按上方按鈕重試';
   }else{
     btn.textContent='✅ 完成';
@@ -502,9 +502,9 @@ function setBadge(s,t){var b=$('fetch-badge');b.className=s;b.textContent=t||'';
 
 // ── HTML extraction ──────────────────────────────────────
 function extractLinks(html,base){var div=document.createElement('div');div.innerHTML=html;var origin='';try{origin=new URL(base).origin;}catch(e){}var links=[],seen={};div.querySelectorAll('a[href]').forEach(function(a){var href=a.getAttribute('href')||'';if(!href||href==='#'||/^javascript/i.test(href))return;var full=href.startsWith('http')?href:origin+(href.startsWith('/')?href:'/'+href);if(seen[full])return;var text=(a.textContent||'').trim().replace(/\s+/g,' ');if(!text||text.length<2||text.length>60)return;if(/^(首頁|登[入錄]|註冊|搜[尋索]|排行|分類|書架|加入|收藏|上[一章頁]|下[一章頁]|上頁|下頁|目錄|返回|關於|聯繫|廣告|反饋|評[論價]|更多|展開|舉報|首章|末章|最新章節?|加書架|投票推薦?|月票|推薦票|打賞)$/.test(text))return;seen[full]=true;links.push({title:text,url:full});});
+if(links.length>=3){var dc={};links.forEach(function(l){try{var u=new URL(l.url);var d=u.hostname+u.pathname.replace(/\/[^/]*$/,'/');dc[d]=(dc[d]||0)+1;}catch(e){}});var md='',mc=0;Object.keys(dc).forEach(function(d){if(dc[d]>mc){mc=dc[d];md=d;}});if(mc>=3&&md)links=links.filter(function(l){try{var u=new URL(l.url);return(u.hostname+u.pathname.replace(/\/[^/]*$/,'/')).startsWith(md);}catch(e){return false;}});}
 var firstCh=links.findIndex(function(l){return/^第[0０〇零]*[一1１][章節节回卷集部]|^第[零〇]章|^序[章言]|^前[言序]|^楔子|^引子|^Chapter\s*[1一]/i.test(l.title);});
 if(firstCh>0)links=links.slice(firstCh);
-if(links.length>=3){var smpl=links.slice(0,Math.min(5,links.length));var pfx;try{var ps=smpl.map(function(l){var u=new URL(l.url);return u.hostname+u.pathname.replace(/\/[^/]*$/,'/');});pfx=ps[0];for(var pi=1;pi<ps.length;pi++){while(pfx&&!ps[pi].startsWith(pfx)){var li=pfx.slice(0,-1).lastIndexOf('/');pfx=li>=0?pfx.slice(0,li+1):'';}}  }catch(e){pfx=null;}if(pfx&&pfx.length>1)links=links.filter(function(l){try{var u=new URL(l.url);return(u.hostname+u.pathname.replace(/\/[^/]*$/,'/')).startsWith(pfx);}catch(e){return false;}});}
 return links;}
 function extractContent(html,chTitle){var div=document.createElement('div');var bm=html.match(/<body[^>]*>([\s\S]*)<\/body>/i);div.innerHTML=bm?bm[1]:html;try{div.querySelectorAll('script,style,nav,header,footer,aside,iframe,noscript,.ad,.ads,[class*="ad-"],[id*="ad-"],[class*="banner"],[class*="recommend"],[class*="comment"],[class*="pagination"],[class*="nav"]').forEach(function(e){e.remove();});}catch(e){}var sels=['#chaptercontent','#chapter_content','#ChapterContent','#content','#Content','#booktext','#BookText','.chapter-content','.chaptercontent','.read-content','.content-text','#readcontent','#article','.article-body','#articleBody','#novel-content','.novel-text','article .content','main .content'];var content='';for(var i=0;i<sels.length;i++){var el=null;try{el=div.querySelector(sels[i]);}catch(e){}if(el){var t=(el.innerText||el.textContent||'').trim();if(t.length>200){content=t;break;}}}if(content.length<200){var best='',bs=0;div.querySelectorAll('div,section,article').forEach(function(el){if(el.children.length>30)return;var t=(el.innerText||el.textContent||'').trim();var sc=t.length-el.querySelectorAll('a').length*15;if(sc>bs&&t.length>200){bs=sc;best=t;}});content=best;}content=content.split('\r\n').join('\n').split('\r').join('\n').replace(/\t/g,' ').replace(/[^\S\n]{2,}/g,' ').replace(/\n{3,}/g,'\n\n').trim();var bad=[/^本章未完/,/^閱讀.*?txt/,/^手機用戶/,/^請記住.*?網址/,/^如果.*?不錯/,/筆趣閣/,/^上一章$/,/^下一章$/,/^章節目錄$/,/^返回$/,/第.{0,5}頁$/,/^\d+\/\d+$/];content=content.split('\n').filter(function(l){var t=l.trim();if(!t)return true;return!bad.some(function(p){return p.test(t);});}).join('\n').replace(/\n{3,}/g,'\n\n').trim();if(chTitle&&chTitle.length>2){var ti=content.indexOf(chTitle);if(ti>0&&ti<content.length*.25)content=content.substring(ti+chTitle.length).trim();}var cm=content.match(/^[\s\S]{0,400}(第[零一二三四五六七八九十百千\d]+[章節回][^\n]{0,60}\n)/);if(cm){var cut=content.indexOf(cm[1])+cm[1].length;if(cut<content.length*.25)content=content.substring(cut).trim();}return content;}
 function extractTitle(html){var m=html.match(/<title[^>]*>([^<]+)<\/title>/i);if(!m)return'未命名';return m[1].replace(/[-_|丨–—].*$/,'').replace(/最新章節.*$/,'').replace(/在線.*$/,'').replace(/免費.*$/,'').replace(/小說.*$/,'').trim()||'未命名';}
@@ -532,7 +532,7 @@ async function doAutoFetch(url){
     done++;fbar(20+Math.round(done/total*75));setBadge('loading',done+'/'+total);updateTOCItem(i);if(i===G.idx&&G.cur===nIdx)showChapter(i);
     if(!aborted&&done===total){
       var failedCnt=G.library[nIdx].chapters.filter(function(c){return c.url&&(c.content==='（無法擷取）'||/^（失敗：/.test(c.content||''));}).length;
-      if(failedCnt>0){flog('⚠️ '+failedCnt+' 章下載失敗 — <button onclick="retryFailed('+nIdx+')" style="cursor:pointer;padding:2px 8px;border:1px solid var(--warn);border-radius:4px;background:transparent;color:var(--tx);font-size:11px">↻ 重試失敗章節</button>','warn');setBadge('done','全'+total+'章('+failedCnt+'失敗)');}
+      if(failedCnt>0){flog('⚠️ '+failedCnt+' 章下載失敗','warn');setBadge('done','全'+total+'章('+failedCnt+'失敗)');var _btn=$('dl-btn'),_prog=$('dl-prog'),_notice=$('dl-notice');if(_btn&&_notice){_btn.disabled=false;_btn.textContent='↻ 重試失敗章節';_btn.setAttribute('data-retry',nIdx);if(_prog){_prog.style.display='block';_prog.textContent='⚠️ '+failedCnt+'/'+total+' 章失敗，可按上方按鈕重試';}buildTOC();_notice.style.display='block';}}
       else{flog('🎉 全部'+total+'章完成！','ok');setBadge('done','全'+total+'章 ✓');}
       fbar(0);save();}
   }
@@ -749,13 +749,15 @@ function buildTOC(q){
   var ql=(q||'').toLowerCase(),n=G.library[G.cur],rs=G.read[G.cur]||[];
   n.chapters.forEach(function(ch,i){
     if(ql&&ch.title.toLowerCase().indexOf(ql)<0)return;
+    var isFailed=ch.url&&(ch.content==='（無法擷取）'||/^（失敗：/.test(ch.content||''));
     var isLoad=ch.content===null,isRead=rs.indexOf(i)>=0,isAct=i===G.idx;
     var d=document.createElement('div');
-    d.className='ti'+(isAct?' active':isRead?' read':isLoad?' loading':'');
+    d.className='ti'+(isAct?' active':isRead?' read':isFailed?' failed':isLoad?' loading':'');
     d.setAttribute('data-i',i);
     var ck=isRead?'<span class="ti-check"> ✓</span>':'';
     var ld=isLoad?'<span style="color:var(--warn)"> ⋯</span>':'';
-    d.innerHTML='<div class="ti-body"><div class="ti-meta">第'+(i+1)+'章'+ld+ck+'</div><div class="ti-title">'+esc(ch.title)+'</div></div><span class="ti-edit" data-ei="'+i+'">✏️</span><span class="ti-del" data-di="'+i+'">🗑</span>';
+    var fl=isFailed?'<span style="color:var(--err)"> ⚠</span>':'';
+    d.innerHTML='<div class="ti-body"><div class="ti-meta">第'+(i+1)+'章'+fl+ld+ck+'</div><div class="ti-title">'+esc(ch.title)+'</div></div><span class="ti-edit" data-ei="'+i+'">✏️</span><span class="ti-del" data-di="'+i+'">🗑</span>';
     d.addEventListener('click',function(e){if(e.target.closest('.ti-del')||e.target.closest('.ti-edit'))return;showChapter(+this.getAttribute('data-i'));if(window.innerWidth<=680)closeSB();});
     list.appendChild(d);
   });
@@ -768,9 +770,11 @@ $('tcq').addEventListener('input',function(){buildTOC(this.value);});
 function updateTOCItem(i){
   if(G.cur<0)return;var el=document.querySelector('.ti[data-i="'+i+'"]');if(!el)return;
   var ch=G.library[G.cur].chapters[i];var rs=G.read[G.cur]||[],isRead=rs.indexOf(i)>=0,isAct=i===G.idx;
-  el.className='ti'+(isAct?' active':isRead?' read':'');
+  var isFailed=ch.url&&(ch.content==='（無法擷取）'||/^（失敗：/.test(ch.content||''));
+  el.className='ti'+(isAct?' active':isRead?' read':isFailed?' failed':'');
   var ck=isRead?'<span class="ti-check"> ✓</span>':'';
-  el.querySelector('.ti-body').innerHTML='<div class="ti-meta">第'+(i+1)+'章'+ck+'</div><div class="ti-title">'+esc(ch.title)+'</div>';
+  var fl=isFailed?'<span style="color:var(--err)"> ⚠</span>':'';
+  el.querySelector('.ti-body').innerHTML='<div class="ti-meta">第'+(i+1)+'章'+fl+ck+'</div><div class="ti-title">'+esc(ch.title)+'</div>';
 }
 
 // ── Show chapter ─────────────────────────────────────────
@@ -1181,7 +1185,7 @@ function buildNoteList(el,notes,bi,inOverview){
   });
 }
 $('bnotesov').addEventListener('click',showOverview);
-$('dl-btn').addEventListener('click',function(){reFetchAll(G.cur);});
+$('dl-btn').addEventListener('click',function(){var ni=this.getAttribute('data-retry');if(ni!==null)retryFailed(+ni);else reFetchAll(G.cur);});
 function showOverview(){
   var box=$('overview-list');box.innerHTML='';var any=false;
   G.library.forEach(function(n,bi){

@@ -404,6 +404,7 @@ function bkKey(bi){var bk=G.library[bi==null?G.cur:bi];return bk?(bk.url||bk.bid
 function bkRead(bi){var k=bkKey(bi==null?G.cur:bi);if(!k)return[];if(!G.read[k])G.read[k]=[];return G.read[k];}
 function bkReadLen(bi){var k=bkKey(bi==null?G.cur:bi);return k&&G.read[k]?G.read[k].length:0;}
 function bkMarkRead(chIdx,bi){var k=bkKey(bi==null?G.cur:bi);if(!k)return;if(!G.read[k])G.read[k]=[];if(G.read[k].indexOf(chIdx)<0)G.read[k].push(chIdx);}
+function dedupLibrary(){var seen={};G.library=G.library.filter(function(bk){var k=bk.url||bk.bid;if(!k)return true;if(seen[k])return false;seen[k]=true;return true;});}
 var PM={on:false,pages:[],pageIdx:0,chIdx:-1};
 var SK='nr8',PROXY='https://novel-proxy.runrain.workers.dev/';
 var IDB=null;
@@ -1314,8 +1315,19 @@ function _mergeSync(local,remote){
   allDeleted.forEach(function(k){delete byKey[k];});
   var library=Object.keys(byKey).map(function(k){return byKey[k];});
 
+  // Convert remote.read numeric keys → stable keys using remote.library
+  var remoteRead={};
+  Object.keys(remote.read||{}).forEach(function(k){
+    var val=remote.read[k];
+    if(!isNaN(+k)&&remote.library&&remote.library[+k]){
+      var rbk=remote.library[+k],sk=rbk.url||rbk.bid;
+      if(sk){remoteRead[sk]=val;return;}
+    }
+    remoteRead[k]=val;
+  });
+
   // Merge read arrays (union of chapter indices per stable book key)
-  var read=Object.assign({},remote.read||{});
+  var read=Object.assign({},remoteRead);
   Object.keys(local.read||{}).forEach(function(k){
     if(deletedKeys[k])return;
     var lr=local.read[k],rr=read[k];
@@ -1360,7 +1372,7 @@ async function loadFromGH(){
     var inMem={};(G.library||[]).forEach(function(bk){var k=bk.url||bk.bid;if(k){inMem[k]={};(bk.chapters||[]).forEach(function(ch){if(ch.url&&ch.content!=null)inMem[k][ch.url]=ch.content;});}});
     merged.library.forEach(function(bk){var k=bk.url||bk.bid,cm=inMem[k]||{};(bk.chapters||[]).forEach(function(ch){if(ch.url)ch.content=cm[ch.url]!=null?cm[ch.url]:null;});});
     var curKey=G.cur>=0&&G.library[G.cur]?G.library[G.cur].url||G.library[G.cur].bid:null;
-    G.library=merged.library;if(curKey){var ni=G.library.findIndex(function(bk){return(bk.url||bk.bid)===curKey;});if(ni>=0)G.cur=ni;}G.read=merged.read;G.deleted=merged.deleted||[];
+    G.library=merged.library;dedupLibrary();if(curKey){var ni=G.library.findIndex(function(bk){return(bk.url||bk.bid)===curKey;});if(ni>=0)G.cur=ni;}G.read=merged.read;G.deleted=merged.deleted||[];
     save();buildShelf();
     setSyncSt('ok','上次同步：'+new Date().toLocaleTimeString());
   }catch(e){setSyncSt('err',e.message);setTimeout(loadFromGH,15000);}
@@ -1405,6 +1417,7 @@ function restore(){
       var hasNumKey=Object.keys(G.read).some(function(k){return!isNaN(+k)&&G.library[+k];});
       if(hasNumKey){var nr2={};Object.keys(G.read).forEach(function(k){var ki=+k,bk=!isNaN(ki)&&G.library[ki];if(bk){var nk2=bk.url||bk.bid;if(nk2){if(!nr2[nk2])nr2[nk2]=[];G.read[k].forEach(function(ci){if(nr2[nk2].indexOf(ci)<0)nr2[nk2].push(ci);});}else nr2[k]=G.read[k];}else nr2[k]=G.read[k];});G.read=nr2;}
       updateExpSel();
+      dedupLibrary();
       G.library.forEach(function(n){n.chapters.forEach(function(c){if(c.content&&c.url)idbSet(c.url,c.content);});});}
   }catch(e){console.error('restore error:',e);}
   var pmPref=localStorage.getItem('nr_pmstate');if(pmPref===null)pmPref='1';PM.on=(pmPref==='1');

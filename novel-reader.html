@@ -399,7 +399,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 <div id="kh"></div>
 
 <script>
-var G={library:[],cur:-1,idx:0,pidx:0,read:{},ttsOn:false,fetching:false};
+var G={library:[],cur:-1,idx:0,pidx:0,read:{},deleted:[],ttsOn:false,fetching:false};
+function bkKey(bi){var bk=G.library[bi==null?G.cur:bi];return bk?(bk.url||bk.bid)||null:null;}
+function bkRead(bi){var k=bkKey(bi==null?G.cur:bi);if(!k)return[];if(!G.read[k])G.read[k]=[];return G.read[k];}
+function bkReadLen(bi){var k=bkKey(bi==null?G.cur:bi);return k&&G.read[k]?G.read[k].length:0;}
+function bkMarkRead(chIdx,bi){var k=bkKey(bi==null?G.cur:bi);if(!k)return;if(!G.read[k])G.read[k]=[];if(G.read[k].indexOf(chIdx)<0)G.read[k].push(chIdx);}
 var PM={on:false,pages:[],pageIdx:0,chIdx:-1};
 var SK='nr8',PROXY='https://novel-proxy.runrain.workers.dev/';
 var IDB=null;
@@ -571,7 +575,7 @@ function buildShelf(filter){
   items.forEach(function(item){
     var n=item.n,i=item.i,st=novelStatus(n);
     if(filter!=='all'&&st!==filter)return;
-    var rc=(G.read[i]||[]).length,total=n.chapters?n.chapters.length:0;
+    var rc=bkReadLen(i),total=n.chapters?n.chapters.length:0;
     var pct=total>0?Math.round(rc/total*100):0;
     var isCur=G.cur===i;
     var card=document.createElement('div');
@@ -691,11 +695,11 @@ function curFilter(){var a=document.querySelector('.stab.active');return a?a.dat
 function deleteNovel(ni){
   if(!confirm('確定刪除《'+G.library[ni].title+'》？'))return;
   idbDelChapters(G.library[ni].chapters);
+  var dk=G.library[ni].url||G.library[ni].bid;
   G.library.splice(ni,1);
-  var nr={};Object.keys(G.read).forEach(function(k){var ki=+k;if(ki<ni)nr[ki]=G.read[k];else if(ki>ni)nr[ki-1]=G.read[k];});
-  G.read=nr;
+  if(dk){if(!G.deleted)G.deleted=[];if(G.deleted.indexOf(dk)<0)G.deleted.push(dk);}
   if(G.cur===ni)G.cur=-1;else if(G.cur>ni)G.cur--;
-  updateExpSel();save();buildShelf(curFilter());
+  updateExpSel();save();buildShelf(curFilter());scheduleSync();
   if(!G.library.length)showAddView();
 }
 
@@ -703,7 +707,7 @@ function openNovel(ni){
   // Switch novel if needed
   if(G.cur!==ni){
     G.cur=ni;
-    if(!G.read[ni])G.read[ni]=[];
+    bkRead(ni);
     if(!G.library[ni].startDate)G.library[ni].startDate=new Date().toISOString().slice(0,10);
     var n=G.library[ni];
     $('ns').textContent=n.title.length>14?n.title.substring(0,14)+'…':n.title;
@@ -746,7 +750,7 @@ $('badd').addEventListener('click',showAddView);
 function buildTOC(q){
   if(G.cur<0||!G.library[G.cur])return;
   var list=$('tcl');list.innerHTML='';
-  var ql=(q||'').toLowerCase(),n=G.library[G.cur],rs=G.read[G.cur]||[];
+  var ql=(q||'').toLowerCase(),n=G.library[G.cur],rs=bkRead();
   n.chapters.forEach(function(ch,i){
     if(ql&&ch.title.toLowerCase().indexOf(ql)<0)return;
     var isFailed=ch.url&&(ch.content==='（無法擷取）'||/^（失敗：/.test(ch.content||''));
@@ -763,13 +767,13 @@ function buildTOC(q){
   });
   list.querySelectorAll('.ti-del').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var i=+this.getAttribute('data-di');if(!confirm('刪除「'+G.library[G.cur].chapters[i].title+'」？'))return;G.library[G.cur].chapters.splice(i,1);if(G.idx>=G.library[G.cur].chapters.length)G.idx=Math.max(0,G.library[G.cur].chapters.length-1);buildTOC(q);showChapter(G.idx);save();});});
   list.querySelectorAll('.ti-edit').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var i=+this.getAttribute('data-ei');var row=this.closest('.ti');var titleEl=row.querySelector('.ti-title');var orig=G.library[G.cur].chapters[i].title;var inp=document.createElement('input');inp.value=orig;inp.style.cssText='width:100%;padding:2px 5px;background:var(--pn);border:1px solid var(--ac);border-radius:4px;color:var(--tx);font-size:14px;outline:none;';titleEl.replaceWith(inp);inp.focus();inp.select();var done=false;function confirm(){if(done)return;done=true;var v=inp.value.trim()||orig;G.library[G.cur].chapters[i].title=v;save();buildTOC(q);}inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();confirm();}else if(e.key==='Escape'){done=true;buildTOC(q);}});inp.addEventListener('blur',confirm);});});
-  $('sbf').textContent='已讀 '+(G.read[G.cur]||[]).length+' / '+n.chapters.length+' 章';
+  $('sbf').textContent='已讀 '+bkReadLen()+' / '+n.chapters.length+' 章';
 }
 $('tcq').addEventListener('input',function(){buildTOC(this.value);});
 
 function updateTOCItem(i){
   if(G.cur<0)return;var el=document.querySelector('.ti[data-i="'+i+'"]');if(!el)return;
-  var ch=G.library[G.cur].chapters[i];var rs=G.read[G.cur]||[],isRead=rs.indexOf(i)>=0,isAct=i===G.idx;
+  var ch=G.library[G.cur].chapters[i];var rs=bkRead(),isRead=rs.indexOf(i)>=0,isAct=i===G.idx;
   var isFailed=ch.url&&(ch.content==='（無法擷取）'||/^（失敗：/.test(ch.content||''));
   el.className='ti'+(isAct?' active':isRead?' read':isFailed?' failed':'');
   var ck=isRead?'<span class="ti-check"> ✓</span>':'';
@@ -782,7 +786,7 @@ function showChapter(i,startPage){
   if(G.cur<0||!G.library[G.cur])return;
   var chs=G.library[G.cur].chapters;if(i<0||i>=chs.length)return;
   var _sp=startPage||0;
-  G.idx=i;if(!G.read[G.cur])G.read[G.cur]=[];if(G.read[G.cur].indexOf(i)<0)G.read[G.cur].push(i);
+  G.idx=i;bkMarkRead(i);
   var ch=chs[i];$('chhd').textContent=ch.title;$('chtl').textContent=ch.title;
   if(ch.content===null){
     $('nt').innerHTML='<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入中…</p>';
@@ -797,8 +801,8 @@ function showChapter(i,startPage){
   else{var ps=(ch.content||'').split('\n').filter(function(l){return l.trim();});$('nt').innerHTML=ps.length?ps.map(function(p){return'<p>'+markQuotes(p,_ci)+'</p>';}).join(''):'<p style="color:var(--txd);text-align:center">（本章無內文）</p>';}
   $('rw').scrollTop=0;$('pvbtn').disabled=(i===0);$('nxbtn').disabled=(i===chs.length-1);
   var pct=chs.length>1?Math.round(i/(chs.length-1)*100):100;$('pg').style.width=pct+'%';$('pind').textContent='第'+(i+1)+' / '+chs.length+'章';
-  document.querySelectorAll('.ti').forEach(function(el){var n=+el.getAttribute('data-i'),rs=G.read[G.cur]||[];el.className='ti'+(n===i?' active':rs.indexOf(n)>=0?' read':'');if(n===i)el.scrollIntoView({block:'nearest'});});
-  $('sbf').textContent='已讀 '+(G.read[G.cur]||[]).length+' / '+chs.length+'章';
+  document.querySelectorAll('.ti').forEach(function(el){var n=+el.getAttribute('data-i'),rs=bkRead();el.className='ti'+(n===i?' active':rs.indexOf(n)>=0?' read':'');if(n===i)el.scrollIntoView({block:'nearest'});});
+  $('sbf').textContent='已讀 '+bkReadLen()+' / '+chs.length+'章';
   if(PM.on){$('rc').style.display='none';$('pw').style.display='flex';$('bb').style.display='none';paginateChapter(i,_sp);}
   else{$('rc').style.display='block';$('pw').style.display='none';$('bb').style.display='';}
   if(G.ttsOn)stopTTS();save();$('rw').focus();
@@ -864,7 +868,7 @@ function animatePg(dir,cb){
 }
 window.pageNext=function(){if(!PM.on)return;animatePg('l',function(){var tp=$('pw').classList.contains('twopage'),step=tp?2:1;if(PM.pageIdx+step<PM.pages.length){PM.pageIdx+=step;renderPg(PM.chIdx,PM.pages[PM.pageIdx],PM.pageIdx,PM.pages.length,G.library[G.cur].chapters[PM.chIdx].title);save();}else{var nc=PM.chIdx+1;if(G.library[G.cur]&&nc<G.library[G.cur].chapters.length){showChapter(nc,0);}}});};
 window.pagePrev=function(){if(!PM.on)return;animatePg('r',function(){var tp=$('pw').classList.contains('twopage'),step=tp?2:1;if(PM.pageIdx-step>=0){PM.pageIdx-=step;renderPg(PM.chIdx,PM.pages[PM.pageIdx],PM.pageIdx,PM.pages.length,G.library[G.cur].chapters[PM.chIdx].title);save();}else{var pc=PM.chIdx-1;if(pc>=0){showChapter(pc,99999);}}});};
-function markRead(i){if(!G.read[G.cur])G.read[G.cur]=[];if(G.read[G.cur].indexOf(i)<0)G.read[G.cur].push(i);}
+function markRead(i){bkMarkRead(i);}
 var resT;window.addEventListener('resize',function(){clearTimeout(resT);resT=setTimeout(function(){if(PM.on&&G.cur>=0&&G.library[G.cur])paginateChapter(PM.chIdx,PM.pageIdx);},300);});
 function addSwipe(el,onL,onR){el.addEventListener('touchstart',function(e){var t=e.touches[0];el._tx=t.clientX;el._ty=t.clientY;},{passive:true});el.addEventListener('touchend',function(e){if(window.getSelection&&window.getSelection().toString())return;var dx=e.changedTouches[0].clientX-el._tx,dy=e.changedTouches[0].clientY-el._ty;if(Math.abs(dx)>Math.abs(dy)*1.5&&Math.abs(dx)>50){if(dx<0)onL();else onR();}},{passive:true});}
 addSwipe($('pw'),pageNext,pagePrev);
@@ -1236,7 +1240,7 @@ $('imp-file').addEventListener('change',function(e){
   var r=new FileReader();r.onload=function(ev){try{
     var d=JSON.parse(ev.target.result),novels=d.library||[];if(!novels.length)throw new Error('無資料');
     var added=0,base=G.library.length;
-    novels.forEach(function(n,i){if(n&&n.title&&n.chapters){G.library.push(n);if(d.read&&d.read[i])G.read[base+added]=d.read[i];added++;}});
+    novels.forEach(function(n,i){if(n&&n.title&&n.chapters){G.library.push(n);var nk=n.url||n.bid;var rd=d.read&&((nk&&d.read[nk])||d.read[i])||null;if(rd){if(nk)G.read[nk]=rd;else G.read[base+added]=rd;}added++;}});
     updateExpSel();save();$('exp-stat').textContent='✅ 匯入 '+added+' 本';
     if(added>0){var tn=base+(d.cur||0);if(tn<G.library.length){openNovel(tn);if(d.idx&&d.idx>0)showChapter(d.idx);}}
   }catch(e2){$('exp-stat').textContent='❌ '+e2.message;}};
@@ -1249,7 +1253,7 @@ document.addEventListener('click',function(e){[['ttp','btts'],['setp','bset'],['
 function save(){
   try{
     G.library.forEach(function(n,i){if(!n.bid)n.bid='bk'+Date.now()+i+Math.random().toString(36).slice(2,5);});
-var d={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',pubStatus:n.pubStatus||'',bid:n.bid||'',startDate:n.startDate||'',finishDate:n.finishDate||'',review:n.review||'',notes:n.notes||[],chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:c.url?null:c.content};})};  }),cur:G.cur,idx:G.idx,pidx:PM.pageIdx,read:G.read};
+var d={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',pubStatus:n.pubStatus||'',bid:n.bid||'',startDate:n.startDate||'',finishDate:n.finishDate||'',review:n.review||'',notes:n.notes||[],chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:c.url?null:c.content};})};  }),cur:G.cur,idx:G.idx,pidx:PM.pageIdx,read:G.read,deleted:G.deleted||[]};
     localStorage.setItem(SK,JSON.stringify(d));
   }catch(e){try{
     var bare={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:null};})};  }),cur:G.cur,idx:G.idx,read:G.read};
@@ -1281,13 +1285,20 @@ function _buildSyncPayload(){
       startDate:bk.startDate||'',finishDate:bk.finishDate||'',review:bk.review||'',
       notes:bk.notes||[],chapters:(bk.chapters||[]).map(function(c){var ch={title:c.title,url:c.url||''};if(!c.url&&c.content)ch.content=c.content;return ch;})};
   });
-  return{v:1,updated_at:new Date().toISOString(),library:lib,read:G.read||{}};
+  return{v:2,updated_at:new Date().toISOString(),library:lib,read:G.read||{},deleted:G.deleted||[]};
 }
 function _mergeSync(local,remote){
+  // Build deletion set: union of both sides
+  var deletedKeys={};
+  (local.deleted||[]).forEach(function(k){deletedKeys[k]=true;});
+  (remote.deleted||[]).forEach(function(k){deletedKeys[k]=true;});
+  var allDeleted=Object.keys(deletedKeys);
+
   var byKey={},importedTitles={};
   (local.library||[]).forEach(function(bk){var k=bk.url||bk.bid;if(k)byKey[k]=bk;if(!bk.url&&bk.title){var tk=(bk.title.trim()+'|'+(bk.author||'').trim()).toLowerCase();importedTitles[tk]=k;}});
   (remote.library||[]).forEach(function(bk){
     var k=bk.url||bk.bid;if(!k)return;
+    if(deletedKeys[k])return; // Skip deleted
     if(!byKey[k]&&!bk.url&&bk.title){var tk=(bk.title.trim()+'|'+(bk.author||'').trim()).toLowerCase();if(importedTitles[tk])k=importedTitles[tk];}
     if(byKey[k]){
       var lo=byKey[k],re=bk;
@@ -1299,13 +1310,26 @@ function _mergeSync(local,remote){
       byKey[k]=Object.assign({},re,lo,{chapters:chs,notes:notes});
     } else {byKey[k]=bk;}
   });
+  // Remove deleted books from local side too
+  allDeleted.forEach(function(k){delete byKey[k];});
   var library=Object.keys(byKey).map(function(k){return byKey[k];});
+
+  // Merge read arrays (union of chapter indices per stable book key)
   var read=Object.assign({},remote.read||{});
   Object.keys(local.read||{}).forEach(function(k){
+    if(deletedKeys[k])return;
     var lr=local.read[k],rr=read[k];
-    if(!rr||(lr.chIdx||0)>(rr.chIdx||0)||(lr.chIdx===rr.chIdx&&(lr.pidx||0)>(rr.pidx||0)))read[k]=lr;
+    if(!rr){read[k]=lr;}
+    else if(Array.isArray(lr)&&Array.isArray(rr)){
+      var union=rr.slice();
+      lr.forEach(function(ci){if(union.indexOf(ci)<0)union.push(ci);});
+      read[k]=union;
+    }
   });
-  return{library:library,read:read};
+  // Clean up read data for deleted books
+  allDeleted.forEach(function(k){delete read[k];});
+
+  return{library:library,read:read,deleted:allDeleted};
 }
 async function _ghFetch(method,body){
   var pat=ghPAT();
@@ -1336,7 +1360,7 @@ async function loadFromGH(){
     var inMem={};(G.library||[]).forEach(function(bk){var k=bk.url||bk.bid;if(k){inMem[k]={};(bk.chapters||[]).forEach(function(ch){if(ch.url&&ch.content!=null)inMem[k][ch.url]=ch.content;});}});
     merged.library.forEach(function(bk){var k=bk.url||bk.bid,cm=inMem[k]||{};(bk.chapters||[]).forEach(function(ch){if(ch.url)ch.content=cm[ch.url]!=null?cm[ch.url]:null;});});
     var curKey=G.cur>=0&&G.library[G.cur]?G.library[G.cur].url||G.library[G.cur].bid:null;
-    G.library=merged.library;if(curKey){var ni=G.library.findIndex(function(bk){return(bk.url||bk.bid)===curKey;});if(ni>=0)G.cur=ni;}G.read=merged.read;
+    G.library=merged.library;if(curKey){var ni=G.library.findIndex(function(bk){return(bk.url||bk.bid)===curKey;});if(ni>=0)G.cur=ni;}G.read=merged.read;G.deleted=merged.deleted||[];
     save();buildShelf();
     setSyncSt('ok','上次同步：'+new Date().toLocaleTimeString());
   }catch(e){setSyncSt('err',e.message);setTimeout(loadFromGH,15000);}
@@ -1376,7 +1400,11 @@ function restore(){
   var pmw=localStorage.getItem('nr_pmw');if(pmw){$('pmr').value=pmw;$('pmv').textContent=pmw;document.documentElement.style.setProperty('--pm',pmw+'px');}
   var bg=localStorage.getItem('nr_bg');if(bg){document.documentElement.style.setProperty('--bg',bg);$('custom-bg').value=bg;}
   try{var raw=localStorage.getItem(SK);if(!raw)return;var x=JSON.parse(raw);
-    if(x.library&&x.library.length){G.library=x.library;G.read=x.read||{};G.cur=x.cur!=null?x.cur:-1;G.idx=x.idx||0;G.pidx=x.pidx||0;updateExpSel();
+    if(x.library&&x.library.length){G.library=x.library;G.read=x.read||{};G.deleted=x.deleted||[];G.cur=x.cur!=null?x.cur:-1;G.idx=x.idx||0;G.pidx=x.pidx||0;
+      // Migrate numeric-keyed G.read to stable url/bid keys
+      var hasNumKey=Object.keys(G.read).some(function(k){return!isNaN(+k)&&G.library[+k];});
+      if(hasNumKey){var nr2={};Object.keys(G.read).forEach(function(k){var ki=+k,bk=!isNaN(ki)&&G.library[ki];if(bk){var nk2=bk.url||bk.bid;if(nk2){if(!nr2[nk2])nr2[nk2]=[];G.read[k].forEach(function(ci){if(nr2[nk2].indexOf(ci)<0)nr2[nk2].push(ci);});}else nr2[k]=G.read[k];}else nr2[k]=G.read[k];});G.read=nr2;}
+      updateExpSel();
       G.library.forEach(function(n){n.chapters.forEach(function(c){if(c.content&&c.url)idbSet(c.url,c.content);});});}
   }catch(e){console.error('restore error:',e);}
   var pmPref=localStorage.getItem('nr_pmstate');if(pmPref===null)pmPref='1';PM.on=(pmPref==='1');

@@ -415,9 +415,9 @@ async function checkAndShowDLNotice(bi){
   var bk=G.library[bi];if(!bk)return;
   var urlChs=(bk.chapters||[]).filter(function(c){return c.url;});
   if(!urlChs.length)return;
-  // Check first 3 URL-chapters in IDB
+  // Check first 3 URL-chapters in memory or IDB
   var sample=Math.min(3,urlChs.length),cached=0;
-  for(var i=0;i<sample;i++){var v=await idbGetP(urlChs[i].url);if(v)cached++;}
+  for(var i=0;i<sample;i++){var ch=urlChs[i];if(ch.content&&ch.content!=='（無法擷取）'&&!/^（失敗：/.test(ch.content)){cached++;continue;}var v=await idbGetP(ch.url);if(v)cached++;}
   if(cached<sample){
     $('dl-prog').style.display='none';$('dl-prog').textContent='';
     $('dl-btn').disabled=false;$('dl-btn').textContent='⬇️ 下載所有章節';$('dl-btn').removeAttribute('data-retry');

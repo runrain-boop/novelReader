@@ -1285,10 +1285,12 @@ function _buildSyncPayload(){
   return{v:2,updated_at:new Date().toISOString(),library:lib,read:G.read||{},deleted:G.deleted||[]};
 }
 function _mergeSync(local,remote){
-  // Build deletion set: union of both sides
+  // Build deletion set: local library always wins — if re-added locally, don't delete
+  var localLibKeys={};
+  (local.library||[]).forEach(function(bk){var k=bk.url||bk.bid;if(k)localLibKeys[k]=true;});
   var deletedKeys={};
-  (local.deleted||[]).forEach(function(k){deletedKeys[k]=true;});
-  (remote.deleted||[]).forEach(function(k){deletedKeys[k]=true;});
+  (local.deleted||[]).forEach(function(k){if(!localLibKeys[k])deletedKeys[k]=true;});
+  (remote.deleted||[]).forEach(function(k){if(!localLibKeys[k])deletedKeys[k]=true;});
   var allDeleted=Object.keys(deletedKeys);
 
   var byKey={},importedTitles={};

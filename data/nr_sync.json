@@ -6,10 +6,10 @@
       "author": "衛拂衣",
       "intro": "",
       "url": "https://www.twking.org/216_216991/",
-      "status": "done",
+      "status": "reading",
       "pubStatus": "dropped",
       "startDate": "2026-06-11",
-      "finishDate": "2026-06-14",
+      "finishDate": "",
       "review": "",
       "notes": [
         {
@@ -2695,9 +2695,9 @@
           "url": "https://www.twking.org/DMCA.html"
         }
       ],
-      "posIdx": 0,
+      "posIdx": 569,
       "posPidx": 0,
-      "posAt": "",
+      "posAt": "2026-06-14T03:54:28.980Z",
       "statusAt": ""
     },
     {
@@ -27365,5 +27365,5 @@
     "https://www.twking.org/153_153180/",
     "https://www.twking.org/187_187758/"
   ],
-  "updated_at": "2026-06-14T03:53:37.360Z"
+  "updated_at": "2026-06-14T03:54:33.809Z"
 }

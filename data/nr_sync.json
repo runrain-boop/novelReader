@@ -22909,9 +22909,9 @@
       "finishDate": "",
       "review": "",
       "notes": [],
-      "posIdx": 261,
+      "posIdx": 263,
       "posPidx": 0,
-      "posAt": "2026-06-14T16:38:06.203Z",
+      "posAt": "2026-06-14T16:38:10.623Z",
       "statusAt": "",
       "chapters": [
         {
@@ -28166,7 +28166,8 @@
       251,
       255,
       268,
-      261
+      261,
+      263
     ]
   },
   "deleted": [
@@ -28176,5 +28177,5 @@
     "https://www.twking.org/153_153180/",
     "https://www.twking.org/187_187758/"
   ],
-  "updated_at": "2026-06-14T16:38:10.353Z"
+  "updated_at": "2026-06-14T16:38:14.634Z"
 }

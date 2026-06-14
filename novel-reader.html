@@ -1232,11 +1232,10 @@ $('btts').addEventListener('click',function(){$('ttp').classList.toggle('show');
 function fillVoices(){
   $('tvsel').innerHTML='';
   var vs=speechSynthesis.getVoices();
-  var preferred=['Microsoft Xiaoxiao Online (Natural)','Microsoft Yunxi Online (Natural)','Tingting','Meijia'];
-  var found=preferred.map(function(n){return vs.find(function(v){return v.name===n;});}).filter(Boolean);
-  var list=found.length?found:vs.filter(function(v){return v.lang.indexOf('zh')===0;});
-  if(!list.length)list=vs.slice(0,10);
-  list.forEach(function(v){var o=document.createElement('option');o.value=v.name;o.textContent=v.name;$('tvsel').appendChild(o);});
+  var natural=vs.filter(function(v){return /natural/i.test(v.name)&&v.lang.indexOf('zh')===0;});
+  var list=natural.length?natural:vs.filter(function(v){return v.lang.indexOf('zh')===0;});
+  if(!list.length)list=vs.slice(0,5);
+  list.slice(0,5).forEach(function(v){var o=document.createElement('option');o.value=v.name;o.textContent=v.name;$('tvsel').appendChild(o);});
   if(!vs.length){var o=document.createElement('option');o.textContent='（無可用語音）';$('tvsel').appendChild(o);}
 }
 if(speechSynthesis.onvoiceschanged!==undefined)speechSynthesis.onvoiceschanged=fillVoices;setTimeout(fillVoices,500);

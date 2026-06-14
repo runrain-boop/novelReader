@@ -579,8 +579,8 @@ function buildShelf(filter){
   items.forEach(function(item){
     var n=item.n,i=item.i,st=novelStatus(n);
     if(filter!=='all'&&st!==filter)return;
-    var rc=bkReadLen(i),total=n.chapters?n.chapters.length:0;
-    var pct=total>0?Math.round(rc/total*100):0;
+    var rc=(n.posIdx||0)+1,total=n.chapters?n.chapters.length:0;
+    var pct=total>0?Math.round((n.posIdx||0)/total*100):0;
     var isCur=G.cur===i;
     var card=document.createElement('div');
     card.className='sc'+(isCur?' cur':'');

@@ -1227,11 +1227,59 @@ function showOverview(){
 
 // ── TTS ──────────────────────────────────────────────────
 $('btts').addEventListener('click',function(){$('ttp').classList.toggle('show');$('setp').classList.remove('show');$('expp').classList.remove('show');$('syncp').classList.remove('show');});$('tplaybtn').addEventListener('click',togTTS);
-function fillVoices(){$('tvsel').innerHTML='';var vs=speechSynthesis.getVoices(),zh=vs.filter(function(v){return v.lang.indexOf('zh')===0;});(zh.length?zh:vs.slice(0,15)).forEach(function(v){var o=document.createElement('option');o.value=v.name;o.textContent=v.name+' ('+v.lang+')';$('tvsel').appendChild(o);});}
+function fillVoices(){
+  $('tvsel').innerHTML='';
+  var vs=speechSynthesis.getVoices();
+  var zh=vs.filter(function(v){return v.lang.indexOf('zh')===0;});
+  var ot=vs.filter(function(v){return v.lang.indexOf('zh')!==0;});
+  if(zh.length){var g=document.createElement('optgroup');g.label='中文語音（建議選帶 Natural/Online 的）';zh.forEach(function(v){var o=document.createElement('option');o.value=v.name;o.textContent=v.name+' ('+v.lang+')';g.appendChild(o);});$('tvsel').appendChild(g);}
+  if(ot.length){var g2=document.createElement('optgroup');g2.label='其他語音';ot.slice(0,30).forEach(function(v){var o=document.createElement('option');o.value=v.name;o.textContent=v.name+' ('+v.lang+')';g2.appendChild(o);});$('tvsel').appendChild(g2);}
+  if(!vs.length){var o=document.createElement('option');o.textContent='（無可用語音）';$('tvsel').appendChild(o);}
+}
 if(speechSynthesis.onvoiceschanged!==undefined)speechSynthesis.onvoiceschanged=fillVoices;setTimeout(fillVoices,500);
 $('trate').addEventListener('input',function(){$('rv').textContent=parseFloat(this.value).toFixed(1);});$('tpitch').addEventListener('input',function(){$('pv').textContent=parseFloat(this.value).toFixed(1);});$('tvol').addEventListener('input',function(){$('vv').textContent=parseFloat(this.value).toFixed(1);});
 function togTTS(){G.ttsOn?stopTTS():startTTS();}
-function startTTS(){if(G.cur<0)return;speechSynthesis.cancel();var ch=G.library[G.cur].chapters[G.idx];var text=(ch.content||ch.title||'').replace(/\n/g,'。');if(!text)return;var u=new SpeechSynthesisUtterance(text);var v=speechSynthesis.getVoices().find(function(x){return x.name===$('tvsel').value;});if(v)u.voice=v;u.rate=parseFloat($('trate').value);u.pitch=parseFloat($('tpitch').value);u.volume=parseFloat($('tvol').value);u.onend=function(){G.ttsOn=false;$('tplaybtn').textContent='▶ 開始朗讀';$('btts').classList.remove('on');};speechSynthesis.speak(u);G.ttsOn=true;$('tplaybtn').textContent='⏹ 停止朗讀';$('btts').classList.add('on');}
+function startTTS(){
+  if(G.cur<0||!G.library[G.cur])return;
+  speechSynthesis.cancel();
+  var ch=G.library[G.cur].chapters[G.idx];
+  if(!ch)return;
+  // Wait for content to load if needed
+  if(!ch.content){
+    var _w=0;var _wi=setInterval(function(){_w++;var c=G.library[G.cur]&&G.library[G.cur].chapters[G.idx];if((c&&c.content)||_w>15){clearInterval(_wi);if(G.ttsOn&&c&&c.content)startTTS();}},300);
+    G.ttsOn=true;$('tplaybtn').textContent='⏹ 停止朗讀';$('btts').classList.add('on');return;
+  }
+  var text;
+  if(PM.on&&PM.pages&&PM.pages[PM.pageIdx]&&PM.pages[PM.pageIdx].length){
+    text=PM.pages[PM.pageIdx].filter(function(l){return l.trim();}).join('，');
+  } else {
+    text=ch.content.split('\n').filter(function(l){return l.trim();}).join('，');
+  }
+  if(!text.trim())return;
+  var u=new SpeechSynthesisUtterance(text);
+  var v=speechSynthesis.getVoices().find(function(x){return x.name===$('tvsel').value;});
+  if(v)u.voice=v;
+  u.rate=parseFloat($('trate').value);u.pitch=parseFloat($('tpitch').value);u.volume=parseFloat($('tvol').value);
+  u.onend=function(){
+    if(!G.ttsOn)return;
+    if(PM.on){
+      var tp=$('pw').classList.contains('twopage'),step=tp?2:1;
+      if(PM.pageIdx+step<PM.pages.length){pageNext();setTimeout(startTTS,400);}
+      else ttsNextChapter();
+    } else {
+      ttsNextChapter();
+    }
+  };
+  speechSynthesis.speak(u);
+  G.ttsOn=true;$('tplaybtn').textContent='⏹ 停止朗讀';$('btts').classList.add('on');
+}
+function ttsNextChapter(){
+  if(!G.library[G.cur])return;
+  var nc=G.idx+1;
+  if(nc>=G.library[G.cur].chapters.length){stopTTS();return;}
+  showChapter(nc,0);
+  var _t=0;var _i=setInterval(function(){_t++;var c=G.library[G.cur]&&G.library[G.cur].chapters[G.idx];if((c&&c.content)||_t>15){clearInterval(_i);if(G.ttsOn)startTTS();}},300);
+}
 function stopTTS(){speechSynthesis.cancel();G.ttsOn=false;$('tplaybtn').textContent='▶ 開始朗讀';$('btts').classList.remove('on');}
 
 // ── Settings ─────────────────────────────────────────────

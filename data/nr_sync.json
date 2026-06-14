@@ -22909,9 +22909,9 @@
       "finishDate": "",
       "review": "",
       "notes": [],
-      "posIdx": 0,
+      "posIdx": 23,
       "posPidx": 0,
-      "posAt": "2026-06-14T16:27:57.642Z",
+      "posAt": "2026-06-14T16:37:40.848Z",
       "statusAt": "",
       "chapters": [
         {
@@ -28160,7 +28160,8 @@
       0
     ],
     "https://www.52shuku.net/chongsheng/h0Uc.html": [
-      0
+      0,
+      23
     ]
   },
   "deleted": [
@@ -28170,5 +28171,5 @@
     "https://www.twking.org/153_153180/",
     "https://www.twking.org/187_187758/"
   ],
-  "updated_at": "2026-06-14T16:32:53.852Z"
+  "updated_at": "2026-06-14T16:37:44.992Z"
 }

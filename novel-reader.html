@@ -1232,10 +1232,11 @@ $('btts').addEventListener('click',function(){$('ttp').classList.toggle('show');
 function fillVoices(){
   $('tvsel').innerHTML='';
   var vs=speechSynthesis.getVoices();
-  var zh=vs.filter(function(v){return v.lang.indexOf('zh')===0;});
-  var ot=vs.filter(function(v){return v.lang.indexOf('zh')!==0;});
-  if(zh.length){var g=document.createElement('optgroup');g.label='中文語音（建議選帶 Natural/Online 的）';zh.forEach(function(v){var o=document.createElement('option');o.value=v.name;o.textContent=v.name+' ('+v.lang+')';g.appendChild(o);});$('tvsel').appendChild(g);}
-  if(ot.length){var g2=document.createElement('optgroup');g2.label='其他語音';ot.slice(0,30).forEach(function(v){var o=document.createElement('option');o.value=v.name;o.textContent=v.name+' ('+v.lang+')';g2.appendChild(o);});$('tvsel').appendChild(g2);}
+  var preferred=['Microsoft Xiaoxiao Online (Natural)','Microsoft Yunxi Online (Natural)','Tingting','Meijia'];
+  var found=preferred.map(function(n){return vs.find(function(v){return v.name===n;});}).filter(Boolean);
+  var list=found.length?found:vs.filter(function(v){return v.lang.indexOf('zh')===0;});
+  if(!list.length)list=vs.slice(0,10);
+  list.forEach(function(v){var o=document.createElement('option');o.value=v.name;o.textContent=v.name;$('tvsel').appendChild(o);});
   if(!vs.length){var o=document.createElement('option');o.textContent='（無可用語音）';$('tvsel').appendChild(o);}
 }
 if(speechSynthesis.onvoiceschanged!==undefined)speechSynthesis.onvoiceschanged=fillVoices;setTimeout(fillVoices,500);

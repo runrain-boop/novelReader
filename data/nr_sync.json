@@ -21078,9 +21078,9 @@
       "finishDate": "",
       "review": "",
       "notes": [],
-      "posIdx": 268,
-      "posPidx": 8,
-      "posAt": "2026-06-14T18:38:10.745Z",
+      "posIdx": 269,
+      "posPidx": 0,
+      "posAt": "2026-06-14T18:38:31.287Z",
       "statusAt": "",
       "chapters": [
         {
@@ -26335,7 +26335,8 @@
       264,
       265,
       266,
-      267
+      267,
+      269
     ]
   },
   "deleted": [
@@ -26347,5 +26348,5 @@
     "https://www.52shuku.net/xiandaidushi/1488.html",
     "https://www.52shuku.net/chongsheng/hvWX.html"
   ],
-  "updated_at": "2026-06-14T18:38:23.284Z"
+  "updated_at": "2026-06-14T18:38:34.812Z"
 }

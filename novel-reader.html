@@ -1232,12 +1232,12 @@ $('btts').addEventListener('click',function(){$('ttp').classList.toggle('show');
 function fillVoices(){
   $('tvsel').innerHTML='';
   var vs=speechSynthesis.getVoices();
-  if(!vs.length){var o=document.createElement('option');o.textContent='（無可用語音）';$('tvsel').appendChild(o);return;}
-  var zh=vs.filter(function(v){return v.lang.indexOf('zh')===0;});
+  if(!vs.length){var o=document.createElement('option');o.textContent='（語音載入中…）';$('tvsel').appendChild(o);return;}
+  var zh=vs.filter(function(v){return v.lang.indexOf('zh')>=0||/tingting|meijia/i.test(v.name);});
   var zhNat=zh.filter(function(v){return /natural/i.test(v.name);});
   var zhRest=zh.filter(function(v){return !/natural/i.test(v.name);});
   var list=zhNat.concat(zhRest).slice(0,5);
-  if(!list.length)list=vs.slice(0,5);
+  if(!list.length){var o=document.createElement('option');o.textContent='（未找到中文語音）';$('tvsel').appendChild(o);return;}
   list.forEach(function(v){var o=document.createElement('option');o.value=v.name;o.textContent=v.name;$('tvsel').appendChild(o);});
   var rec=['Microsoft Xiaoxiao Online (Natural)','Microsoft Yunxi Online (Natural)','Tingting','Meijia'];
   var best=rec.find(function(n){return list.some(function(v){return v.name===n;});});

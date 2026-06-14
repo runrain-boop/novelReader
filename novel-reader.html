@@ -1233,11 +1233,15 @@ function fillVoices(){
   $('tvsel').innerHTML='';
   var vs=speechSynthesis.getVoices();
   if(!vs.length){var o=document.createElement('option');o.textContent='（無可用語音）';$('tvsel').appendChild(o);return;}
-  var natural=vs.filter(function(v){return /natural/i.test(v.name);});
-  var zh=vs.filter(function(v){return v.lang.indexOf('zh')===0&&!/natural/i.test(v.name);});
-  var list=natural.concat(zh).slice(0,5);
+  var zh=vs.filter(function(v){return v.lang.indexOf('zh')===0;});
+  var zhNat=zh.filter(function(v){return /natural/i.test(v.name);});
+  var zhRest=zh.filter(function(v){return !/natural/i.test(v.name);});
+  var list=zhNat.concat(zhRest).slice(0,5);
   if(!list.length)list=vs.slice(0,5);
   list.forEach(function(v){var o=document.createElement('option');o.value=v.name;o.textContent=v.name;$('tvsel').appendChild(o);});
+  var rec=['Microsoft Xiaoxiao Online (Natural)','Microsoft Yunxi Online (Natural)','Tingting','Meijia'];
+  var best=rec.find(function(n){return list.some(function(v){return v.name===n;});});
+  if(best)$('tvsel').value=best;
 }
 if(speechSynthesis.onvoiceschanged!==undefined)speechSynthesis.onvoiceschanged=fillVoices;setTimeout(fillVoices,500);
 $('trate').addEventListener('input',function(){$('rv').textContent=parseFloat(this.value).toFixed(1);});$('tpitch').addEventListener('input',function(){$('pv').textContent=parseFloat(this.value).toFixed(1);});$('tvol').addEventListener('input',function(){$('vv').textContent=parseFloat(this.value).toFixed(1);});

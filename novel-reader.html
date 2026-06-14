@@ -421,6 +421,7 @@ async function checkAndShowDLNotice(bi){
   var notice=$('dl-notice');if(!notice)return;
   notice.style.display='none';
   var bk=G.library[bi];if(!bk)return;
+  if(G.fetching)return;
   var urlChs=(bk.chapters||[]).filter(function(c){return c.url;});
   if(!urlChs.length)return;
   // Check first 3 URL-chapters in memory or IDB
@@ -541,7 +542,7 @@ async function doAutoFetch(url){
     if(!aborted&&done===total){
       var failedCnt=G.library[nIdx].chapters.filter(function(c){return c.url&&(c.content==='（無法擷取）'||/^（失敗：/.test(c.content||''));}).length;
       if(failedCnt>0){flog('⚠️ '+failedCnt+' 章下載失敗','warn');setBadge('done','全'+total+'章('+failedCnt+'失敗)');var _btn=$('dl-btn'),_prog=$('dl-prog'),_notice=$('dl-notice');if(_btn&&_notice){_btn.disabled=false;_btn.textContent='↻ 重試失敗章節';_btn.setAttribute('data-retry',nIdx);if(_prog){_prog.style.display='block';_prog.textContent='⚠️ '+failedCnt+'/'+total+' 章失敗，可按上方按鈕重試';}buildTOC();_notice.style.display='block';}}
-      else{flog('🎉 全部'+total+'章完成！','ok');setBadge('done','全'+total+'章 ✓');}
+      else{flog('🎉 全部'+total+'章完成！','ok');setBadge('done','全'+total+'章 ✓');$('dl-notice').style.display='none';}
       fbar(0);save();}
   }
   for(var i=0;i<total&&!aborted;i+=BATCH){var batch=[];for(var j=i;j<Math.min(i+BATCH,total);j++)batch.push(fetchCh(j));await Promise.all(batch);if(aborted)break;if(i+BATCH<total)await new Promise(function(r){setTimeout(r,250);});}

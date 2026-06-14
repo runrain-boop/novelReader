@@ -21310,9 +21310,9 @@
       "finishDate": "",
       "review": "",
       "notes": [],
-      "posIdx": 272,
-      "posPidx": 18,
-      "posAt": "2026-06-14T21:02:51.410Z",
+      "posIdx": 273,
+      "posPidx": 0,
+      "posAt": "2026-06-14T21:03:13.666Z",
       "statusAt": "",
       "chapters": [
         {
@@ -31395,7 +31395,8 @@
       249,
       250,
       271,
-      272
+      272,
+      273
     ],
     "https://www.52shuku.net/chongsheng/hvWX.html": [
       0,
@@ -31417,5 +31418,5 @@
     "https://www.twking.org/153_153180/",
     "https://www.52shuku.net/xiandaidushi/1488.html"
   ],
-  "updated_at": "2026-06-14T21:03:09.256Z"
+  "updated_at": "2026-06-14T21:03:18.194Z"
 }

@@ -527,10 +527,10 @@ async function doAutoFetch(url){
   var ih;try{ih=await proxyFetch(url,15000,function(m){flog(m,'warn');});}catch(e){flog('❌ 抓取失敗：'+e.message,'err');setBadge('err','失敗');G.fetching=false;$('fetchbtn').disabled=false;fbar(0);return;}
   var title=extractTitle(ih);flog('✅ 成功（'+Math.round(ih.length/1024)+'KB）','ok');flog('📚 《'+title+'》');fbar(15);
   var chs=extractLinks(ih,url);
-  if(chs.length<2){var sc=extractContent(ih,title);if(sc.length>200){var ni=addToLibrary({title:title,url:url,chapters:[{title:title,content:sc}]});openNovel(ni);buildShelf(curFilter());flog('✅ 完成','ok');fbar(0);setBadge('done','完成');G.fetching=false;$('fetchbtn').disabled=false;return;}flog('❌ 找不到章節連結','err');setBadge('err','無章節');G.fetching=false;$('fetchbtn').disabled=false;fbar(0);return;}
+  if(chs.length<2){var sc=extractContent(ih,title);if(sc.length>200){var ni=addToLibrary({title:title,url:url,chapters:[{title:title,content:sc}]});openNovel(ni);buildTOC();buildShelf(curFilter());flog('✅ 完成','ok');fbar(0);setBadge('done','完成');G.fetching=false;$('fetchbtn').disabled=false;return;}flog('❌ 找不到章節連結','err');setBadge('err','無章節');G.fetching=false;$('fetchbtn').disabled=false;fbar(0);return;}
   flog('✅ 找到 '+chs.length+' 章','ok');fbar(20);
   var novel={title:title,url:url,chapters:chs.map(function(c){return{title:c.title,url:c.url,content:null};})};
-  var nIdx=addToLibrary(novel);openNovel(nIdx);buildShelf(curFilter());
+  var nIdx=addToLibrary(novel);openNovel(nIdx);buildTOC();buildShelf(curFilter());
   $('chhd').textContent=chs[0].title;$('nt').innerHTML='<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入第一章…</p>';
   var total=chs.length,done=0,failStreak=0,aborted=false,BATCH=2;
   async function fetchCh(i){
@@ -1371,7 +1371,7 @@ async function loadFromGH(){
     merged.library.forEach(function(bk){var k=bk.url||bk.bid,cm=inMem[k]||{};(bk.chapters||[]).forEach(function(ch){if(ch.url)ch.content=cm[ch.url]!=null?cm[ch.url]:null;});});
     var curKey=G.cur>=0&&G.library[G.cur]?G.library[G.cur].url||G.library[G.cur].bid:null;
     G.library=merged.library;dedupLibrary();if(curKey){var ni=G.library.findIndex(function(bk){return(bk.url||bk.bid)===curKey;});if(ni>=0)G.cur=ni;}G.read=merged.read;G.deleted=merged.deleted||[];
-    save();buildShelf();
+    save();buildShelf();if(G.cur>=0&&G.library[G.cur])buildTOC();
     setSyncSt('ok','上次同步：'+new Date().toLocaleTimeString());
   }catch(e){setSyncSt('err',e.message);setTimeout(loadFromGH,15000);}
 }

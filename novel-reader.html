@@ -519,37 +519,37 @@ function extractContent(html,chTitle){var div=document.createElement('div');var 
 function extractTitle(html){var m=html.match(/<title[^>]*>([^<]+)<\/title>/i);if(!m)return'未命名';return m[1].replace(/[-_|丨–—].*$/,'').replace(/最新章節.*$/,'').replace(/在線.*$/,'').replace(/免費.*$/,'').replace(/小說.*$/,'').trim()||'未命名';}
 
 // ── Auto fetch ───────────────────────────────────────────
-$('fetchbtn').addEventListener('click',function(){var url=$('urlin').value.trim();if(!url.startsWith('http')){flogClear();flog('❌ 請輸入完整網址','err');return;}doAutoFetch(url);});
+$('fetchbtn').addEventListener('click',function(){var url=$('urlin').value.trim();if(!url.startsWith('http')){flogClear();flog('❌ 請輸入完整網址','err');return;}doAutoFetch(url).catch(function(e){G.fetching=false;$('fetchbtn').disabled=false;console.error('fetch error:',e);});});
 $('urlin').addEventListener('keydown',function(e){if(e.key==='Enter')$('fetchbtn').click();});
 
 async function doAutoFetch(url){
   if(G.fetching)return;G.fetching=true;$('fetchbtn').disabled=true;flogClear();fbar(5);setBadge('loading','抓取中…');flog('<span class="spin"></span> 正在抓取目錄頁…');
-  try{
-    var ih;try{ih=await proxyFetch(url,15000,function(m){flog(m,'warn');});}catch(e){flog('❌ 抓取失敗：'+e.message,'err');setBadge('err','失敗');fbar(0);return;}
-    var title=extractTitle(ih);flog('✅ 成功（'+Math.round(ih.length/1024)+'KB）','ok');flog('📚 《'+title+'》');fbar(15);
-    var chs=extractLinks(ih,url);
-    if(chs.length<2){var sc=extractContent(ih,title);if(sc.length>200){var ni=addToLibrary({title:title,url:url,chapters:[{title:title,content:sc}]});openNovel(ni);flog('✅ 完成','ok');fbar(0);setBadge('done','完成');return;}flog('❌ 找不到章節連結','err');setBadge('err','無章節');fbar(0);return;}
-    flog('✅ 找到 '+chs.length+' 章','ok');fbar(20);
-    var novel={title:title,url:url,chapters:chs.map(function(c){return{title:c.title,url:c.url,content:null};})};
-    var nIdx=addToLibrary(novel);openNovel(nIdx);
-    $('chhd').textContent=chs[0].title;$('nt').innerHTML='<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入第一章…</p>';
-    var total=chs.length,done=0,failStreak=0,aborted=false,BATCH=2;
-    async function fetchCh(i){
-      if(aborted)return;
-      var bk=G.library[nIdx];if(!bk)return;
-      var ch=bk.chapters[i];if(!ch||!ch.url){if(ch)ch.content='';done++;return;}
-      try{var h=await proxyFetch(ch.url,12000,null);ch.content=extractContent(h,ch.title);if(!ch.content)ch.content='（無法擷取）';else{idbSet(ch.url,ch.content);failStreak=0;}}
-      catch(e){ch.content='（失敗：'+e.message+'）';failStreak++;if(failStreak>=5){aborted=true;flog('⛔ 連續 '+failStreak+' 次連線失敗，已中止抓取。書籍已加入書架，可手動刪除。','err');setBadge('err','中止');fbar(0);save();return;}}
-      done++;fbar(20+Math.round(done/total*75));setBadge('loading',done+'/'+total);updateTOCItem(i);if(i===G.idx&&G.cur===nIdx)showChapter(i);
-      if(!aborted&&done===total){
-        var bk2=G.library[nIdx];
-        var failedCnt=bk2?bk2.chapters.filter(function(c){return c.url&&(c.content==='（無法擷取）'||/^（失敗：/.test(c.content||''));}).length:0;
-        if(failedCnt>0){flog('⚠️ '+failedCnt+' 章下載失敗','warn');setBadge('done','全'+total+'章('+failedCnt+'失敗)');var _btn=$('dl-btn'),_prog=$('dl-prog'),_notice=$('dl-notice');if(_btn&&_notice){_btn.disabled=false;_btn.textContent='↻ 重試失敗章節';_btn.setAttribute('data-retry',nIdx);if(_prog){_prog.style.display='block';_prog.textContent='⚠️ '+failedCnt+'/'+total+' 章失敗，可按上方按鈕重試';}buildTOC();_notice.style.display='block';}}
-        else{flog('🎉 全部'+total+'章完成！','ok');setBadge('done','全'+total+'章 ✓');$('dl-notice').style.display='none';}
-        fbar(0);save();}
-    }
-    for(var i=0;i<total&&!aborted;i+=BATCH){var batch=[];for(var j=i;j<Math.min(i+BATCH,total);j++)batch.push(fetchCh(j));await Promise.all(batch);if(aborted)break;if(i+BATCH<total)await new Promise(function(r){setTimeout(r,250);});}
-  }finally{G.fetching=false;$('fetchbtn').disabled=false;}
+  var ih;try{ih=await proxyFetch(url,15000,function(m){flog(m,'warn');});}catch(e){flog('❌ 抓取失敗：'+e.message,'err');setBadge('err','失敗');G.fetching=false;$('fetchbtn').disabled=false;fbar(0);return;}
+  var title=extractTitle(ih);flog('✅ 成功（'+Math.round(ih.length/1024)+'KB）','ok');flog('📚 《'+title+'》');fbar(15);
+  var chs=extractLinks(ih,url);
+  if(chs.length<2){var sc=extractContent(ih,title);if(sc.length>200){var ni=addToLibrary({title:title,url:url,chapters:[{title:title,content:sc}]});openNovel(ni);buildShelf(curFilter());flog('✅ 完成','ok');fbar(0);setBadge('done','完成');G.fetching=false;$('fetchbtn').disabled=false;return;}flog('❌ 找不到章節連結','err');setBadge('err','無章節');G.fetching=false;$('fetchbtn').disabled=false;fbar(0);return;}
+  flog('✅ 找到 '+chs.length+' 章','ok');fbar(20);
+  var novel={title:title,url:url,chapters:chs.map(function(c){return{title:c.title,url:c.url,content:null};})};
+  var nIdx=addToLibrary(novel);openNovel(nIdx);buildShelf(curFilter());
+  $('chhd').textContent=chs[0].title;$('nt').innerHTML='<p style="color:var(--txd);text-align:center"><span class="spin"></span> 載入第一章…</p>';
+  var total=chs.length,done=0,failStreak=0,aborted=false,BATCH=2;
+  async function fetchCh(i){
+    if(aborted)return;
+    var bk=G.library[nIdx];if(!bk){done++;return;}
+    var ch=bk.chapters[i];if(!ch||!ch.url){if(ch)ch.content='';done++;return;}
+    try{var h=await proxyFetch(ch.url,12000,null);ch.content=extractContent(h,ch.title);if(!ch.content)ch.content='（無法擷取）';else{idbSet(ch.url,ch.content);failStreak=0;}}
+    catch(e){ch.content='（失敗：'+e.message+'）';failStreak++;if(failStreak>=5){aborted=true;flog('⛔ 連續 '+failStreak+' 次連線失敗，已中止抓取。書籍已加入書架，可手動刪除。','err');setBadge('err','中止');fbar(0);save();return;}}
+    done++;fbar(20+Math.round(done/total*75));setBadge('loading',done+'/'+total);updateTOCItem(i);if(i===G.idx&&G.cur===nIdx)showChapter(i);
+    if(!aborted&&done===total){
+      var bk2=G.library[nIdx];
+      var failedCnt=bk2?bk2.chapters.filter(function(c){return c.url&&(c.content==='（無法擷取）'||/^（失敗：/.test(c.content||''));}).length:0;
+      if(failedCnt>0){flog('⚠️ '+failedCnt+' 章下載失敗','warn');setBadge('done','全'+total+'章('+failedCnt+'失敗)');var _btn=$('dl-btn'),_prog=$('dl-prog'),_notice=$('dl-notice');if(_btn&&_notice){_btn.disabled=false;_btn.textContent='↻ 重試失敗章節';_btn.setAttribute('data-retry',nIdx);if(_prog){_prog.style.display='block';_prog.textContent='⚠️ '+failedCnt+'/'+total+' 章失敗，可按上方按鈕重試';}buildTOC();_notice.style.display='block';}}
+      else{flog('🎉 全部'+total+'章完成！','ok');setBadge('done','全'+total+'章 ✓');$('dl-notice').style.display='none';}
+      buildShelf(curFilter());fbar(0);save();}
+  }
+  for(var i=0;i<total&&!aborted;i+=BATCH){var batch=[];for(var j=i;j<Math.min(i+BATCH,total);j++)batch.push(fetchCh(j));await Promise.all(batch);if(aborted)break;if(i+BATCH<total)await new Promise(function(r){setTimeout(r,250);});}
+  G.fetching=false;$('fetchbtn').disabled=false;
+  buildShelf(curFilter());
 }
 
 // ── Library ──────────────────────────────────────────────

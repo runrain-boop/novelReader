@@ -9,7 +9,7 @@
       "status": "reading",
       "pubStatus": "dropped",
       "startDate": "2026-06-11",
-      "finishDate": "",
+      "finishDate": "2026-06-14",
       "review": "",
       "notes": [
         {
@@ -27279,7 +27279,7 @@
       "notes": [],
       "posIdx": 0,
       "posPidx": 0,
-      "posAt": "2026-06-14T04:15:18.111Z",
+      "posAt": "2026-06-14T08:02:17.465Z",
       "statusAt": "",
       "chapters": [
         {
@@ -28257,5 +28257,5 @@
     "https://www.twking.org/153_153180/",
     "https://www.twking.org/187_187758/"
   ],
-  "updated_at": "2026-06-14T04:53:41.672Z"
+  "updated_at": "2026-06-14T08:02:24.469Z"
 }

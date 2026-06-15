@@ -26048,9 +26048,9 @@
       "finishDate": "",
       "review": "",
       "notes": [],
-      "posIdx": 346,
-      "posPidx": 14,
-      "posAt": "2026-06-15T20:02:43.212Z",
+      "posIdx": 347,
+      "posPidx": 0,
+      "posAt": "2026-06-15T20:03:18.926Z",
       "statusAt": "",
       "chapters": [
         {
@@ -31422,7 +31422,8 @@
       343,
       344,
       345,
-      346
+      346,
+      347
     ],
     "https://www.twking.org/187_187758/": [
       0,
@@ -31439,5 +31440,5 @@
     "https://www.twking.org/153_153180/",
     "https://www.52shuku.net/xiandaidushi/1488.html"
   ],
-  "updated_at": "2026-06-15T20:02:59.978Z"
+  "updated_at": "2026-06-15T20:03:23.568Z"
 }

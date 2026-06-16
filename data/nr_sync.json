@@ -1,4 +1,6 @@
 {
+  "v": 2,
+  "updated_at": "2026-06-16T06:28:28.186Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -53,6 +55,10 @@
           "pageIdx": 4
         }
       ],
+      "posIdx": 569,
+      "posPidx": 0,
+      "posAt": "2026-06-15T18:14:43.666Z",
+      "statusAt": "2026-06-14T08:06:47.292Z",
       "chapters": [
         {
           "title": "開始閱讀",
@@ -2694,11 +2700,7 @@
           "title": "DMCA",
           "url": "https://www.twking.org/DMCA.html"
         }
-      ],
-      "posIdx": 569,
-      "posPidx": 0,
-      "posAt": "2026-06-15T18:14:43.666Z",
-      "statusAt": "2026-06-14T08:06:47.292Z"
+      ]
     },
     {
       "bid": "bk17811569900971ynx",
@@ -2723,6 +2725,10 @@
           "pageIdx": 0
         }
       ],
+      "posIdx": 0,
+      "posPidx": 0,
+      "posAt": "",
+      "statusAt": "",
       "chapters": [
         {
           "title": "開始閱讀",
@@ -3656,11 +3662,7 @@
           "title": "正文 第234章攜手一生完",
           "url": "https://www.twking.org/5_5662/75107914.html"
         }
-      ],
-      "posIdx": 0,
-      "posPidx": 0,
-      "posAt": "",
-      "statusAt": ""
+      ]
     },
     {
       "bid": "bk17811617051843tl1",
@@ -3674,6 +3676,10 @@
       "finishDate": "",
       "review": "",
       "notes": [],
+      "posIdx": 0,
+      "posPidx": 0,
+      "posAt": "",
+      "statusAt": "",
       "chapters": [
         {
           "title": "開始閱讀",
@@ -3971,11 +3977,7 @@
           "title": "免責聲明",
           "url": "https://www.twking.org/Disclaimer.html"
         }
-      ],
-      "posIdx": 0,
-      "posPidx": 0,
-      "posAt": "",
-      "statusAt": ""
+      ]
     },
     {
       "bid": "bk17811964394904gnz",
@@ -11658,6 +11660,10 @@
       "finishDate": "",
       "review": "",
       "notes": [],
+      "posIdx": 0,
+      "posPidx": 0,
+      "posAt": "",
+      "statusAt": "",
       "chapters": [
         {
           "title": "小說王-台灣最大小說網",
@@ -22095,11 +22101,7 @@
           "title": "免責聲明",
           "url": "https://www.twking.org/Disclaimer.html"
         }
-      ],
-      "posIdx": 0,
-      "posPidx": 0,
-      "posAt": "",
-      "statusAt": ""
+      ]
     },
     {
       "bid": "bk17811569900972iis",
@@ -23224,6 +23226,10 @@
       "finishDate": "",
       "review": "",
       "notes": [],
+      "posIdx": 0,
+      "posPidx": 0,
+      "posAt": "",
+      "statusAt": "2026-06-14T08:06:37.319Z",
       "chapters": [
         {
           "title": "小說王-台灣最大小說網",
@@ -28961,11 +28967,7 @@
           "title": "免責聲明",
           "url": "https://www.twking.org/Disclaimer.html"
         }
-      ],
-      "posIdx": 0,
-      "posPidx": 0,
-      "posAt": "",
-      "statusAt": "2026-06-14T08:06:37.319Z"
+      ]
     },
     {
       "bid": "bk17814097647207hoz",
@@ -29860,7 +29862,7 @@
       "notes": [],
       "posIdx": 4,
       "posPidx": 0,
-      "posAt": "2026-06-14T19:05:00.961Z",
+      "posAt": "2026-06-16T06:28:24.559Z",
       "statusAt": "",
       "chapters": [
         {
@@ -34037,6 +34039,5 @@
     "https://www.twking.org/153_153179/",
     "https://www.twking.org/153_153180/",
     "https://www.52shuku.net/xiandaidushi/1488.html"
-  ],
-  "updated_at": "2026-06-16T06:28:04.795Z"
+  ]
 }

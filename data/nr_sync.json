@@ -1,4 +1,6 @@
 {
+  "v": 2,
+  "updated_at": "2026-06-18T09:09:38.049Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -3990,8 +3992,8 @@
       "review": "",
       "notes": [],
       "posIdx": 527,
-      "posPidx": 0,
-      "posAt": "2026-06-18T09:09:12.667Z",
+      "posPidx": 2,
+      "posAt": "2026-06-18T09:09:22.586Z",
       "statusAt": "",
       "chapters": [
         {
@@ -34136,6 +34138,5 @@
     "https://www.twking.org/153_153179/",
     "https://www.twking.org/153_153180/",
     "https://www.52shuku.net/xiandaidushi/1488.html"
-  ],
-  "updated_at": "2026-06-18T09:09:18.052Z"
+  ]
 }

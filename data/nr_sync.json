@@ -1,4 +1,6 @@
 {
+  "v": 2,
+  "updated_at": "2026-06-23T14:42:43.486Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -28980,8 +28982,8 @@
       "review": "",
       "notes": [],
       "posIdx": 22,
-      "posPidx": 0,
-      "posAt": "2026-06-23T14:42:15.134Z",
+      "posPidx": 2,
+      "posAt": "2026-06-23T14:42:28.008Z",
       "statusAt": "2026-06-23T14:01:35.920Z",
       "chapters": [
         {
@@ -34309,9 +34311,6 @@
     "11": [
       0
     ],
-    "https://www.52shuku.net/yanqing/31_b/bkdXK.html": [
-      0
-    ],
     "https://www.twking.org/56_56944/": [
       0
     ],
@@ -35463,6 +35462,9 @@
       1280,
       1281
     ],
+    "https://www.52shuku.net/yanqing/31_b/bkdXK.html": [
+      0
+    ],
     "https://www.twking.org/187_187758/": [
       0,
       1,
@@ -35513,6 +35515,5 @@
     "https://www.twking.org/153_153179/",
     "https://www.twking.org/153_153180/",
     "https://www.52shuku.net/xiandaidushi/1488.html"
-  ],
-  "updated_at": "2026-06-23T14:42:27.993Z"
+  ]
 }

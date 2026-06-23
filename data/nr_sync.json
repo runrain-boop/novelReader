@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-06-23T00:03:09.496Z",
+  "updated_at": "2026-06-23T00:03:44.317Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -28865,9 +28865,9 @@
       "finishDate": "",
       "review": "",
       "notes": [],
-      "posIdx": 1,
-      "posPidx": 14,
-      "posAt": "2026-06-23T00:02:53.955Z",
+      "posIdx": 2,
+      "posPidx": 0,
+      "posAt": "2026-06-23T00:03:40.662Z",
       "statusAt": "2026-06-14T08:06:40.853Z",
       "chapters": [
         {
@@ -33601,7 +33601,8 @@
     ],
     "https://www.twking.org/154_154868/": [
       0,
-      1
+      1,
+      2
     ],
     "https://www.52shuku.net/chongsheng/hvWX.html": [
       0,

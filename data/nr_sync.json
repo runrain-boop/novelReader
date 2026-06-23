@@ -1,6 +1,4 @@
 {
-  "v": 2,
-  "updated_at": "2026-06-23T14:01:31.127Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -20195,7 +20193,7 @@
       "author": "",
       "intro": "",
       "url": "https://www.twking.org/154_154868/",
-      "status": "want",
+      "status": "reading",
       "pubStatus": "",
       "startDate": "2026-06-14",
       "finishDate": "",
@@ -20204,7 +20202,7 @@
       "posIdx": 20,
       "posPidx": 8,
       "posAt": "2026-06-23T13:17:49.848Z",
-      "statusAt": "2026-06-14T08:06:40.853Z",
+      "statusAt": "2026-06-23T14:01:35.920Z",
       "chapters": [
         {
           "title": "開始閱讀",
@@ -21074,7 +21072,7 @@
       "author": "",
       "intro": "",
       "url": "https://www.52shuku.net/chongsheng/hvWX.html",
-      "status": "reading",
+      "status": "want",
       "pubStatus": "",
       "startDate": "2026-06-14",
       "finishDate": "",
@@ -21083,7 +21081,7 @@
       "posIdx": 4,
       "posPidx": 0,
       "posAt": "2026-06-16T08:38:40.479Z",
-      "statusAt": "",
+      "statusAt": "2026-06-23T14:01:43.175Z",
       "chapters": [
         {
           "title": "穿越耽美",
@@ -31336,5 +31334,6 @@
     "https://www.twking.org/153_153180/",
     "https://www.twking.org/187_187758/",
     "https://www.52shuku.net/xiandaidushi/1488.html"
-  ]
+  ],
+  "updated_at": "2026-06-23T14:01:43.522Z"
 }

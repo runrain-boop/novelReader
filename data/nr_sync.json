@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-06-26T13:05:52.872Z",
+  "updated_at": "2026-06-26T13:06:11.613Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -33439,9 +33439,9 @@
       "finishDate": "",
       "review": "",
       "notes": [],
-      "posIdx": 2,
-      "posPidx": 12,
-      "posAt": "2026-06-26T13:05:37.348Z",
+      "posIdx": 3,
+      "posPidx": 0,
+      "posAt": "2026-06-26T13:06:08.094Z",
       "statusAt": "",
       "chapters": [
         {
@@ -35122,7 +35122,8 @@
     "https://www.52shuku.net/xiandaidushi/pm/h5tG.html": [
       0,
       1,
-      2
+      2,
+      3
     ],
     "https://www.52shuku.net/yanqing/31_b/bkdXK.html": [
       0

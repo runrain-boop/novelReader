@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-06-26T19:26:25.597Z",
+  "updated_at": "2026-06-26T19:59:37.826Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -33441,7 +33441,7 @@
       "notes": [],
       "posIdx": 21,
       "posPidx": 0,
-      "posAt": "2026-06-26T18:45:12.552Z",
+      "posAt": "2026-06-26T19:59:32.056Z",
       "statusAt": "",
       "chapters": [
         {
@@ -35116,9 +35116,6 @@
     }
   ],
   "read": {
-    "11": [
-      0
-    ],
     "https://www.52shuku.net/xiandaidushi/pm/h5tG.html": [
       0,
       1,

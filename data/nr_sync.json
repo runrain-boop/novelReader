@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-07-11T06:15:43.280Z",
+  "updated_at": "2026-07-11T06:17:10.019Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -35137,9 +35137,9 @@
       "finishDate": "",
       "review": "",
       "notes": [],
-      "posIdx": 1,
-      "posPidx": 10,
-      "posAt": "2026-07-11T06:15:43.202Z",
+      "posIdx": 2,
+      "posPidx": 0,
+      "posAt": "2026-07-11T06:17:06.365Z",
       "statusAt": "2026-07-02T13:42:04.628Z",
       "chapters": [
         {
@@ -46818,7 +46818,8 @@
     ],
     "https://www.52shuku.net/jiakong/11_b/bkega.html": [
       0,
-      1
+      1,
+      2
     ],
     "https://www.twking.org/187_187758/": [
       0,

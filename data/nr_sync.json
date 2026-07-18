@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-07-18T10:10:12.452Z",
+  "updated_at": "2026-07-18T10:10:25.357Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -35131,16 +35131,16 @@
       "author": "",
       "intro": "",
       "url": "https://www.52shuku.net/jiakong/11_b/bkega.html",
-      "status": "want",
+      "status": "done",
       "pubStatus": "",
       "startDate": "2026-07-02",
-      "finishDate": "",
+      "finishDate": "2026-07-18",
       "review": "",
       "notes": [],
       "posIdx": 264,
-      "posPidx": 10,
-      "posAt": "2026-07-18T10:10:12.075Z",
-      "statusAt": "2026-07-02T13:42:04.628Z",
+      "posPidx": 22,
+      "posAt": "2026-07-18T10:10:14.488Z",
+      "statusAt": "2026-07-18T10:10:21.303Z",
       "chapters": [
         {
           "title": "开始阅读",

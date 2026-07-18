@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-07-18T20:34:26.766Z",
+  "updated_at": "2026-07-18T20:34:57.899Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -32840,9 +32840,9 @@
       "finishDate": "",
       "review": "",
       "notes": [],
-      "posIdx": 20,
-      "posPidx": 20,
-      "posAt": "2026-07-18T20:34:19.940Z",
+      "posIdx": 21,
+      "posPidx": 0,
+      "posAt": "2026-07-18T20:34:54.110Z",
       "statusAt": "2026-06-23T14:06:05.997Z",
       "chapters": [
         {
@@ -46711,7 +46711,8 @@
       17,
       18,
       19,
-      20
+      20,
+      21
     ],
     "https://www.52shuku.net/chongsheng/hvWX.html": [
       0,

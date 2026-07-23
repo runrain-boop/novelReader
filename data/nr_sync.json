@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-07-22T18:36:02.260Z",
+  "updated_at": "2026-07-23T12:57:24.956Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -32842,7 +32842,7 @@
       "notes": [],
       "posIdx": 26,
       "posPidx": 8,
-      "posAt": "2026-07-20T08:01:29.671Z",
+      "posAt": "2026-07-23T12:57:18.798Z",
       "statusAt": "2026-06-23T14:06:05.997Z",
       "chapters": [
         {
@@ -35134,7 +35134,7 @@
       "status": "done",
       "pubStatus": "",
       "startDate": "2026-07-02",
-      "finishDate": "",
+      "finishDate": "2026-07-18",
       "review": "",
       "notes": [],
       "posIdx": 1,

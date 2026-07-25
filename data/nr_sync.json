@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-07-25T16:57:51.197Z",
+  "updated_at": "2026-07-25T16:58:08.092Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -45343,9 +45343,9 @@
       "finishDate": "",
       "review": "",
       "notes": [],
-      "posIdx": 45,
-      "posPidx": 22,
-      "posAt": "2026-07-25T16:57:37.217Z",
+      "posIdx": 46,
+      "posPidx": 0,
+      "posAt": "2026-07-25T16:58:04.603Z",
       "statusAt": "",
       "chapters": [
         {
@@ -49046,7 +49046,8 @@
       42,
       43,
       44,
-      45
+      45,
+      46
     ]
   },
   "deleted": [

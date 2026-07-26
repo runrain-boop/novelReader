@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-07-26T18:41:01.071Z",
+  "updated_at": "2026-07-26T18:43:43.827Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -47106,9 +47106,9 @@
       "finishDate": "",
       "review": "",
       "notes": [],
-      "posIdx": 2,
-      "posPidx": 12,
-      "posAt": "2026-07-26T18:40:45.479Z",
+      "posIdx": 3,
+      "posPidx": 0,
+      "posAt": "2026-07-26T18:43:40.178Z",
       "statusAt": "",
       "chapters": [
         {
@@ -51378,7 +51378,8 @@
     "https://www.52shuku.net/jiakong/22_b/bjTGZ.html": [
       0,
       1,
-      2
+      2,
+      3
     ]
   },
   "deleted": [

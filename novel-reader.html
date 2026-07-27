@@ -1410,7 +1410,10 @@ function _mergeSync(local,remote){
       var notes=Object.keys(nm).map(function(k2){return nm[k2];}).sort(function(a,b){return(b.ts||0)-(a.ts||0);});
       var posF=(lo.posAt||'')>=(re.posAt||'')?{posIdx:lo.posIdx||0,posPidx:lo.posPidx||0,posAt:lo.posAt||''}:{posIdx:re.posIdx||0,posPidx:re.posPidx||0,posAt:re.posAt||''};
       var statusF=(lo.statusAt&&lo.statusAt>=(re.statusAt||''))?{status:lo.status||'reading',statusAt:lo.statusAt}:{status:re.status||lo.status||'reading',statusAt:re.statusAt||''};
-      byKey[k]=Object.assign({},re,lo,{chapters:chs,notes:notes},posF,statusF);
+      // notionPageId 只在「這台裝置」推送成功時才會寫入，其他裝置本地必然是空值——
+      // 不能套用「local 永遠贏」的規則，否則會被沒同步過的裝置覆蓋掉，要改成比對哪邊 notionSyncedAt 較新
+      var notionF=(lo.notionSyncedAt||0)>=(re.notionSyncedAt||0)?{notionPageId:lo.notionPageId||re.notionPageId||'',notionSyncedAt:lo.notionSyncedAt||re.notionSyncedAt||0}:{notionPageId:re.notionPageId||lo.notionPageId||'',notionSyncedAt:re.notionSyncedAt||lo.notionSyncedAt||0};
+      byKey[k]=Object.assign({},re,lo,{chapters:chs,notes:notes},posF,statusF,notionF);
     } else {byKey[k]=bk;}
   });
   // Remove deleted books from local side too

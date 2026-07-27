@@ -366,7 +366,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 <div id="syncp" class="panel"><h4>☁ 多裝置同步</h4><p style="font-size:12px;color:var(--txd);margin-bottom:10px;line-height:1.6">輸入 GitHub Personal Access Token 可將書架、筆記與閱讀進度同步至多裝置。<br>Token 僅存在本機瀏覽器，不會上傳伺服器。</p><div class="srow"><label style="white-space:nowrap;flex-shrink:0">GitHub Token</label><input id="sync-pat" type="password" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" style="flex:1;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:12px;outline:none;font-family:var(--ui)"></div><div style="display:flex;gap:8px;margin-top:10px"><button onclick="savePAT()" style="flex:1;padding:8px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer">儲存並同步</button><button onclick="clearPAT()" style="flex:1;padding:8px;background:var(--pn);color:var(--txd);border:1px solid var(--bd);border-radius:7px;font-size:13px;cursor:pointer">清除 Token</button></div><div id="sync-info" style="font-size:11px;color:var(--txd);margin-top:8px;line-height:1.5"></div></div>
 <div id="expp" class="panel"><h4>📦 匯出 / 匯入</h4><select class="exp-sel" id="exp-sel"><option value="all">全部小說</option></select><div class="exp-btns"><button onclick="doExport()" style="background:var(--ac);color:#fff">⬆️ 匯出</button><button onclick="$('imp-file').click()" style="background:var(--pn);color:var(--txd);border:1px solid var(--bd)">⬇️ 匯入</button></div><input type="file" id="imp-file" accept=".json" style="display:none"><div id="exp-stat"></div></div>
 <div id="editp"><div id="edit-box"><h4>✏️ 編輯書籍資訊</h4><div class="ef"><label>書名</label><input id="edit-title" type="text"></div><div class="ef"><label>來源網址</label><div style="display:flex;gap:6px;align-items:center"><input id="edit-url" type="text" readonly style="flex:1;cursor:default;color:var(--txd);"><button id="edit-url-btn" style="flex-shrink:0;padding:8px 10px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:14px;">🔗</button></div></div><div class="ef"><label>作者</label><input id="edit-author" type="text" placeholder="（選填）"></div><div class="ef"><label>簡介</label><textarea id="edit-intro" placeholder="（選填）"></textarea></div><div class="ef"><label>封面</label><div style="display:flex;gap:12px;align-items:flex-start"><div id="cover-preview" style="width:72px;height:108px;border:1px solid var(--bd);border-radius:7px;overflow:hidden;background:var(--pn);display:flex;align-items:center;justify-content:center;flex-shrink:0"></div><div style="display:flex;flex-direction:column;gap:6px;padding-top:2px"><button id="cover-upload-btn" style="padding:7px 12px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:13px;-webkit-appearance:none">📷 上傳封面</button><button id="cover-clear-btn" style="padding:7px 12px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:13px;color:var(--txd);-webkit-appearance:none">✕ 清除</button><input type="file" id="cover-file" accept="image/*" style="display:none"></div></div></div>
-<div class="ef"><label>書評</label><textarea id="edit-review" placeholder="（選填）讀後感、評分等…" style="height:90px"></textarea></div><div class="ef"><label>完本狀態</label><select id="edit-pubstatus" style="padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none;width:100%"><option value="">未標</option><option value="ongoing">連載中</option><option value="completed">已完本</option><option value="dropped">已棄更</option></select></div><div class="ef" style="display:flex;gap:10px"><div style="flex:1"><label style="font-size:12px;color:var(--txd)">開始閱讀</label><input id="edit-start-date" type="date" style="width:100%;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none"></div><div style="flex:1"><label style="font-size:12px;color:var(--txd)">讀完日期</label><input id="edit-finish-date" type="date" style="width:100%;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none"></div></div><div class="ef"><label>章節管理</label><div class="edit-chlist" id="edit-chlist"></div></div><div class="edit-btns"><button onclick="saveEdit()" style="background:var(--ac);color:#fff">✅ 儲存</button><button onclick="closeEdit()" style="background:var(--pn);color:var(--txd);border:1px solid var(--bd)">取消</button></div></div></div>
+<div class="ef"><label>書評</label><textarea id="edit-review" placeholder="（選填）讀後感、評分等…" style="height:90px"></textarea></div><div class="ef"><label>完本狀態</label><select id="edit-pubstatus" style="padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none;width:100%"><option value="">未標</option><option value="ongoing">連載中</option><option value="completed">已完本</option><option value="dropped">已棄更</option></select></div><div class="ef" style="display:flex;gap:10px"><div style="flex:1"><label style="font-size:12px;color:var(--txd)">開始閱讀</label><input id="edit-start-date" type="date" style="width:100%;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none"></div><div style="flex:1"><label style="font-size:12px;color:var(--txd)">讀完日期</label><input id="edit-finish-date" type="date" style="width:100%;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none"></div></div><div class="ef"><label>Notion 閱讀紀錄</label><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span id="notion-status" style="font-size:12px;color:var(--txd)"></span><button type="button" id="notion-push-btn" style="padding:6px 12px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:12px;-webkit-appearance:none">📤 同步到 Notion</button><button type="button" id="notion-settings-btn" title="設定 Notion Token / Database ID" style="padding:6px 10px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:12px;-webkit-appearance:none">⚙</button></div></div><div class="ef"><label>章節管理</label><div class="edit-chlist" id="edit-chlist"></div></div><div class="edit-btns"><button onclick="saveEdit()" style="background:var(--ac);color:#fff">✅ 儲存</button><button onclick="closeEdit()" style="background:var(--pn);color:var(--txd);border:1px solid var(--bd)">取消</button></div></div></div>
 <!-- Note popup -->
 <div id="note-popup">
   <div id="np-quote" style="font-size:12px;color:var(--txd);font-style:italic;margin-bottom:7px;max-height:48px;overflow:hidden;line-height:1.4;border-left:3px solid var(--bd);padding-left:8px"></div>
@@ -607,6 +607,7 @@ function buildShelf(filter){
       '<input type="file" accept="image/*" class="sc-cover-file" data-file-ni="'+i+'" style="display:none">'+
       '<div class="sc-body">'+
         '<span class="sc-src-tag '+(n.url?'src-sync':'src-imp')+'">'+(n.url?'同步':'匯入')+'</span>'+
+        (n.notionPageId?'<span class="sc-src-tag" style="background:rgba(91,77,224,.15);color:#5b4de0;margin-left:4px" title="已同步至 Notion">📔 Notion</span>':'')+
         '<div class="sc-title">'+esc(n.title)+'</div>'+
         (n.author?'<div class="sc-author">'+esc(n.author)+'</div>':'')+
         '<div class="sc-bar-wrap"><div class="sc-bar" style="width:'+pct+'%"></div></div>'+
@@ -975,6 +976,7 @@ function openEdit(){
   $('edit-url-btn').style.opacity=n.url?'1':'0.4';
   $('edit-url-btn').onclick=n.url?function(){window.open(n.url,'_blank');}:null;
   renderEditChList();
+  updateNotionStatusUI();
   $('editp').classList.add('show');
 }
 function renderEditChList(){
@@ -1138,6 +1140,8 @@ $('cover-file').addEventListener('change',function(){
   };fr.readAsDataURL(file);this.value='';
 });
 $('cover-clear-btn').addEventListener('click',function(){_editCoverUrl='__clear__';$('cover-preview').innerHTML=svgClosedBook('#8b6914');});
+$('notion-push-btn').addEventListener('click',pushNovelToNotion);
+$('notion-settings-btn').addEventListener('click',function(){openNotionSettings();updateNotionStatusUI();});
 
 // ── Notes ────────────────────────────────────────────────
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -1365,6 +1369,7 @@ function _buildSyncPayload(){
     return{bid:bk.bid||'',title:bk.title||'',author:bk.author||'',intro:bk.intro||'',
       url:bk.url||'',status:bk.status||'reading',pubStatus:bk.pubStatus||'',
       startDate:bk.startDate||'',finishDate:bk.finishDate||'',review:bk.review||'',
+      notionPageId:bk.notionPageId||'',notionSyncedAt:bk.notionSyncedAt||0,
       notes:bk.notes||[],posIdx:bk.posIdx||0,posPidx:bk.posPidx||0,posAt:bk.posAt||'',statusAt:bk.statusAt||'',chapters:(bk.chapters||[]).map(function(c){var ch={title:c.title,url:c.url||''};if(!c.url&&c.content)ch.content=c.content;return ch;})};
   });
   return{v:2,updated_at:new Date().toISOString(),library:lib,read:G.read||{},deleted:G.deleted||[]};
@@ -1488,6 +1493,114 @@ function clearPAT(){
   if(!confirm('確定清除 GitHub Token？同步功能將停止。'))return;
   localStorage.removeItem('gh_pat');_ghSha=null;clearTimeout(_syncTimer);
   setSyncSt('nopat','');$('syncp').classList.remove('show');
+}
+
+// ── Notion sync (書名/作者/閱讀狀態/起訖日/備註 推送到 Notion 閱讀紀錄表) ──
+var NOTION_LS='notionConfig_reading_v1'; // 與 reading-list.html 共用同一組 Token/資料庫設定
+var NOTION_STATUS_MAP={want:'想讀',reading:'在讀',done:'完讀'};
+var _notionPropTypes={};
+function getNotionConfig(){try{return JSON.parse(localStorage.getItem(NOTION_LS)||'{}');}catch(e){return{};}}
+function saveNotionConfig(cfg){localStorage.setItem(NOTION_LS,JSON.stringify(cfg));}
+function getNotionFields(){
+  var f=(getNotionConfig().fields)||{};
+  return{title:f.title||'書名',author:f.author||'作者',status:f.status||'閱讀狀態',start:f.start||'閱讀起日',end:f.end||'閱讀迄日',note:f.note||'備註'};
+}
+function _notionFetch(path,opts){
+  var cfg=getNotionConfig();
+  opts=opts||{};
+  opts.headers=Object.assign({'Authorization':'Bearer '+cfg.token,'Notion-Version':'2022-06-28','Content-Type':'application/json'},opts.headers||{});
+  return fetch(PROXY+'?url='+encodeURIComponent('https://api.notion.com'+path),opts);
+}
+async function ensureNotionPropTypes(){
+  if(Object.keys(_notionPropTypes).length)return;
+  var cfg=getNotionConfig();if(!cfg.dbId)return;
+  try{
+    var r=await _notionFetch('/v1/databases/'+cfg.dbId+'/query',{method:'POST',body:JSON.stringify({page_size:1})});
+    if(!r.ok)return;
+    var data=await r.json();
+    var p=(data.results&&data.results[0]&&data.results[0].properties)||{};
+    var fields=getNotionFields();
+    Object.keys(fields).forEach(function(k){if(p[fields[k]])_notionPropTypes[k]=p[fields[k]].type;});
+  }catch(e){console.warn('Notion 屬性型別取得失敗',e);}
+}
+function buildNotionProps(n,fields){
+  var mk=function(key,value){
+    var type=_notionPropTypes[key];if(!type)return null;
+    if(type==='rich_text')return{rich_text:[{text:{content:String(value||'')}}]};
+    if(type==='select')return value?{select:{name:String(value)}}:{select:null};
+    if(type==='date')return value?{date:{start:value}}:{date:null};
+    return null;
+  };
+  var status=n.pubStatus==='dropped'?'棄讀':NOTION_STATUS_MAP[n.status||'reading'];
+  var map={author:[fields.author,n.author||''],status:[fields.status,status],start:[fields.start,n.startDate||''],end:[fields.end,n.finishDate||''],note:[fields.note,n.review||n.intro||'']};
+  var props={};
+  Object.keys(map).forEach(function(k){
+    var name=map[k][0],p=mk(k,map[k][1]);
+    if(p&&name)props[name]=p;
+  });
+  return props;
+}
+async function findNotionPageByTitle(title){
+  var cfg=getNotionConfig(),fields=getNotionFields();
+  var r=await _notionFetch('/v1/databases/'+cfg.dbId+'/query',{method:'POST',body:JSON.stringify({filter:{property:fields.title,title:{equals:title}},page_size:1})});
+  if(!r.ok)return null;
+  var data=await r.json();
+  return(data.results&&data.results[0])?data.results[0].id:null;
+}
+function notionStatusText(n){
+  if(!n)return'';
+  if(n.notionPageId)return'✅ 已同步 Notion'+(n.notionSyncedAt?'（'+new Date(n.notionSyncedAt).toLocaleString()+'）':'');
+  return'⬜ 尚未同步至 Notion';
+}
+function updateNotionStatusUI(){
+  var el=$('notion-status');if(!el)return;
+  var n=G.cur>=0?G.library[G.cur]:null;
+  el.textContent=n?notionStatusText(n):'';
+}
+function openNotionSettings(){
+  var cfg=getNotionConfig();
+  var token=prompt('請輸入 Notion Integration Token（僅存於本機瀏覽器）：',cfg.token||'');
+  if(token===null)return;
+  var dbId=prompt('請輸入 Notion Database ID：',cfg.dbId||'');
+  if(dbId===null)return;
+  cfg.token=token.trim();cfg.dbId=dbId.trim();
+  saveNotionConfig(cfg);
+  _notionPropTypes={};
+  var el=$('notion-status');if(el)el.textContent='Notion 設定已儲存';
+}
+async function pushNovelToNotion(){
+  if(G.cur<0){alert('請先開啟一本小說');return;}
+  var n=G.library[G.cur];
+  var cfg=getNotionConfig();
+  if(!cfg.token||!cfg.dbId){openNotionSettings();return;}
+  var btn=$('notion-push-btn');
+  if(btn){btn.disabled=true;btn.textContent='同步中…';}
+  try{
+    _notionPropTypes={};
+    await ensureNotionPropTypes();
+    var fields=getNotionFields();
+    var props=buildNotionProps(n,fields);
+    var pageId=n.notionPageId||await findNotionPageByTitle(n.title);
+    if(pageId){
+      var r=await _notionFetch('/v1/pages/'+pageId,{method:'PATCH',body:JSON.stringify({properties:props})});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+    }else{
+      props[fields.title]={title:[{text:{content:n.title}}]};
+      var r2=await _notionFetch('/v1/pages',{method:'POST',body:JSON.stringify({parent:{database_id:cfg.dbId},properties:props})});
+      if(!r2.ok)throw new Error('HTTP '+r2.status);
+      var data=await r2.json();
+      pageId=(data.id||'').replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/,'$1-$2-$3-$4-$5');
+    }
+    n.notionPageId=pageId;n.notionSyncedAt=Date.now();save();
+    updateNotionStatusUI();
+    buildShelf();
+    if(btn)btn.textContent='✅ 已同步';
+  }catch(e){
+    alert('Notion 同步失敗：'+e.message);
+    if(btn)btn.textContent='📤 同步到 Notion';
+  }finally{
+    if(btn)setTimeout(function(){btn.disabled=false;if(!n.notionPageId)btn.textContent='📤 同步到 Notion';},1200);
+  }
 }
 
 function restore(){

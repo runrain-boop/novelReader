@@ -7,8 +7,8 @@ async function handleRequest(request) {
     return new Response(null, {
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, PUT",
-        "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept",
+        "Access-Control-Allow-Methods": "GET, PUT, POST, PATCH",
+        "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept, Notion-Version",
       }
     });
   }
@@ -21,6 +21,7 @@ async function handleRequest(request) {
   try { origin = new URL(target).origin; } catch(e) {}
 
   const isGitHub = target.includes("api.github.com");
+  const isNotion = target.includes("api.notion.com");
 
   let fetchOptions;
   if (isGitHub) {
@@ -35,6 +36,19 @@ async function handleRequest(request) {
 
     fetchOptions = { method: request.method, headers };
     if (request.method === "PUT") fetchOptions.body = await request.text();
+  } else if (isNotion) {
+    const headers = {};
+    const auth = request.headers.get("Authorization");
+    const ct = request.headers.get("Content-Type");
+    const nv = request.headers.get("Notion-Version");
+    if (auth) headers["Authorization"] = auth;
+    if (ct) headers["Content-Type"] = ct;
+    headers["Notion-Version"] = nv || "2022-06-28";
+
+    fetchOptions = { method: request.method, headers };
+    if (request.method === "POST" || request.method === "PATCH") {
+      fetchOptions.body = await request.text();
+    }
   } else {
     fetchOptions = {
       method: "GET",

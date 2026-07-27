@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-07-27T11:05:46.138Z",
+  "updated_at": "2026-07-27T11:05:54.277Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -32502,8 +32502,8 @@
       "startDate": "2026-07-02",
       "finishDate": "2026-07-15",
       "review": "",
-      "notionPageId": "",
-      "notionSyncedAt": 0,
+      "notionPageId": "3aad11e1-256c-81ae-ab04-e89610c5bef9",
+      "notionSyncedAt": 1785150348653,
       "notes": [],
       "posIdx": 0,
       "posPidx": 0,

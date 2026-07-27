@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-07-27T10:50:04.624Z",
+  "updated_at": "2026-07-27T10:51:32.784Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -24957,7 +24957,7 @@
       "notes": [],
       "posIdx": 369,
       "posPidx": 6,
-      "posAt": "2026-07-27T10:46:57.779Z",
+      "posAt": "2026-07-27T10:51:27.783Z",
       "statusAt": "2026-06-22T23:59:39.252Z",
       "chapters": [
         {
@@ -32502,8 +32502,8 @@
       "startDate": "2026-07-02",
       "finishDate": "2026-07-15",
       "review": "",
-      "notionPageId": "3aad11e1-256c-81ae-ab04-e89610c5bef9",
-      "notionSyncedAt": 1785148892759,
+      "notionPageId": "",
+      "notionSyncedAt": 0,
       "notes": [],
       "posIdx": 0,
       "posPidx": 4,

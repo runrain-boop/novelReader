@@ -1101,7 +1101,7 @@ function updateEchToolbar(){
   if(delBtn){delBtn.disabled=count===0;delBtn.style.opacity=count>0?'1':'.4';}
   if(selAll)selAll.textContent=(count===cbs.length&&cbs.length>0)?'取消全選':'全選';
 }
-window.saveEdit=function(){if(G.cur<0)return;G.library[G.cur].title=$('edit-title').value.trim()||G.library[G.cur].title;G.library[G.cur].author=$('edit-author').value.trim();G.library[G.cur].intro=$('edit-intro').value.trim();G.library[G.cur].review=$('edit-review').value.trim();G.library[G.cur].startDate=$('edit-start-date').value||'';G.library[G.cur].finishDate=$('edit-finish-date').value||'';G.library[G.cur].pubStatus=$('edit-pubstatus').value;if(_editCoverUrl==='__clear__'){if(G.library[G.cur].bid)idbSet('__cover__'+G.library[G.cur].bid,null);}else if(_editCoverUrl&&_editCoverUrl!==true){if(!G.library[G.cur].bid)G.library[G.cur].bid='bk'+Date.now()+Math.random().toString(36).slice(2,5);idbSet('__cover__'+G.library[G.cur].bid,_editCoverUrl);}  _editCoverUrl=null;$('ns').textContent=G.library[G.cur].title.length>14?G.library[G.cur].title.substring(0,14)+'…':G.library[G.cur].title;updateExpSel();save();closeEdit();};
+window.saveEdit=function(){if(G.cur<0)return;G.library[G.cur].title=$('edit-title').value.trim()||G.library[G.cur].title;G.library[G.cur].author=$('edit-author').value.trim();G.library[G.cur].intro=$('edit-intro').value.trim();G.library[G.cur].review=$('edit-review').value.trim();G.library[G.cur].startDate=$('edit-start-date').value||'';G.library[G.cur].finishDate=$('edit-finish-date').value||'';G.library[G.cur].pubStatus=$('edit-pubstatus').value;G.library[G.cur].metaAt=new Date().toISOString();if(_editCoverUrl==='__clear__'){if(G.library[G.cur].bid)idbSet('__cover__'+G.library[G.cur].bid,null);}else if(_editCoverUrl&&_editCoverUrl!==true){if(!G.library[G.cur].bid)G.library[G.cur].bid='bk'+Date.now()+Math.random().toString(36).slice(2,5);idbSet('__cover__'+G.library[G.cur].bid,_editCoverUrl);}  _editCoverUrl=null;$('ns').textContent=G.library[G.cur].title.length>14?G.library[G.cur].title.substring(0,14)+'…':G.library[G.cur].title;updateExpSel();save();closeEdit();};
 window.closeEdit=function(){$('editp').classList.remove('show');};$('editp').addEventListener('click',function(e){if(e.target===$('editp'))closeEdit();});
 
 // ── Underline helpers ────────────────────────────────────
@@ -1185,6 +1185,7 @@ $('np-save').addEventListener('click',function(){
   if(!NP_QUOTE||G.cur<0)return;ensureNotes();
   var ch=G.library[G.cur].chapters[G.idx]||{};
   G.library[G.cur].notes.push({id:Date.now(),chIdx:G.idx,chTitle:ch.title||'',quote:NP_QUOTE,text:$('np-text').value.trim(),color:NP_COLOR,ts:Date.now(),pageIdx:PM.on?PM.pageIdx:0});
+  G.library[G.cur].metaAt=new Date().toISOString();
   save();hideNP();window.getSelection().removeAllRanges();updateUnderlines();
 });
 $('bnotes').addEventListener('click',showBookNotes);
@@ -1216,7 +1217,7 @@ function buildNoteList(el,notes,bi,inOverview){
       dbtn.addEventListener('click',function(e){
         e.stopPropagation();
         if(!confirm('刪除此筆記？'))return;
-        G.library[capBi].notes.splice(capNi,1);save();updateUnderlines();
+        G.library[capBi].notes.splice(capNi,1);G.library[capBi].metaAt=new Date().toISOString();save();updateUnderlines();
         if(capOv){showOverview();}else{showBookNotes();}
       });
     })(bi,ni,inOverview);
@@ -1350,7 +1351,7 @@ document.addEventListener('click',function(e){[['ttp','btts'],['setp','bset'],['
 function save(posOnly){
   try{
     if(!posOnly)G.library.forEach(function(n,i){if(!n.bid)n.bid='bk'+Date.now()+i+Math.random().toString(36).slice(2,5);});
-var d={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',pubStatus:n.pubStatus||'',bid:n.bid||'',startDate:n.startDate||'',finishDate:n.finishDate||'',review:n.review||'',notionPageId:n.notionPageId||'',notionSyncedAt:n.notionSyncedAt||0,notes:n.notes||[],posIdx:n.posIdx||0,posPidx:n.posPidx||0,posAt:n.posAt||'',statusAt:n.statusAt||'',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:c.url?null:c.content};})};  }),cur:G.cur,idx:G.idx,pidx:PM.pageIdx,read:G.read,deleted:G.deleted||[]};
+var d={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',pubStatus:n.pubStatus||'',bid:n.bid||'',startDate:n.startDate||'',finishDate:n.finishDate||'',review:n.review||'',notionPageId:n.notionPageId||'',notionSyncedAt:n.notionSyncedAt||0,metaAt:n.metaAt||'',notes:n.notes||[],posIdx:n.posIdx||0,posPidx:n.posPidx||0,posAt:n.posAt||'',statusAt:n.statusAt||'',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:c.url?null:c.content};})};  }),cur:G.cur,idx:G.idx,pidx:PM.pageIdx,read:G.read,deleted:G.deleted||[]};
     localStorage.setItem(SK,JSON.stringify(d));
   }catch(e){try{
     var bare={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:null};})};  }),cur:G.cur,idx:G.idx,read:G.read};
@@ -1381,7 +1382,7 @@ function _buildSyncPayload(){
     return{bid:bk.bid||'',title:bk.title||'',author:bk.author||'',intro:bk.intro||'',
       url:bk.url||'',status:bk.status||'reading',pubStatus:bk.pubStatus||'',
       startDate:bk.startDate||'',finishDate:bk.finishDate||'',review:bk.review||'',
-      notionPageId:bk.notionPageId||'',notionSyncedAt:bk.notionSyncedAt||0,
+      notionPageId:bk.notionPageId||'',notionSyncedAt:bk.notionSyncedAt||0,metaAt:bk.metaAt||'',
       notes:bk.notes||[],posIdx:bk.posIdx||0,posPidx:bk.posPidx||0,posAt:bk.posAt||'',statusAt:bk.statusAt||'',chapters:(bk.chapters||[]).map(function(c){var ch={title:c.title,url:c.url||''};if(!c.url&&c.content)ch.content=c.content;return ch;})};
   });
   return{v:2,updated_at:new Date().toISOString(),library:lib,read:G.read||{},deleted:G.deleted||[]};
@@ -1404,16 +1405,17 @@ function _mergeSync(local,remote){
     if(byKey[k]){
       var lo=byKey[k],re=bk;
       var chs=lo.chapters.length>=re.chapters.length?lo.chapters:re.chapters;
-      var nm={};
-      (lo.notes||[]).forEach(function(n){nm[(n.ts||0)+'|'+(n.quote||'')]=n;});
-      (re.notes||[]).forEach(function(n){nm[(n.ts||0)+'|'+(n.quote||'')]=n;});
-      var notes=Object.keys(nm).map(function(k2){return nm[k2];}).sort(function(a,b){return(b.ts||0)-(a.ts||0);});
       var posF=(lo.posAt||'')>=(re.posAt||'')?{posIdx:lo.posIdx||0,posPidx:lo.posPidx||0,posAt:lo.posAt||''}:{posIdx:re.posIdx||0,posPidx:re.posPidx||0,posAt:re.posAt||''};
       var statusF=(lo.statusAt&&lo.statusAt>=(re.statusAt||''))?{status:lo.status||'reading',statusAt:lo.statusAt}:{status:re.status||lo.status||'reading',statusAt:re.statusAt||''};
       // notionPageId 只在「這台裝置」推送成功時才會寫入，其他裝置本地必然是空值——
       // 不能套用「local 永遠贏」的規則，否則會被沒同步過的裝置覆蓋掉，要改成比對哪邊 notionSyncedAt 較新
       var notionF=(lo.notionSyncedAt||0)>=(re.notionSyncedAt||0)?{notionPageId:lo.notionPageId||re.notionPageId||'',notionSyncedAt:lo.notionSyncedAt||re.notionSyncedAt||0}:{notionPageId:re.notionPageId||lo.notionPageId||'',notionSyncedAt:re.notionSyncedAt||lo.notionSyncedAt||0};
-      byKey[k]=Object.assign({},re,lo,{chapters:chs,notes:notes},posF,statusF,notionF);
+      // 作者/簡介/書評/完本狀態/起訖日/筆記：同樣不能「本機永遠贏」，改成比對 metaAt（最後編輯時間）較新的那一整組欄位為準，
+      // 這樣才不會被另一台沒同步過的裝置的舊資料覆蓋掉（含刪除筆記也才能真正同步過去）
+      var metaF=(lo.metaAt||'')>=(re.metaAt||'')
+        ?{author:lo.author||'',intro:lo.intro||'',review:lo.review||'',pubStatus:lo.pubStatus||'',startDate:lo.startDate||'',finishDate:lo.finishDate||'',notes:lo.notes||[],metaAt:lo.metaAt||''}
+        :{author:re.author||'',intro:re.intro||'',review:re.review||'',pubStatus:re.pubStatus||'',startDate:re.startDate||'',finishDate:re.finishDate||'',notes:re.notes||[],metaAt:re.metaAt||''};
+      byKey[k]=Object.assign({},re,lo,{chapters:chs},posF,statusF,notionF,metaF);
     } else {byKey[k]=bk;}
   });
   // Remove deleted books from local side too

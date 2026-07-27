@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-07-27T10:54:15.382Z",
+  "updated_at": "2026-07-27T10:54:33.448Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -16,6 +16,26 @@
       "notionPageId": "",
       "notionSyncedAt": 0,
       "notes": [
+        {
+          "id": 1781165637065,
+          "chIdx": 568,
+          "chTitle": "第568章 答案",
+          "quote": "這樣的差事，朝中自然有無數人盯着，無論是正使亦或",
+          "text": "",
+          "color": "#e8c3f0",
+          "ts": 1781165637065,
+          "pageIdx": 2
+        },
+        {
+          "id": 1781165559463,
+          "chIdx": 569,
+          "chTitle": "第569章 一諾",
+          "quote": "眼睫微顫，眸中複雜，說不清是失望",
+          "text": "",
+          "color": "#f0c3c3",
+          "ts": 1781165559463,
+          "pageIdx": 10
+        },
         {
           "id": 1781159431856,
           "chIdx": 569,
@@ -32486,8 +32506,8 @@
       "notionSyncedAt": 0,
       "notes": [],
       "posIdx": 0,
-      "posPidx": 4,
-      "posAt": "2026-07-27T10:54:11.691Z",
+      "posPidx": 0,
+      "posAt": "2026-07-27T10:54:28.437Z",
       "statusAt": "2026-07-18T10:10:21.303Z",
       "chapters": [
         {

@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-07-28T14:21:14.024Z",
+  "updated_at": "2026-07-28T14:21:21.879Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -15,6 +15,7 @@
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
+      "metaAt": "",
       "notes": [
         {
           "id": 1781165637065,
@@ -2717,6 +2718,7 @@
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
+      "metaAt": "",
       "notes": [
         {
           "id": 1781162187447,
@@ -3681,6 +3683,7 @@
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
+      "metaAt": "",
       "notes": [],
       "posIdx": 0,
       "posPidx": 0,
@@ -3998,6 +4001,7 @@
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
+      "metaAt": "",
       "notes": [],
       "posIdx": 0,
       "posPidx": 0,
@@ -14455,6 +14459,7 @@
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
+      "metaAt": "",
       "notes": [],
       "posIdx": 0,
       "posPidx": 0,
@@ -20212,6 +20217,7 @@
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
+      "metaAt": "",
       "notes": [],
       "posIdx": 0,
       "posPidx": 0,
@@ -21093,6 +21099,7 @@
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
+      "metaAt": "",
       "notes": [],
       "posIdx": 120,
       "posPidx": 0,
@@ -24954,6 +24961,7 @@
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
+      "metaAt": "",
       "notes": [],
       "posIdx": 369,
       "posPidx": 6,
@@ -30203,6 +30211,7 @@
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
+      "metaAt": "",
       "notes": [],
       "posIdx": 0,
       "posPidx": 0,
@@ -30804,6 +30813,7 @@
       "review": "",
       "notionPageId": "3aad11e1-256c-81aa-b157-ff5fecbe64fc",
       "notionSyncedAt": 1785150434181,
+      "metaAt": "",
       "notes": [
         {
           "id": 1782799767477,
@@ -30818,7 +30828,7 @@
       ],
       "posIdx": 1,
       "posPidx": 0,
-      "posAt": "2026-07-28T14:21:04.061Z",
+      "posAt": "2026-07-28T14:21:16.994Z",
       "statusAt": "2026-06-28T03:07:30.952Z",
       "chapters": [
         {
@@ -32504,6 +32514,7 @@
       "review": "",
       "notionPageId": "3aad11e1-256c-81ae-ab04-e89610c5bef9",
       "notionSyncedAt": 1785150348653,
+      "metaAt": "",
       "notes": [],
       "posIdx": 0,
       "posPidx": 0,
@@ -33593,6 +33604,7 @@
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
+      "metaAt": "",
       "notes": [],
       "posIdx": 161,
       "posPidx": 6,
@@ -42714,6 +42726,7 @@
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
+      "metaAt": "",
       "notes": [],
       "posIdx": 85,
       "posPidx": 4,
@@ -44479,6 +44492,7 @@
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
+      "metaAt": "",
       "notes": [],
       "posIdx": 281,
       "posPidx": 2,

@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-07-29T00:35:35.460Z",
+  "updated_at": "2026-07-29T00:36:08.689Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -47154,9 +47154,9 @@
       "notionSyncedAt": 0,
       "metaAt": "",
       "notes": [],
-      "posIdx": 378,
-      "posPidx": 8,
-      "posAt": "2026-07-29T00:35:19.817Z",
+      "posIdx": 379,
+      "posPidx": 0,
+      "posAt": "2026-07-29T00:36:05.193Z",
       "statusAt": "",
       "chapters": [
         {
@@ -51757,7 +51757,8 @@
       375,
       376,
       377,
-      378
+      378,
+      379
     ],
     "https://www.twking.org/187_187758/": [
       0,

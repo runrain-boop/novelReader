@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-07-30T05:19:46.250Z",
+  "updated_at": "2026-07-30T05:19:54.421Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -44490,8 +44490,8 @@
       "startDate": "2026-07-26",
       "finishDate": "2026-07-29",
       "review": "純爽文",
-      "notionPageId": "",
-      "notionSyncedAt": 0,
+      "notionPageId": "3add11e1-256c-81f4-9bec-ea7ae607b7a0",
+      "notionSyncedAt": 1785388790957,
       "metaAt": "2026-07-30T05:19:42.814Z",
       "notes": [],
       "posIdx": 0,

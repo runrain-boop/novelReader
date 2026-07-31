@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-07-30T18:16:21.811Z",
+  "updated_at": "2026-07-31T05:04:59.528Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -35170,7 +35170,7 @@
       "status": "done",
       "pubStatus": "",
       "startDate": "2026-07-02",
-      "finishDate": "2026-07-18",
+      "finishDate": "",
       "review": "",
       "notionPageId": "3aad11e1-256c-81ae-ab04-e89610c5bef9",
       "notionSyncedAt": 1785150348653,
@@ -47154,9 +47154,9 @@
       "notionSyncedAt": 1785388790957,
       "metaAt": "2026-07-30T05:19:55.723Z",
       "notes": [],
-      "posIdx": 566,
-      "posPidx": 2,
-      "posAt": "2026-07-30T18:16:13.834Z",
+      "posIdx": 382,
+      "posPidx": 6,
+      "posAt": "2026-07-31T05:04:53.077Z",
       "statusAt": "2026-07-29T17:46:06.324Z",
       "chapters": [
         {

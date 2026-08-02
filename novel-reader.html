@@ -293,6 +293,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
     <button class="btn" id="bexp">📦</button>
     <button class="btn" id="bsync" title="多裝置同步">☁</button><span id="sync-st" class="sync-st"></span>
     <button class="btn" id="bnotion" title="Notion 設定">📔</button>
+    <button class="btn" id="brefresh" title="重新整理">🔄</button>
   </div>
 
   <div id="rw" tabindex="0">
@@ -952,6 +953,7 @@ kbTrap.addEventListener('blur',function(){setTimeout(function(){var a=document.a
 
 // ── Navigation ───────────────────────────────────────────
 $('btoc').addEventListener('click',togSB);
+$('brefresh').addEventListener('click',function(){location.href=location.pathname+'?t='+Date.now();});
 function togSB(){
   if(window.innerWidth<=680){$('sb').classList.toggle('open');$('overlay').classList.toggle('show');}
   else{$('sb').classList.toggle('col');if(PM.on&&G.cur>=0&&G.library[G.cur])setTimeout(function(){paginateChapter(G.idx,PM.pageIdx);},60);}

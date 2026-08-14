@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-08-14T07:43:54.684Z",
+  "updated_at": "2026-08-14T07:44:02.940Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -48692,13 +48692,9 @@
       "notes": [],
       "posIdx": 0,
       "posPidx": 0,
-      "posAt": "2026-08-14T07:43:51.082Z",
+      "posAt": "2026-08-14T07:43:59.428Z",
       "statusAt": "",
       "chapters": [
-        {
-          "title": "从片警到破案专家_烟波碎【完结】小说在线阅读",
-          "url": "https://www.52shuku.net/yanqing/02_b/bkbQB.html"
-        },
         {
           "title": "开始阅读",
           "url": "https://www.52shuku.net/yanqing/02_b/bkbQB_2.html"
@@ -52269,7 +52265,8 @@
       0
     ],
     "https://www.52shuku.net/yanqing/02_b/bkbQB.html": [
-      0
+      0,
+      1
     ]
   },
   "deleted": [

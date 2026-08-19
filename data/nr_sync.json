@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-08-19T18:30:18.481Z",
+  "updated_at": "2026-08-19T18:30:54.422Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -49444,9 +49444,9 @@
       "notionSyncedAt": 1786862388846,
       "metaAt": "2026-08-16T06:39:51.004Z",
       "notes": [],
-      "posIdx": 240,
-      "posPidx": 20,
-      "posAt": "2026-08-19T18:30:13.563Z",
+      "posIdx": 241,
+      "posPidx": 0,
+      "posAt": "2026-08-19T18:30:50.461Z",
       "statusAt": "",
       "chapters": [
         {
@@ -62064,7 +62064,8 @@
       237,
       238,
       239,
-      240
+      240,
+      241
     ],
     "https://www.52shuku.net/yanqing/02_b/bkbQB.html": [
       0,

@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-09-04T05:00:37.704Z",
+  "updated_at": "2026-09-04T05:01:03.817Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -59320,9 +59320,9 @@
       "notionSyncedAt": 0,
       "metaAt": "",
       "notes": [],
-      "posIdx": 2,
-      "posPidx": 22,
-      "posAt": "2026-09-04T05:00:22.137Z",
+      "posIdx": 3,
+      "posPidx": 0,
+      "posAt": "2026-09-04T05:01:00.198Z",
       "statusAt": "",
       "chapters": [
         {
@@ -64589,7 +64589,8 @@
     "https://www.52shuku.net/jiakong/22_b/bkdqi.html": [
       0,
       1,
-      2
+      2,
+      3
     ],
     "https://www.twking.org/187_187758/": [
       0,

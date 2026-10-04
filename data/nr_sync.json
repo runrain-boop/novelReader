@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-10-04T09:43:57.160Z",
+  "updated_at": "2026-10-04T09:44:17.436Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -61522,9 +61522,9 @@
       "notionSyncedAt": 0,
       "metaAt": "",
       "notes": [],
-      "posIdx": 2,
-      "posPidx": 10,
-      "posAt": "2026-10-04T09:43:41.608Z",
+      "posIdx": 3,
+      "posPidx": 0,
+      "posAt": "2026-10-04T09:44:13.880Z",
       "statusAt": "",
       "chapters": [
         {
@@ -66029,7 +66029,8 @@
     "https://www.52shuku.net/chongsheng/b/bjMMG.html": [
       0,
       1,
-      2
+      2,
+      3
     ]
   },
   "deleted": [

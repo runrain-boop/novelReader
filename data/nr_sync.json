@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-10-05T11:53:55.585Z",
+  "updated_at": "2026-10-05T11:56:36.461Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -61522,9 +61522,9 @@
       "notionSyncedAt": 0,
       "metaAt": "",
       "notes": [],
-      "posIdx": 94,
-      "posPidx": 2,
-      "posAt": "2026-10-05T11:53:40.121Z",
+      "posIdx": 95,
+      "posPidx": 0,
+      "posAt": "2026-10-05T11:56:32.815Z",
       "statusAt": "",
       "chapters": [
         {
@@ -66121,7 +66121,8 @@
       91,
       92,
       93,
-      94
+      94,
+      95
     ]
   },
   "deleted": [

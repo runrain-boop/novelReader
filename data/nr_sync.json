@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-10-10T13:12:42.908Z",
+  "updated_at": "2026-10-10T13:12:46.692Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -63825,10 +63825,10 @@
       "author": "",
       "intro": "",
       "url": "https://www.xbanxia.cc/books/95788.html",
-      "status": "reading",
+      "status": "done",
       "pubStatus": "",
       "startDate": "2026-10-08",
-      "finishDate": "",
+      "finishDate": "2026-10-10",
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
@@ -63836,8 +63836,8 @@
       "notes": [],
       "posIdx": 102,
       "posPidx": 22,
-      "posAt": "2026-10-10T13:12:27.279Z",
-      "statusAt": "",
+      "posAt": "2026-10-10T13:12:46.607Z",
+      "statusAt": "2026-10-10T13:12:43.286Z",
       "chapters": [
         {
           "title": "第1章",

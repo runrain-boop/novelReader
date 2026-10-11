@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-10-11T19:13:20.798Z",
+  "updated_at": "2026-10-11T19:14:06.879Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -3685,9 +3685,9 @@
       "notionSyncedAt": 0,
       "metaAt": "",
       "notes": [],
-      "posIdx": 6,
-      "posPidx": 24,
-      "posAt": "2026-10-11T19:13:05.058Z",
+      "posIdx": 7,
+      "posPidx": 0,
+      "posAt": "2026-10-11T19:14:03.265Z",
       "statusAt": "",
       "chapters": [
         {
@@ -64542,7 +64542,8 @@
       149,
       4,
       5,
-      6
+      6,
+      7
     ],
     "https://www.twking.org/6_6041/": [
       0

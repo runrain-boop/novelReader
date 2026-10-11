@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-10-11T19:57:02.666Z",
+  "updated_at": "2026-10-11T19:57:54.358Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -3685,9 +3685,9 @@
       "notionSyncedAt": 0,
       "metaAt": "",
       "notes": [],
-      "posIdx": 17,
+      "posIdx": 16,
       "posPidx": 0,
-      "posAt": "2026-10-11T19:56:50.055Z",
+      "posAt": "2026-10-11T19:54:03.026Z",
       "statusAt": "",
       "chapters": [
         {
@@ -35170,7 +35170,7 @@
       "status": "done",
       "pubStatus": "",
       "startDate": "2026-07-02",
-      "finishDate": "2026-07-18",
+      "finishDate": "",
       "review": "",
       "notionPageId": "3aad11e1-256c-81ae-ab04-e89610c5bef9",
       "notionSyncedAt": 1785150348653,
@@ -62696,11 +62696,15 @@
       "notionSyncedAt": 0,
       "metaAt": "2026-10-10T13:32:37.485Z",
       "notes": [],
-      "posIdx": 87,
+      "posIdx": 0,
       "posPidx": 0,
-      "posAt": "2026-10-11T18:31:37.990Z",
+      "posAt": "2026-10-11T19:57:49.145Z",
       "statusAt": "",
       "chapters": [
+        {
+          "title": "[神话同人] 神棍也要晚自习_拉棉花糖的兔子【完结】小说在线阅读",
+          "url": "https://www.52shuku.net/bl/b/bjQHg.html"
+        },
         {
           "title": "开始阅读",
           "url": "https://www.52shuku.net/bl/b/bjQHg_2.html"
@@ -64552,8 +64556,7 @@
       13,
       14,
       15,
-      16,
-      17
+      16
     ],
     "https://www.twking.org/6_6041/": [
       0

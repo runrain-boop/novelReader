@@ -565,6 +565,7 @@ async function doAutoFetch(url){
 // ── Library ──────────────────────────────────────────────
 function addToLibrary(novel){
   if(!novel.status)novel.status='reading';
+  novel.addedAt=new Date().toISOString();
   var ex=-1;if(novel.url)for(var i=0;i<G.library.length;i++){if(G.library[i].url===novel.url){ex=i;break;}}
   if(novel.url&&G.deleted){var di=G.deleted.indexOf(novel.url);if(di>=0)G.deleted.splice(di,1);}
   if(ex>=0){G.library[ex]=novel;updateExpSel();return ex;}
@@ -705,7 +706,7 @@ function deleteNovel(ni){
   idbDelChapters(G.library[ni].chapters);
   var dk=G.library[ni].url||G.library[ni].bid;
   G.library.splice(ni,1);
-  if(dk){if(!G.deleted)G.deleted=[];if(G.deleted.indexOf(dk)<0)G.deleted.push(dk);}
+  if(dk){if(!G.deleted)G.deleted=[];if(G.deleted.indexOf(dk)<0)G.deleted.push(dk);if(!G.deletedAt)G.deletedAt={};G.deletedAt[dk]=new Date().toISOString();}
   if(G.cur===ni)G.cur=-1;else if(G.cur>ni)G.cur--;
   updateExpSel();save();buildShelf(curFilter());scheduleSync();
   if(!G.library.length)showAddView();
@@ -1342,7 +1343,7 @@ $('imp-file').addEventListener('change',function(e){
   var r=new FileReader();r.onload=function(ev){try{
     var d=JSON.parse(ev.target.result),novels=d.library||[];if(!novels.length)throw new Error('無資料');
     var added=0,base=G.library.length;
-    novels.forEach(function(n,i){if(n&&n.title&&n.chapters){G.library.push(n);var nk=n.url||n.bid;var rd=d.read&&((nk&&d.read[nk])||d.read[i])||null;if(rd){if(nk)G.read[nk]=rd;else G.read[base+added]=rd;}added++;}});
+    novels.forEach(function(n,i){if(n&&n.title&&n.chapters){n.addedAt=new Date().toISOString();G.library.push(n);var nk=n.url||n.bid;if(nk&&G.deleted){var _di=G.deleted.indexOf(nk);if(_di>=0)G.deleted.splice(_di,1);}var rd=d.read&&((nk&&d.read[nk])||d.read[i])||null;if(rd){if(nk)G.read[nk]=rd;else G.read[base+added]=rd;}added++;}});
     updateExpSel();save();$('exp-stat').textContent='✅ 匯入 '+added+' 本';
     if(added>0){var tn=base+(d.cur||0);if(tn<G.library.length){openNovel(tn);if(d.idx&&d.idx>0)showChapter(d.idx);}}
   }catch(e2){$('exp-stat').textContent='❌ '+e2.message;}};
@@ -1355,7 +1356,7 @@ document.addEventListener('click',function(e){[['ttp','btts'],['setp','bset'],['
 function save(posOnly){
   try{
     if(!posOnly)G.library.forEach(function(n,i){if(!n.bid)n.bid='bk'+Date.now()+i+Math.random().toString(36).slice(2,5);});
-var d={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',pubStatus:n.pubStatus||'',bid:n.bid||'',startDate:n.startDate||'',finishDate:n.finishDate||'',review:n.review||'',notionPageId:n.notionPageId||'',notionSyncedAt:n.notionSyncedAt||0,metaAt:n.metaAt||'',notes:n.notes||[],posIdx:n.posIdx||0,posPidx:n.posPidx||0,posAt:n.posAt||'',statusAt:n.statusAt||'',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:c.url?null:c.content};})};  }),cur:G.cur,idx:G.idx,pidx:PM.pageIdx,read:G.read,deleted:G.deleted||[]};
+var d={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',pubStatus:n.pubStatus||'',bid:n.bid||'',startDate:n.startDate||'',finishDate:n.finishDate||'',review:n.review||'',notionPageId:n.notionPageId||'',notionSyncedAt:n.notionSyncedAt||0,metaAt:n.metaAt||'',notes:n.notes||[],posIdx:n.posIdx||0,posPidx:n.posPidx||0,posAt:n.posAt||'',statusAt:n.statusAt||'',addedAt:n.addedAt||'',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:c.url?null:c.content};})};  }),cur:G.cur,idx:G.idx,pidx:PM.pageIdx,read:G.read,deleted:G.deleted||[],deletedAt:G.deletedAt||{}};
     localStorage.setItem(SK,JSON.stringify(d));
   }catch(e){try{
     var bare={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:null};})};  }),cur:G.cur,idx:G.idx,read:G.read};
@@ -1387,17 +1388,20 @@ function _buildSyncPayload(){
       url:bk.url||'',status:bk.status||'reading',pubStatus:bk.pubStatus||'',
       startDate:bk.startDate||'',finishDate:bk.finishDate||'',review:bk.review||'',
       notionPageId:bk.notionPageId||'',notionSyncedAt:bk.notionSyncedAt||0,metaAt:bk.metaAt||'',
-      notes:bk.notes||[],posIdx:bk.posIdx||0,posPidx:bk.posPidx||0,posAt:bk.posAt||'',statusAt:bk.statusAt||'',chapters:(bk.chapters||[]).map(function(c){var ch={title:c.title,url:c.url||''};if(!c.url&&c.content)ch.content=c.content;return ch;})};
+      notes:bk.notes||[],posIdx:bk.posIdx||0,posPidx:bk.posPidx||0,posAt:bk.posAt||'',statusAt:bk.statusAt||'',addedAt:bk.addedAt||'',chapters:(bk.chapters||[]).map(function(c){var ch={title:c.title,url:c.url||''};if(!c.url&&c.content)ch.content=c.content;return ch;})};
   });
-  return{v:2,updated_at:new Date().toISOString(),library:lib,read:G.read||{},deleted:G.deleted||[]};
+  return{v:2,updated_at:new Date().toISOString(),library:lib,read:G.read||{},deleted:G.deleted||[],deletedAt:G.deletedAt||{}};
 }
 function _mergeSync(local,remote){
-  // Build deletion set: local library always wins — if re-added locally, don't delete
-  var localLibKeys={};
-  (local.library||[]).forEach(function(bk){var k=bk.url||bk.bid;if(k)localLibKeys[k]=true;});
+  // 刪除紀錄：比時間。只有「刪除之後又重新加入」（addedAt 比 deletedAt 新）的書才保留；
+  // 不能用「本機書庫有就不刪」，否則還沒同步的舊裝置會把已刪的書推回雲端復活
+  var bookAdded={},delAt={};
+  [local,remote].forEach(function(side){
+    (side.library||[]).forEach(function(bk){var k=bk.url||bk.bid;if(k&&(bk.addedAt||'')>(bookAdded[k]||''))bookAdded[k]=bk.addedAt;});
+    Object.keys(side.deletedAt||{}).forEach(function(k){if(side.deletedAt[k]>(delAt[k]||''))delAt[k]=side.deletedAt[k];});
+  });
   var deletedKeys={};
-  (local.deleted||[]).forEach(function(k){if(!localLibKeys[k])deletedKeys[k]=true;});
-  (remote.deleted||[]).forEach(function(k){if(!localLibKeys[k])deletedKeys[k]=true;});
+  (local.deleted||[]).concat(remote.deleted||[]).forEach(function(k){if(!((bookAdded[k]||'')>(delAt[k]||'')))deletedKeys[k]=true;});
   var allDeleted=Object.keys(deletedKeys);
 
   var byKey={},importedTitles={};
@@ -1419,7 +1423,7 @@ function _mergeSync(local,remote){
       var metaF=(lo.metaAt||'')>=(re.metaAt||'')
         ?{author:lo.author||'',intro:lo.intro||'',review:lo.review||'',pubStatus:lo.pubStatus||'',startDate:lo.startDate||'',finishDate:lo.finishDate||'',notes:lo.notes||[],metaAt:lo.metaAt||''}
         :{author:re.author||'',intro:re.intro||'',review:re.review||'',pubStatus:re.pubStatus||'',startDate:re.startDate||'',finishDate:re.finishDate||'',notes:re.notes||[],metaAt:re.metaAt||''};
-      byKey[k]=Object.assign({},re,lo,{chapters:chs},posF,statusF,notionF,metaF);
+      byKey[k]=Object.assign({},re,lo,{chapters:chs,addedAt:bookAdded[k]||''},posF,statusF,notionF,metaF);
     } else {byKey[k]=bk;}
   });
   // Remove deleted books from local side too
@@ -1452,7 +1456,8 @@ function _mergeSync(local,remote){
   // Clean up read data for deleted books
   allDeleted.forEach(function(k){delete read[k];});
 
-  return{library:library,read:read,deleted:allDeleted};
+  var deletedAt={};allDeleted.forEach(function(k){if(delAt[k])deletedAt[k]=delAt[k];});
+  return{library:library,read:read,deleted:allDeleted,deletedAt:deletedAt};
 }
 async function _ghFetch(method,body){
   var pat=ghPAT();
@@ -1483,7 +1488,7 @@ async function loadFromGH(){
     var inMem={};(G.library||[]).forEach(function(bk){var k=bk.url||bk.bid;if(k){inMem[k]={};(bk.chapters||[]).forEach(function(ch){if(ch.url&&ch.content!=null)inMem[k][ch.url]=ch.content;});}});
     merged.library.forEach(function(bk){var k=bk.url||bk.bid,cm=inMem[k]||{};(bk.chapters||[]).forEach(function(ch){if(ch.url)ch.content=cm[ch.url]!=null?cm[ch.url]:null;});});
     var curKey=G.cur>=0&&G.library[G.cur]?G.library[G.cur].url||G.library[G.cur].bid:null;
-    G.library=merged.library;dedupLibrary();if(curKey){var ni=G.library.findIndex(function(bk){return(bk.url||bk.bid)===curKey;});if(ni>=0)G.cur=ni;}G.read=merged.read;G.deleted=merged.deleted||[];
+    G.library=merged.library;dedupLibrary();if(curKey){var ni=G.library.findIndex(function(bk){return(bk.url||bk.bid)===curKey;});if(ni>=0)G.cur=ni;}G.read=merged.read;G.deleted=merged.deleted||[];G.deletedAt=merged.deletedAt||{};
     save();buildShelf();if(G.cur>=0&&G.library[G.cur])buildTOC();
     setSyncSt('ok','上次同步：'+new Date().toLocaleTimeString());
     ctStartup().catch(function(e){setSyncSt('err',e.message);});
@@ -1713,7 +1718,7 @@ function restore(){
   var pmw=localStorage.getItem('nr_pmw');if(pmw){$('pmv').textContent=pmw;document.documentElement.style.setProperty('--pm',pmw+'px');}
   var bg=localStorage.getItem('nr_bg');if(bg){document.documentElement.style.setProperty('--bg',bg);$('custom-bg').value=bg;}
   try{var raw=localStorage.getItem(SK);if(!raw)return;var x=JSON.parse(raw);
-    if(x.library&&x.library.length){G.library=x.library;G.read=x.read||{};G.deleted=x.deleted||[];G.cur=x.cur!=null?x.cur:-1;G.idx=x.idx||0;G.pidx=x.pidx||0;
+    if(x.library&&x.library.length){G.library=x.library;G.read=x.read||{};G.deleted=x.deleted||[];G.deletedAt=x.deletedAt||{};G.cur=x.cur!=null?x.cur:-1;G.idx=x.idx||0;G.pidx=x.pidx||0;
       // Migrate numeric-keyed G.read to stable url/bid keys
       var hasNumKey=Object.keys(G.read).some(function(k){return!isNaN(+k)&&G.library[+k];});
       if(hasNumKey){var nr2={};Object.keys(G.read).forEach(function(k){var ki=+k,bk=!isNaN(ki)&&G.library[ki];if(bk){var nk2=bk.url||bk.bid;if(nk2){if(!nr2[nk2])nr2[nk2]=[];G.read[k].forEach(function(ci){if(nr2[nk2].indexOf(ci)<0)nr2[nk2].push(ci);});}else nr2[k]=G.read[k];}else nr2[k]=G.read[k];});G.read=nr2;}

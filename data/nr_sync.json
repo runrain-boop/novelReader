@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-10-12T13:36:41.023Z",
+  "updated_at": "2026-10-12T13:36:48.768Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -62,6 +62,7 @@
       "posPidx": 2,
       "posAt": "2026-06-18T09:05:43.000Z",
       "statusAt": "2026-06-14T08:06:47.292Z",
+      "addedAt": "",
       "chapters": [
         {
           "title": "開始閱讀",
@@ -2735,6 +2736,7 @@
       "posPidx": 0,
       "posAt": "2026-10-11T18:40:40.728Z",
       "statusAt": "",
+      "addedAt": "",
       "chapters": [
         {
           "title": "開始閱讀",
@@ -3689,6 +3691,7 @@
       "posPidx": 0,
       "posAt": "2026-07-27T10:34:58.625Z",
       "statusAt": "",
+      "addedAt": "",
       "chapters": [
         {
           "title": "小說王-台灣最大小說網",
@@ -14147,6 +14150,7 @@
       "posPidx": 0,
       "posAt": "",
       "statusAt": "2026-06-14T08:06:37.319Z",
+      "addedAt": "",
       "chapters": [
         {
           "title": "小說王-台灣最大小說網",
@@ -19905,6 +19909,7 @@
       "posPidx": 0,
       "posAt": "2026-07-27T10:52:55.500Z",
       "statusAt": "2026-07-02T13:42:09.401Z",
+      "addedAt": "",
       "chapters": [
         {
           "title": "開始閱讀",
@@ -20787,6 +20792,7 @@
       "posPidx": 0,
       "posAt": "2026-10-04T09:19:10.752Z",
       "statusAt": "2026-06-23T14:01:43.175Z",
+      "addedAt": "",
       "chapters": [
         {
           "title": "穿越耽美",
@@ -24649,6 +24655,7 @@
       "posPidx": 6,
       "posAt": "2026-07-27T10:51:27.783Z",
       "statusAt": "2026-06-22T23:59:39.252Z",
+      "addedAt": "",
       "chapters": [
         {
           "title": "第2页",
@@ -29899,6 +29906,7 @@
       "posPidx": 0,
       "posAt": "2026-07-27T10:34:01.023Z",
       "statusAt": "2026-06-23T14:06:05.997Z",
+      "addedAt": "",
       "chapters": [
         {
           "title": "开始阅读",
@@ -30512,6 +30520,7 @@
       "posPidx": 0,
       "posAt": "2026-07-29T05:31:17.675Z",
       "statusAt": "2026-06-28T03:07:30.952Z",
+      "addedAt": "",
       "chapters": [
         {
           "title": "甜甜[全息]_弄清风【完结+番外】小说在线阅读",
@@ -32202,6 +32211,7 @@
       "posPidx": 0,
       "posAt": "2026-08-14T07:25:06.618Z",
       "statusAt": "2026-07-18T10:10:21.303Z",
+      "addedAt": "",
       "chapters": [
         {
           "title": "开始阅读",
@@ -33292,6 +33302,7 @@
       "posPidx": 6,
       "posAt": "2026-07-11T06:12:31.018Z",
       "statusAt": "",
+      "addedAt": "",
       "chapters": [
         {
           "title": "满级大佬为国争光[无限]_香柠草【完结】小说在线阅读",
@@ -42414,6 +42425,7 @@
       "posPidx": 4,
       "posAt": "2026-07-26T18:28:18.463Z",
       "statusAt": "",
+      "addedAt": "",
       "chapters": [
         {
           "title": "苗疆少主[全息]_蝶之灵【完结】小说在线阅读",
@@ -44180,6 +44192,7 @@
       "posPidx": 7,
       "posAt": "2026-10-08T12:29:21.227Z",
       "statusAt": "2026-07-29T17:46:06.324Z",
+      "addedAt": "",
       "chapters": [
         {
           "title": "赛博江湖，专治不服_林风早【完结+番外】小说在线阅读",
@@ -46470,6 +46483,7 @@
       "posPidx": 0,
       "posAt": "2026-09-02T09:17:11.418Z",
       "statusAt": "",
+      "addedAt": "",
       "chapters": [
         {
           "title": "天才操作手[全息]_李温酒【完结+番外】小说在线阅读",
@@ -48376,6 +48390,7 @@
       "posPidx": 2,
       "posAt": "2026-08-14T19:10:00.567Z",
       "statusAt": "",
+      "addedAt": "",
       "chapters": [
         {
           "title": "开始阅读",
@@ -49406,6 +49421,7 @@
       "posPidx": 0,
       "posAt": "2026-08-14T17:06:44.836Z",
       "statusAt": "",
+      "addedAt": "",
       "chapters": [
         {
           "title": "我在废土世界扫垃圾_有花在野【完结+番外】小说在线阅读",
@@ -53748,6 +53764,7 @@
       "posPidx": 0,
       "posAt": "2026-08-27T17:41:41.074Z",
       "statusAt": "",
+      "addedAt": "",
       "chapters": [
         {
           "title": "她作死向来很可以的_撕枕犹眠【完结+番外】小说在线阅读",
@@ -56346,6 +56363,7 @@
       "posPidx": 0,
       "posAt": "2026-10-11T18:40:09.845Z",
       "statusAt": "",
+      "addedAt": "",
       "chapters": [
         {
           "title": "我还能苟[星际]_有点困【完结】小说在线阅读",
@@ -58548,6 +58566,7 @@
       "posPidx": 2,
       "posAt": "2026-10-08T06:39:13.624Z",
       "statusAt": "",
+      "addedAt": "",
       "chapters": [
         {
           "title": "偷风不偷月_北南【完结+番外】小说在线阅读",
@@ -59722,6 +59741,7 @@
       "posPidx": 0,
       "posAt": "2026-10-11T19:57:49.145Z",
       "statusAt": "",
+      "addedAt": "",
       "chapters": [
         {
           "title": "[神话同人] 神棍也要晚自习_拉棉花糖的兔子【完结】小说在线阅读",
@@ -60860,6 +60880,7 @@
       "posPidx": 0,
       "posAt": "2026-10-12T13:16:34.031Z",
       "statusAt": "2026-10-10T13:12:43.286Z",
+      "addedAt": "",
       "chapters": [
         {
           "title": "第1章",
@@ -61294,6 +61315,7 @@
       "posPidx": 10,
       "posAt": "2026-10-12T13:27:10.319Z",
       "statusAt": "",
+      "addedAt": "",
       "chapters": [
         {
           "title": "第1章",
@@ -65972,5 +65994,6 @@
     "https://www.twking.org/187_187758/",
     "https://www.52shuku.net/xiandaidushi/1488.html",
     "https://www.twking.org/241_241792/"
-  ]
+  ],
+  "deletedAt": {}
 }

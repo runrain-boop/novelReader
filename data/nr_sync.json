@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-10-12T08:19:14.087Z",
+  "updated_at": "2026-10-12T08:19:56.789Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -10863,9 +10863,9 @@
       "notionSyncedAt": 0,
       "metaAt": "",
       "notes": [],
-      "posIdx": 0,
-      "posPidx": 20,
-      "posAt": "2026-10-12T08:18:58.540Z",
+      "posIdx": 1,
+      "posPidx": 0,
+      "posAt": "2026-10-12T08:19:53.220Z",
       "statusAt": "2026-06-28T03:07:21.510Z",
       "chapters": [
         {
@@ -68006,7 +68006,8 @@
     ],
     "https://www.52shuku.net/jiakong/70.html": [
       0,
-      396
+      396,
+      1
     ]
   },
   "deleted": [

@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-10-12T12:15:09.132Z",
+  "updated_at": "2026-10-12T12:15:15.160Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -61170,8 +61170,8 @@
       "startDate": "2026-10-08",
       "finishDate": "2026-10-10",
       "review": "謝清圓/沈潤",
-      "notionPageId": "",
-      "notionSyncedAt": 0,
+      "notionPageId": "3f7d11e1-256c-8113-ad54-e18ad08618b2",
+      "notionSyncedAt": 1791807311615,
       "metaAt": "2026-10-10T13:14:38.722Z",
       "notes": [],
       "posIdx": 0,

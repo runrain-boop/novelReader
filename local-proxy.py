@@ -3,14 +3,18 @@
 #       改由自己電腦的網路去抓，就跟用瀏覽器看一樣。
 # 使用：python local-proxy.py   （視窗開著期間有效，Ctrl+C 結束）
 # 格式：http://127.0.0.1:8787/?url=<網址>
+# 加 --open 會順便用預設瀏覽器打開閱讀器（桌面捷徑用）
 
 import sys
+import socket
+import webbrowser
 import urllib.request
 import urllib.error
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 PORT = 8787
+READER_URL = "https://runrain-boop.github.io/novelReader/novel-reader.html"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
 
@@ -64,5 +68,16 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    server = None
+    try:
+        # Windows 上重複綁同一個埠不一定會報錯，所以先試連看看是否已經有一個在跑
+        socket.create_connection(("127.0.0.1", PORT), timeout=1).close()
+    except OSError:
+        server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
+    if "--open" in sys.argv:
+        webbrowser.open(READER_URL)
+    if server is None:
+        print(f"連接埠 {PORT} 已被使用，代理應該已經在執行了。")
+        sys.exit(0)
     print(f"Novel Reader 本機代理啟動：http://127.0.0.1:{PORT}/  （Ctrl+C 結束）")
-    ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()
+    server.serve_forever()

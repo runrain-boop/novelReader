@@ -1592,7 +1592,7 @@ function getNotionConfig(){try{return JSON.parse(localStorage.getItem(NOTION_LS)
 function saveNotionConfig(cfg){localStorage.setItem(NOTION_LS,JSON.stringify(cfg));}
 function getNotionFields(){
   var f=(getNotionConfig().fields)||{};
-  return{title:f.title||'書名',author:f.author||'作者',status:f.status||'閱讀狀態',start:f.start||'閱讀起日',end:f.end||'閱讀迄日',note:f.note||'備註'};
+  return{title:f.title||'書名',author:f.author||'作者',status:f.status||'閱讀狀態',start:f.start||'閱讀起日',end:f.end||'閱讀迄日',note:f.note||'備註',source:f.source||'來源'};
 }
 function _notionFetch(path,opts){
   var cfg=getNotionConfig();
@@ -1621,7 +1621,7 @@ function buildNotionProps(n,fields){
     return null;
   };
   var status=n.pubStatus==='dropped'?'棄讀':NOTION_STATUS_MAP[n.status||'reading'];
-  var map={author:[fields.author,n.author||''],status:[fields.status,status],start:[fields.start,n.startDate||''],end:[fields.end,n.finishDate||''],note:[fields.note,n.review||n.intro||'']};
+  var map={author:[fields.author,n.author||''],status:[fields.status,status],start:[fields.start,n.startDate||''],end:[fields.end,n.finishDate||''],note:[fields.note,n.review||n.intro||''],source:[fields.source,'小說閱讀器']};
   var props={};
   Object.keys(map).forEach(function(k){
     var name=map[k][0],p=mk(k,map[k][1]);
@@ -1691,6 +1691,8 @@ async function pushNovelToNotion(){
     var props=buildNotionProps(n,fields);
     var pageId=n.notionPageId||await findNotionPageByTitle(n.title);
     if(pageId){
+      // 來源已經有值（例如微信讀書，用書名配對到的既有紀錄）就不覆蓋，只補空白的
+      if(props[fields.source]){try{var gr=await _notionFetch('/v1/pages/'+pageId);if(gr.ok){var gp=(await gr.json()).properties||{},sp=gp[fields.source];if(sp&&sp.select&&sp.select.name)delete props[fields.source];}}catch(e){}}
       var r=await _notionFetch('/v1/pages/'+pageId,{method:'PATCH',body:JSON.stringify({properties:props})});
       if(!r.ok)throw new Error('HTTP '+r.status);
     }else{

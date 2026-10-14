@@ -1350,7 +1350,7 @@ $('imp-file').addEventListener('change',function(e){
   r.readAsText(file);this.value='';
 });
 $('bexp-shelf').addEventListener('click',function(){$('expp').classList.toggle('show');$('ttp').classList.remove('show');$('setp').classList.remove('show');});
-document.addEventListener('click',function(e){[['ttp','btts'],['setp','bset'],['expp','bexp','bexp-shelf'],['syncp','bsync'],['notionp','bnotion']].forEach(function(p){if(!$(p[0]).contains(e.target)&&p.slice(1).every(function(id){return!$(id).contains(e.target);}))$(p[0]).classList.remove('show');});});
+document.addEventListener('click',function(e){[['ttp','btts'],['setp','bset'],['expp','bexp','bexp-shelf'],['syncp','bsync'],['notionp','bnotion','notion-push-btn']].forEach(function(p){if(!$(p[0]).contains(e.target)&&p.slice(1).every(function(id){return!$(id).contains(e.target);}))$(p[0]).classList.remove('show');});});
 
 // ── Persist ──────────────────────────────────────────────
 function save(posOnly){

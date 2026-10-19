@@ -1643,7 +1643,7 @@ function getNotionConfig(){try{return JSON.parse(localStorage.getItem(NOTION_LS)
 function saveNotionConfig(cfg){localStorage.setItem(NOTION_LS,JSON.stringify(cfg));}
 function getNotionFields(){
   var f=(getNotionConfig().fields)||{};
-  return{title:f.title||'書名',author:f.author||'作者',status:f.status||'閱讀狀態',start:f.start||'閱讀起日',end:f.end||'閱讀迄日',note:f.note||'備註',source:f.source||'來源',rating:f.rating||'評價'};
+  return{title:f.title||'書名',author:f.author||'作者',status:f.status||'閱讀狀態',start:f.start||'閱讀起日',end:f.end||'閱讀迄日',note:f.note||'備註',source:f.source||'來源',rating:f.rating||'評價',reason:f.reason||'暫停/棄讀原因'};
 }
 function _notionFetch(path,opts){
   var cfg=getNotionConfig();
@@ -1675,6 +1675,7 @@ function buildNotionProps(n,fields){
   var status=(st==='reading'||st==='want')&&n.pubStatus==='dropped'?'棄讀':NOTION_STATUS_MAP[st];
   var map={author:[fields.author,n.author||''],status:[fields.status,status],start:[fields.start,n.startDate||''],end:[fields.end,n.finishDate||''],note:[fields.note,n.review||n.intro||''],source:[fields.source,'小說閱讀器']};
   if(n.rating>0)map.rating=[fields.rating,'⭐⭐⭐⭐⭐'.slice(0,n.rating)]; // 沒評分就不送，避免把 Notion 上已有的評價清掉
+  if(n.statusNote||st==='paused'||st==='dropped')map.reason=[fields.reason,n.statusNote||'']; // 同理：在讀/想讀又沒寫原因時不送
   var props={};
   Object.keys(map).forEach(function(k){
     var name=map[k][0],p=mk(k,map[k][1]);

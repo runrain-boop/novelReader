@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-10-19T11:17:33.847Z",
+  "updated_at": "2026-10-19T11:18:49.000Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -30519,7 +30519,7 @@
       "review": "",
       "notionPageId": "3aad11e1-256c-81aa-b157-ff5fecbe64fc",
       "notionSyncedAt": 1785150434181,
-      "metaAt": "",
+      "metaAt": "2026-10-19T11:18:49.000Z",
       "notes": [
         {
           "id": 1782799767477,
@@ -30537,7 +30537,7 @@
       "posAt": "2026-07-29T05:31:17.675Z",
       "statusAt": "2026-06-28T03:07:30.952Z",
       "statusNote": "",
-      "rating": 0,
+      "rating": 3,
       "addedAt": "",
       "chapters": [
         {
@@ -32223,14 +32223,14 @@
       "review": "",
       "notionPageId": "3aad11e1-256c-81ae-ab04-e89610c5bef9",
       "notionSyncedAt": 1785150348653,
-      "metaAt": "",
+      "metaAt": "2026-10-19T11:18:49.000Z",
       "notes": [],
       "posIdx": 0,
       "posPidx": 0,
       "posAt": "2026-08-14T07:25:06.618Z",
       "statusAt": "2026-07-18T10:10:21.303Z",
       "statusNote": "",
-      "rating": 0,
+      "rating": 4,
       "addedAt": "",
       "chapters": [
         {
@@ -44210,14 +44210,14 @@
       "review": "純爽文",
       "notionPageId": "3add11e1-256c-81f4-9bec-ea7ae607b7a0",
       "notionSyncedAt": 1785388790957,
-      "metaAt": "2026-08-16T06:43:24.633Z",
+      "metaAt": "2026-10-19T11:18:49.000Z",
       "notes": [],
       "posIdx": 382,
       "posPidx": 7,
       "posAt": "2026-10-08T12:29:21.227Z",
       "statusAt": "2026-07-29T17:46:06.324Z",
       "statusNote": "",
-      "rating": 0,
+      "rating": 3,
       "addedAt": "",
       "chapters": [
         {
@@ -46503,14 +46503,14 @@
       "review": "",
       "notionPageId": "3bed11e1-256c-81a6-9627-c4b91e76c96d",
       "notionSyncedAt": 1786862388846,
-      "metaAt": "2026-08-16T06:39:51.004Z",
+      "metaAt": "2026-10-19T11:18:49.000Z",
       "notes": [],
       "posIdx": 0,
       "posPidx": 0,
       "posAt": "2026-09-02T09:17:11.418Z",
       "statusAt": "",
       "statusNote": "",
-      "rating": 0,
+      "rating": 4,
       "addedAt": "",
       "chapters": [
         {

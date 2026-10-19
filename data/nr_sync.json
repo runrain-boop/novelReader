@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-10-19T11:12:04.817Z",
+  "updated_at": "2026-10-19T11:13:27.884Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -63143,9 +63143,9 @@
       "notionSyncedAt": 0,
       "metaAt": "2026-10-19T09:29:01.872Z",
       "notes": [],
-      "posIdx": 2,
-      "posPidx": 36,
-      "posAt": "2026-10-19T11:10:14.149Z",
+      "posIdx": 3,
+      "posPidx": 0,
+      "posAt": "2026-10-19T11:13:24.230Z",
       "statusAt": "",
       "statusNote": "",
       "rating": 0,
@@ -67536,7 +67536,8 @@
     "https://www.xbanxia.cc/books/403183.html": [
       0,
       1,
-      2
+      2,
+      3
     ]
   },
   "deleted": [

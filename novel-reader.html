@@ -93,6 +93,18 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 .sc-stat.reading{background:rgba(139,105,20,.15);color:var(--ac)}
 .sc-stat.want{background:rgba(96,96,192,.15);color:#6060c0}
 .sc-stat.done{background:rgba(74,144,96,.15);color:var(--ok)}
+.sc-stat.paused{background:rgba(200,130,40,.15);color:#c88228}
+.sc-stat.dropped{background:rgba(150,150,150,.18);color:var(--txd)}
+.sc-stars{font-size:12px;color:#e0a800;letter-spacing:1px;margin-bottom:4px;line-height:1}
+.sc-dl{display:inline-block;font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;margin:0 0 4px 4px}
+.sc-dl.full{background:rgba(74,144,96,.15);color:var(--ok)}
+.sc-dl.part{background:rgba(200,130,40,.15);color:#c88228}
+.sc-dl.fail{background:rgba(200,60,60,.15);color:var(--err)}
+.sc-dl.none{background:var(--pn);color:var(--txd)}
+.sc-reason{font-size:11px;color:var(--txd);margin:-2px 0 6px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.4}
+.sc-clear{margin-top:6px;padding:4px 0;border-radius:5px;border:1px dashed var(--bd);font-size:11px;cursor:pointer;background:transparent;color:var(--txd);-webkit-appearance:none;width:100%}
+.ed-stars span{font-size:24px;cursor:pointer;color:var(--bd);padding:0 2px;user-select:none}
+.ed-stars span.on{color:#e0a800}
 .sc-prog{font-size:10px;color:var(--txr)}
 /* Status buttons inside card */
 .sc-status-row{display:flex;gap:4px}
@@ -101,6 +113,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 .ssb.sw{border-color:#6060c0;color:#6060c0;background:rgba(96,96,192,.1);font-weight:700}
 .ssb.sr{border-color:var(--ac);color:var(--ac);background:rgba(139,105,20,.1);font-weight:700}
 .ssb.sd{border-color:var(--ok);color:var(--ok);background:rgba(74,144,96,.1);font-weight:700}
+.ssb.sp{border-color:#c88228;color:#c88228;background:rgba(200,130,40,.1);font-weight:700}
+.ssb.sx{border-color:var(--txd);color:var(--tx);background:rgba(150,150,150,.15);font-weight:700}
+.sc-status-row{gap:3px}.sc-status-row .ssb{font-size:10px;padding:4px 0;min-width:0}
 /* Badges */
 .sc-now{position:absolute;top:6px;left:6px;background:var(--ac);color:#fff;font-size:10px;padding:2px 6px;border-radius:5px;font-weight:700}
 .sc-del{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.45);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:13px;cursor:pointer;display:flex!important;align-items:center;justify-content:center;opacity:.8;z-index:10}
@@ -304,10 +319,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
         <div id="shelf-header">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
             <div id="shelf-tabs" style="margin-bottom:0">
-              <button class="stab active" data-filter="all">全部</button>
+              <button class="stab active" data-filter="all">書架</button>
               <button class="stab" data-filter="reading">在讀</button>
               <button class="stab" data-filter="want">想讀</button>
-              <button class="stab" data-filter="done">完成</button>
+              <button class="stab" data-filter="done">完讀</button>
+              <button class="stab" data-filter="archive">歸檔</button>
             </div>
             <button class="btn" id="badd">＋ 新增書籍</button>
             <button class="btn" id="bnotesov">📋 筆記總覽</button>
@@ -370,7 +386,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 <div id="notionp" class="panel"><h4>📔 Notion 設定</h4><p style="font-size:12px;color:var(--txd);margin-bottom:10px;line-height:1.6">設定一次即可，之後在各本小說的「✏️ 編輯」視窗按「同步到 Notion」就能寫入你的 Notion 閱讀紀錄表。<br>Token 僅存在本機瀏覽器，不會上傳伺服器。</p><div class="srow"><label style="white-space:nowrap;flex-shrink:0">Integration Token</label><input id="notion-token-input" type="password" placeholder="secret_xxxxxxxxxxxx" autocomplete="off" style="flex:1;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:12px;outline:none;font-family:var(--ui)"></div><div class="srow"><label style="white-space:nowrap;flex-shrink:0">Database ID</label><input id="notion-dbid-input" type="text" placeholder="32碼英數字" autocomplete="off" style="flex:1;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:12px;outline:none;font-family:var(--ui)"></div><div style="display:flex;gap:8px;margin-top:10px"><button onclick="saveNotionSettingsUI()" style="flex:1;padding:8px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer">儲存設定</button><button onclick="clearNotionSettingsUI()" style="flex:1;padding:8px;background:var(--pn);color:var(--txd);border:1px solid var(--bd);border-radius:7px;font-size:13px;cursor:pointer">清除設定</button></div><div id="notion-settings-info" style="font-size:11px;color:var(--txd);margin-top:8px;line-height:1.5"></div><p style="font-size:11px;color:var(--txd);margin-top:10px;line-height:1.6;opacity:.85">⚠️ 每次按「同步到 Notion」只會更新作者/閱讀狀態/起訖日/備註這幾個欄位；書名只有第一次新增該筆紀錄時會寫入，之後在本機改書名並不會同步更新 Notion 上的書名欄位。</p></div>
 <div id="expp" class="panel"><h4>📦 匯出 / 匯入</h4><select class="exp-sel" id="exp-sel"><option value="all">全部小說</option></select><div class="exp-btns"><button onclick="doExport()" style="background:var(--ac);color:#fff">⬆️ 匯出</button><button onclick="$('imp-file').click()" style="background:var(--pn);color:var(--txd);border:1px solid var(--bd)">⬇️ 匯入</button></div><input type="file" id="imp-file" accept=".json" style="display:none"><div id="exp-stat"></div></div>
 <div id="editp"><div id="edit-box"><h4>✏️ 編輯書籍資訊</h4><div class="ef"><label>書名</label><input id="edit-title" type="text"></div><div class="ef"><label>來源網址</label><div style="display:flex;gap:6px;align-items:center"><input id="edit-url" type="text" readonly style="flex:1;cursor:default;color:var(--txd);"><button id="edit-url-btn" style="flex-shrink:0;padding:8px 10px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:14px;">🔗</button></div></div><div class="ef"><label>作者</label><input id="edit-author" type="text" placeholder="（選填）"></div><div class="ef"><label>簡介</label><textarea id="edit-intro" placeholder="（選填）"></textarea></div><div class="ef"><label>封面</label><div style="display:flex;gap:12px;align-items:flex-start"><div id="cover-preview" style="width:72px;height:108px;border:1px solid var(--bd);border-radius:7px;overflow:hidden;background:var(--pn);display:flex;align-items:center;justify-content:center;flex-shrink:0"></div><div style="display:flex;flex-direction:column;gap:6px;padding-top:2px"><button id="cover-upload-btn" style="padding:7px 12px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:13px;-webkit-appearance:none">📷 上傳封面</button><button id="cover-clear-btn" style="padding:7px 12px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:13px;color:var(--txd);-webkit-appearance:none">✕ 清除</button><input type="file" id="cover-file" accept="image/*" style="display:none"></div></div></div>
-<div class="ef"><label>書評</label><textarea id="edit-review" placeholder="（選填）讀後感、評分等…" style="height:90px"></textarea></div><div class="ef"><label>完本狀態</label><select id="edit-pubstatus" style="padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none;width:100%"><option value="">未標</option><option value="ongoing">連載中</option><option value="completed">已完本</option><option value="dropped">已棄更</option></select></div><div class="ef" style="display:flex;gap:10px"><div style="flex:1"><label style="font-size:12px;color:var(--txd)">開始閱讀</label><input id="edit-start-date" type="date" style="width:100%;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none"></div><div style="flex:1"><label style="font-size:12px;color:var(--txd)">讀完日期</label><input id="edit-finish-date" type="date" style="width:100%;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none"></div></div><div class="ef"><label>Notion 閱讀紀錄</label><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span id="notion-status" style="font-size:12px;color:var(--txd)"></span><button type="button" id="notion-push-btn" style="padding:6px 12px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:12px;-webkit-appearance:none">📤 同步到 Notion</button></div></div><div class="ef"><label>章節管理</label><div class="edit-chlist" id="edit-chlist"></div></div><div class="edit-btns"><button onclick="saveEdit()" style="background:var(--ac);color:#fff">✅ 儲存</button><button onclick="closeEdit()" style="background:var(--pn);color:var(--txd);border:1px solid var(--bd)">取消</button></div></div></div>
+<div class="ef"><label>評分</label><div class="ed-stars" id="edit-stars"><span data-r="1">★</span><span data-r="2">★</span><span data-r="3">★</span><span data-r="4">★</span><span data-r="5">★</span></div></div><div class="ef" id="edit-reason-wrap"><label>暫停 / 棄讀原因</label><textarea id="edit-reason" placeholder="（選填）為什麼暫停或棄讀" style="height:60px"></textarea></div><div class="ef"><label>書評</label><textarea id="edit-review" placeholder="（選填）讀後感、評分等…" style="height:90px"></textarea></div><div class="ef"><label>完本狀態</label><select id="edit-pubstatus" style="padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none;width:100%"><option value="">未標</option><option value="ongoing">連載中</option><option value="completed">已完本</option><option value="dropped">已棄更</option></select></div><div class="ef" style="display:flex;gap:10px"><div style="flex:1"><label style="font-size:12px;color:var(--txd)">開始閱讀</label><input id="edit-start-date" type="date" style="width:100%;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none"></div><div style="flex:1"><label style="font-size:12px;color:var(--txd)">讀完日期</label><input id="edit-finish-date" type="date" style="width:100%;padding:7px 8px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;color:var(--tx);font-size:13px;outline:none;font-family:var(--ui);-webkit-appearance:none"></div></div><div class="ef"><label>Notion 閱讀紀錄</label><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span id="notion-status" style="font-size:12px;color:var(--txd)"></span><button type="button" id="notion-push-btn" style="padding:6px 12px;background:var(--pn);border:1px solid var(--bd);border-radius:7px;cursor:pointer;font-size:12px;-webkit-appearance:none">📤 同步到 Notion</button></div></div><div class="ef"><label>章節管理</label><div class="edit-chlist" id="edit-chlist"></div></div><div class="edit-btns"><button onclick="saveEdit()" style="background:var(--ac);color:#fff">✅ 儲存</button><button onclick="closeEdit()" style="background:var(--pn);color:var(--txd);border:1px solid var(--bd)">取消</button></div></div></div>
 <!-- Note popup -->
 <div id="note-popup">
   <div id="np-quote" style="font-size:12px;color:var(--txd);font-style:italic;margin-bottom:7px;max-height:48px;overflow:hidden;line-height:1.4;border-left:3px solid var(--bd);padding-left:8px"></div>
@@ -568,13 +584,28 @@ function addToLibrary(novel){
   novel.addedAt=new Date().toISOString();
   var ex=-1;if(novel.url)for(var i=0;i<G.library.length;i++){if(G.library[i].url===novel.url){ex=i;break;}}
   if(novel.url&&G.deleted){var di=G.deleted.indexOf(novel.url);if(di>=0)G.deleted.splice(di,1);}
-  if(ex>=0){G.library[ex]=novel;updateExpSel();return ex;}
+  if(ex>=0){var old=G.library[ex];G.library[ex]=Object.assign({},old,{chapters:novel.chapters,url:novel.url,addedAt:novel.addedAt,status:old.status||novel.status});updateExpSel();return ex;}
   G.library.push(novel);updateExpSel();return G.library.length-1;
 }
 
 // ── Bookshelf ────────────────────────────────────────────
 var COVERS=['📖','📚','📕','📗','📘','📙','🔖','✨','⚔️','🏮','🌙','🌸','🔮','💫','🎭','🌊'];
-var STATUS_LABEL={want:'想讀',reading:'在讀',done:'已完成'};
+var STATUS_LABEL={want:'想讀',reading:'在讀',done:'完讀',paused:'暫停',dropped:'棄讀'};
+var SHELF_OF={reading:'all',want:'all',done:'done',paused:'archive',dropped:'archive'}; // 「書架」只放在讀/想讀；完讀、歸檔（暫停+棄讀）各自一個書架
+function shelfMatch(st,filter){return filter===st||SHELF_OF[st]===filter;}
+function starsText(r){r=+r||0;return r?'★★★★★'.slice(0,r)+'☆☆☆☆☆'.slice(0,5-r):'';}
+function chOk(t){return!!t&&t!=='（無法擷取）'&&!/^（失敗：/.test(t);}
+// 本機下載狀況：用一次 getAllKeys 取得 IndexedDB 裡有哪些章節，再逐本統計
+function dlStats(cb){idbOpen(function(db){if(!db){cb({});return;}try{var req=db.transaction('ch','readonly').objectStore('ch').getAllKeys();req.onsuccess=function(){var have={};(req.result||[]).forEach(function(k){have[k]=1;});var out={};G.library.forEach(function(n,i){var tot=0,ok=0,bad=0;(n.chapters||[]).forEach(function(c){if(!c.url)return;tot++;if(chOk(c.content)||have[c.url])ok++;else if(c.content&&!chOk(c.content))bad++;});out[i]={tot:tot,ok:ok,bad:bad};});cb(out);};req.onerror=function(){cb({});};}catch(e){cb({});}});}
+function dlBadge(s){if(!s||!s.tot)return'';if(s.ok===s.tot)return'<span class="sc-dl full">本機完整</span>';if(s.bad)return'<span class="sc-dl fail">失敗 '+s.bad+'章</span>';if(s.ok)return'<span class="sc-dl part">本機 '+s.ok+'/'+s.tot+'</span>';return'<span class="sc-dl none">未下載</span>';}
+function clearBookContent(ni){
+  var n=G.library[ni];if(!n)return;
+  var urlChs=(n.chapters||[]).filter(function(c){return c.url;});
+  if(!urlChs.length){alert('這本是匯入的書，內文無法重新下載，所以不提供刪除。');return;}
+  if(!confirm('刪除《'+n.title+'》在「這台裝置」上的內文？\n\n閱讀紀錄、進度、筆記、書評和書籍資訊都會保留，之後想再讀可以重新下載。'))return;
+  idbDelChapters(urlChs);urlChs.forEach(function(c){c.content=null;});
+  save();buildShelf(curFilter());
+}
 
 function coverEmoji(title){var c=0;for(var i=0;i<(title||'').length;i++)c+=title.charCodeAt(i);return COVERS[c%COVERS.length];}
 function novelStatus(n){return n.status||'reading';}
@@ -586,7 +617,7 @@ function buildShelf(filter){
   var grid=$('shelf-grid');grid.innerHTML='';
   if(!G.library.length){$('shelf-empty').style.display='block';return;}
   $('shelf-empty').style.display='none';
-  var ord={reading:0,want:1,done:2};
+  var ord={reading:0,want:1,paused:2,dropped:3,done:4};
   var items=G.library.map(function(n,i){return{n:n,i:i};}).sort(function(a,b){
     if(a.i===G.cur&&b.i!==G.cur)return -1;
     if(b.i===G.cur&&a.i!==G.cur)return 1;
@@ -594,7 +625,7 @@ function buildShelf(filter){
   });
   items.forEach(function(item){
     var n=item.n,i=item.i,st=novelStatus(n);
-    if(filter!=='all'&&st!==filter)return;
+    if(!shelfMatch(st,filter))return;
     var rc=(n.posIdx||0)+1,total=n.chapters?n.chapters.length:0;
     var pct=total>0?Math.round((n.posIdx||0)/total*100):0;
     var isCur=G.cur===i;
@@ -602,7 +633,7 @@ function buildShelf(filter){
     card.className='sc'+(isCur?' cur':'');
     card.setAttribute('data-ni',i);
     var isDk=document.body.className==='dk';
-    var coverColor=st==='reading'?(isDk?'#c9a96e':'#8b6914'):st==='done'?(isDk?'#5dba78':'#4a9060'):(isDk?'#8080d0':'#6060c0');
+    var coverColor=st==='reading'?(isDk?'#c9a96e':'#8b6914'):st==='done'?(isDk?'#5dba78':'#4a9060'):st==='paused'?'#c88228':st==='dropped'?'#999':(isDk?'#8080d0':'#6060c0');
     var svgHtml=st==='reading'?svgOpenBook(coverColor):svgClosedBook(coverColor);
     var dateStr='';
     if(n.startDate)dateStr+='📅 '+n.startDate;
@@ -615,8 +646,11 @@ function buildShelf(filter){
       '<div class="sc-body">'+
         '<span class="sc-src-tag '+(n.url?'src-sync':'src-imp')+'">'+(n.url?'同步':'匯入')+'</span>'+
         (n.notionPageId?'<span class="sc-src-tag" style="background:rgba(91,77,224,.15);color:#5b4de0;margin-left:4px" title="已同步至 Notion">📔 Notion</span>':'')+
+        '<span class="sc-dl-slot" data-dl-ni="'+i+'"></span>'+
         '<div class="sc-title">'+esc(n.title)+'</div>'+
         (n.author?'<div class="sc-author">'+esc(n.author)+'</div>':'')+
+        (n.rating?'<div class="sc-stars">'+starsText(n.rating)+'</div>':'')+
+        ((st==='paused'||st==='dropped')&&n.statusNote?'<div class="sc-reason">'+esc(n.statusNote)+'</div>':'')+
         '<div class="sc-bar-wrap"><div class="sc-bar" style="width:'+pct+'%"></div></div>'+
         '<div class="sc-foot">'+
           '<span class="sc-stat '+st+'">'+STATUS_LABEL[st]+'</span>'+
@@ -625,15 +659,23 @@ function buildShelf(filter){
         '<div class="sc-status-row">'+
           '<button class="ssb'+(st==='want'?' sw':'')+'" data-s="want" data-ni="'+i+'">想讀</button>'+
           '<button class="ssb'+(st==='reading'?' sr':'')+'" data-s="reading" data-ni="'+i+'">在讀</button>'+
-          '<button class="ssb'+(st==='done'?' sd':'')+'" data-s="done" data-ni="'+i+'">完成</button>'+
+          '<button class="ssb'+(st==='done'?' sd':'')+'" data-s="done" data-ni="'+i+'">完讀</button>'+
+          '<button class="ssb'+(st==='paused'?' sp':'')+'" data-s="paused" data-ni="'+i+'">暫停</button>'+
+          '<button class="ssb'+(st==='dropped'?' sx':'')+'" data-s="dropped" data-ni="'+i+'">棄讀</button>'+
         '</div>'+
         (dateStr?'<div class="sc-date">'+dateStr+'</div>':'')+
+        (filter==='archive'?'<button class="sc-clear" data-clear-ni="'+i+'">🗑 刪除本機內文</button>':'')+
       '</div>';
     // Status buttons
     card.querySelectorAll('.ssb').forEach(function(btn){
       btn.addEventListener('click',function(e){
         e.stopPropagation();
         var ni2=+this.getAttribute('data-ni'),ns=this.getAttribute('data-s');
+        if(ns==='paused'||ns==='dropped'){
+          var why=prompt((ns==='paused'?'暫停':'棄讀')+'原因（可留空，之後可在編輯書籍資訊修改）',G.library[ni2].statusNote||'');
+          if(why===null)return; // 按取消就不改狀態
+          G.library[ni2].statusNote=why.trim();
+        }
         G.library[ni2].status=ns;G.library[ni2].statusAt=new Date().toISOString();
         if(ns==='done'&&!G.library[ni2].finishDate)G.library[ni2].finishDate=new Date().toISOString().slice(0,10);
         if(ns==='reading'&&!G.library[ni2].startDate)G.library[ni2].startDate=new Date().toISOString().slice(0,10);
@@ -669,6 +711,8 @@ function buildShelf(filter){
       fr.readAsDataURL(file);
       this.value='';
     });
+    var clr=card.querySelector('.sc-clear');
+    if(clr)clr.addEventListener('click',function(e){e.stopPropagation();clearBookContent(+this.getAttribute('data-clear-ni'));});
     // Delete button
     card.querySelector('.sc-del').addEventListener('click',function(e){
       e.stopPropagation();
@@ -689,9 +733,10 @@ function buildShelf(filter){
   // Update tab labels
   document.querySelectorAll('.stab').forEach(function(t){
     var f=t.dataset.filter;
-    if(f==='all')t.textContent='全部('+G.library.length+')';
-    else t.textContent=STATUS_LABEL[f]+'('+G.library.filter(function(n){return novelStatus(n)===f;}).length+')';
+    var lbl={all:'書架',archive:'歸檔'}[f]||STATUS_LABEL[f];
+    t.textContent=lbl+'('+G.library.filter(function(n){return shelfMatch(novelStatus(n),f);}).length+')';
   });
+  dlStats(function(stats){document.querySelectorAll('.sc-dl-slot').forEach(function(el){el.innerHTML=dlBadge(stats[+el.getAttribute('data-dl-ni')]);});});
 }
 document.querySelectorAll('.stab').forEach(function(t){
   t.addEventListener('click',function(){
@@ -976,6 +1021,9 @@ function openEdit(){
   $('edit-start-date').value=n.startDate||'';
   $('edit-finish-date').value=n.finishDate||'';
   $('edit-pubstatus').value=n.pubStatus||'';
+  _editRating=+n.rating||0;paintEditStars();
+  $('edit-reason').value=n.statusNote||'';
+  $('edit-reason-wrap').style.display=(n.status==='paused'||n.status==='dropped'||n.statusNote)?'':'none';
   _editCoverUrl=null;
   var prev=$('cover-preview');prev.innerHTML='';
   if(n.bid){idbGet('__cover__'+n.bid,function(d){if(d){_editCoverUrl=d;prev.innerHTML='<img src="'+d+'" style="width:100%;height:100%;object-fit:cover;display:block">';}else{prev.innerHTML=svgClosedBook('#8b6914');}});}else{prev.innerHTML=svgClosedBook('#8b6914');}
@@ -1106,7 +1154,10 @@ function updateEchToolbar(){
   if(delBtn){delBtn.disabled=count===0;delBtn.style.opacity=count>0?'1':'.4';}
   if(selAll)selAll.textContent=(count===cbs.length&&cbs.length>0)?'取消全選':'全選';
 }
-window.saveEdit=function(){if(G.cur<0)return;G.library[G.cur].title=$('edit-title').value.trim()||G.library[G.cur].title;G.library[G.cur].author=$('edit-author').value.trim();G.library[G.cur].intro=$('edit-intro').value.trim();G.library[G.cur].review=$('edit-review').value.trim();G.library[G.cur].startDate=$('edit-start-date').value||'';G.library[G.cur].finishDate=$('edit-finish-date').value||'';G.library[G.cur].pubStatus=$('edit-pubstatus').value;G.library[G.cur].metaAt=new Date().toISOString();if(_editCoverUrl==='__clear__'){if(G.library[G.cur].bid)idbSet('__cover__'+G.library[G.cur].bid,null);}else if(_editCoverUrl&&_editCoverUrl!==true){if(!G.library[G.cur].bid)G.library[G.cur].bid='bk'+Date.now()+Math.random().toString(36).slice(2,5);idbSet('__cover__'+G.library[G.cur].bid,_editCoverUrl);}  _editCoverUrl=null;$('ns').textContent=G.library[G.cur].title.length>14?G.library[G.cur].title.substring(0,14)+'…':G.library[G.cur].title;updateExpSel();save();closeEdit();};
+var _editRating=0;
+function paintEditStars(){document.querySelectorAll('#edit-stars span').forEach(function(s){s.classList.toggle('on',+s.getAttribute('data-r')<=_editRating);});}
+document.querySelectorAll('#edit-stars span').forEach(function(s){s.addEventListener('click',function(){var r=+this.getAttribute('data-r');_editRating=(r===_editRating)?0:r;paintEditStars();});}); // 再點同一顆 = 清除評分
+window.saveEdit=function(){if(G.cur<0)return;G.library[G.cur].title=$('edit-title').value.trim()||G.library[G.cur].title;G.library[G.cur].author=$('edit-author').value.trim();G.library[G.cur].intro=$('edit-intro').value.trim();G.library[G.cur].review=$('edit-review').value.trim();G.library[G.cur].startDate=$('edit-start-date').value||'';G.library[G.cur].finishDate=$('edit-finish-date').value||'';G.library[G.cur].pubStatus=$('edit-pubstatus').value;G.library[G.cur].rating=_editRating;var _rs=$('edit-reason').value.trim();if(_rs!==(G.library[G.cur].statusNote||'')){G.library[G.cur].statusNote=_rs;G.library[G.cur].statusAt=new Date().toISOString();}G.library[G.cur].metaAt=new Date().toISOString();if(_editCoverUrl==='__clear__'){if(G.library[G.cur].bid)idbSet('__cover__'+G.library[G.cur].bid,null);}else if(_editCoverUrl&&_editCoverUrl!==true){if(!G.library[G.cur].bid)G.library[G.cur].bid='bk'+Date.now()+Math.random().toString(36).slice(2,5);idbSet('__cover__'+G.library[G.cur].bid,_editCoverUrl);}  _editCoverUrl=null;$('ns').textContent=G.library[G.cur].title.length>14?G.library[G.cur].title.substring(0,14)+'…':G.library[G.cur].title;updateExpSel();save();closeEdit();};
 window.closeEdit=function(){$('editp').classList.remove('show');};$('editp').addEventListener('click',function(e){if(e.target===$('editp'))closeEdit();});
 
 // ── Underline helpers ────────────────────────────────────
@@ -1356,7 +1407,7 @@ document.addEventListener('click',function(e){[['ttp','btts'],['setp','bset'],['
 function save(posOnly){
   try{
     if(!posOnly)G.library.forEach(function(n,i){if(!n.bid)n.bid='bk'+Date.now()+i+Math.random().toString(36).slice(2,5);});
-var d={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',pubStatus:n.pubStatus||'',bid:n.bid||'',startDate:n.startDate||'',finishDate:n.finishDate||'',review:n.review||'',notionPageId:n.notionPageId||'',notionSyncedAt:n.notionSyncedAt||0,metaAt:n.metaAt||'',notes:n.notes||[],posIdx:n.posIdx||0,posPidx:n.posPidx||0,posAt:n.posAt||'',statusAt:n.statusAt||'',addedAt:n.addedAt||'',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:c.url?null:c.content};})};  }),cur:G.cur,idx:G.idx,pidx:PM.pageIdx,read:G.read,deleted:G.deleted||[],deletedAt:G.deletedAt||{}};
+var d={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',pubStatus:n.pubStatus||'',bid:n.bid||'',startDate:n.startDate||'',finishDate:n.finishDate||'',review:n.review||'',notionPageId:n.notionPageId||'',notionSyncedAt:n.notionSyncedAt||0,metaAt:n.metaAt||'',notes:n.notes||[],posIdx:n.posIdx||0,posPidx:n.posPidx||0,posAt:n.posAt||'',statusAt:n.statusAt||'',statusNote:n.statusNote||'',rating:n.rating||0,addedAt:n.addedAt||'',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:c.url?null:c.content};})};  }),cur:G.cur,idx:G.idx,pidx:PM.pageIdx,read:G.read,deleted:G.deleted||[],deletedAt:G.deletedAt||{}};
     localStorage.setItem(SK,JSON.stringify(d));
   }catch(e){try{
     var bare={library:G.library.map(function(n){return{title:n.title,author:n.author||'',intro:n.intro||'',url:n.url||'',status:n.status||'reading',chapters:n.chapters.map(function(c){return{title:c.title,url:c.url||'',content:null};})};  }),cur:G.cur,idx:G.idx,read:G.read};
@@ -1388,7 +1439,7 @@ function _buildSyncPayload(){
       url:bk.url||'',status:bk.status||'reading',pubStatus:bk.pubStatus||'',
       startDate:bk.startDate||'',finishDate:bk.finishDate||'',review:bk.review||'',
       notionPageId:bk.notionPageId||'',notionSyncedAt:bk.notionSyncedAt||0,metaAt:bk.metaAt||'',
-      notes:bk.notes||[],posIdx:bk.posIdx||0,posPidx:bk.posPidx||0,posAt:bk.posAt||'',statusAt:bk.statusAt||'',addedAt:bk.addedAt||'',chapters:(bk.chapters||[]).map(function(c){var ch={title:c.title,url:c.url||''};if(!c.url&&c.content)ch.content=c.content;return ch;})};
+      notes:bk.notes||[],posIdx:bk.posIdx||0,posPidx:bk.posPidx||0,posAt:bk.posAt||'',statusAt:bk.statusAt||'',statusNote:bk.statusNote||'',rating:bk.rating||0,addedAt:bk.addedAt||'',chapters:(bk.chapters||[]).map(function(c){var ch={title:c.title,url:c.url||''};if(!c.url&&c.content)ch.content=c.content;return ch;})};
   });
   return{v:2,updated_at:new Date().toISOString(),library:lib,read:G.read||{},deleted:G.deleted||[],deletedAt:G.deletedAt||{}};
 }
@@ -1414,15 +1465,15 @@ function _mergeSync(local,remote){
       var lo=byKey[k],re=bk;
       var chs=lo.chapters.length>=re.chapters.length?lo.chapters:re.chapters;
       var posF=(lo.posAt||'')>=(re.posAt||'')?{posIdx:lo.posIdx||0,posPidx:lo.posPidx||0,posAt:lo.posAt||''}:{posIdx:re.posIdx||0,posPidx:re.posPidx||0,posAt:re.posAt||''};
-      var statusF=(lo.statusAt&&lo.statusAt>=(re.statusAt||''))?{status:lo.status||'reading',statusAt:lo.statusAt}:{status:re.status||lo.status||'reading',statusAt:re.statusAt||''};
+      var statusF=(lo.statusAt&&lo.statusAt>=(re.statusAt||''))?{status:lo.status||'reading',statusAt:lo.statusAt,statusNote:lo.statusNote||''}:{status:re.status||lo.status||'reading',statusAt:re.statusAt||'',statusNote:re.statusNote||''};
       // notionPageId 只在「這台裝置」推送成功時才會寫入，其他裝置本地必然是空值——
       // 不能套用「local 永遠贏」的規則，否則會被沒同步過的裝置覆蓋掉，要改成比對哪邊 notionSyncedAt 較新
       var notionF=(lo.notionSyncedAt||0)>=(re.notionSyncedAt||0)?{notionPageId:lo.notionPageId||re.notionPageId||'',notionSyncedAt:lo.notionSyncedAt||re.notionSyncedAt||0}:{notionPageId:re.notionPageId||lo.notionPageId||'',notionSyncedAt:re.notionSyncedAt||lo.notionSyncedAt||0};
       // 作者/簡介/書評/完本狀態/起訖日/筆記：同樣不能「本機永遠贏」，改成比對 metaAt（最後編輯時間）較新的那一整組欄位為準，
       // 這樣才不會被另一台沒同步過的裝置的舊資料覆蓋掉（含刪除筆記也才能真正同步過去）
       var metaF=(lo.metaAt||'')>=(re.metaAt||'')
-        ?{author:lo.author||'',intro:lo.intro||'',review:lo.review||'',pubStatus:lo.pubStatus||'',startDate:lo.startDate||'',finishDate:lo.finishDate||'',notes:lo.notes||[],metaAt:lo.metaAt||''}
-        :{author:re.author||'',intro:re.intro||'',review:re.review||'',pubStatus:re.pubStatus||'',startDate:re.startDate||'',finishDate:re.finishDate||'',notes:re.notes||[],metaAt:re.metaAt||''};
+        ?{author:lo.author||'',intro:lo.intro||'',review:lo.review||'',pubStatus:lo.pubStatus||'',startDate:lo.startDate||'',finishDate:lo.finishDate||'',notes:lo.notes||[],rating:lo.rating||0,metaAt:lo.metaAt||''}
+        :{author:re.author||'',intro:re.intro||'',review:re.review||'',pubStatus:re.pubStatus||'',startDate:re.startDate||'',finishDate:re.finishDate||'',notes:re.notes||[],rating:re.rating||0,metaAt:re.metaAt||''};
       byKey[k]=Object.assign({},re,lo,{chapters:chs,addedAt:bookAdded[k]||''},posF,statusF,notionF,metaF);
     } else {byKey[k]=bk;}
   });
@@ -1586,13 +1637,13 @@ async function fetchChText(bk,ch,ms){ // 抓單章正文：本機代理的書先
 
 // ── Notion sync (書名/作者/閱讀狀態/起訖日/備註 推送到 Notion 閱讀紀錄表) ──
 var NOTION_LS='notionConfig_reading_v1'; // 與 reading-list.html 共用同一組 Token/資料庫設定
-var NOTION_STATUS_MAP={want:'想讀',reading:'在讀',done:'完讀'};
+var NOTION_STATUS_MAP={want:'想讀',reading:'在讀',done:'完讀',paused:'暫停',dropped:'棄讀'};
 var _notionPropTypes={};
 function getNotionConfig(){try{return JSON.parse(localStorage.getItem(NOTION_LS)||'{}');}catch(e){return{};}}
 function saveNotionConfig(cfg){localStorage.setItem(NOTION_LS,JSON.stringify(cfg));}
 function getNotionFields(){
   var f=(getNotionConfig().fields)||{};
-  return{title:f.title||'書名',author:f.author||'作者',status:f.status||'閱讀狀態',start:f.start||'閱讀起日',end:f.end||'閱讀迄日',note:f.note||'備註',source:f.source||'來源'};
+  return{title:f.title||'書名',author:f.author||'作者',status:f.status||'閱讀狀態',start:f.start||'閱讀起日',end:f.end||'閱讀迄日',note:f.note||'備註',source:f.source||'來源',rating:f.rating||'評價'};
 }
 function _notionFetch(path,opts){
   var cfg=getNotionConfig();
@@ -1620,8 +1671,10 @@ function buildNotionProps(n,fields){
     if(type==='date')return value?{date:{start:value}}:{date:null};
     return null;
   };
-  var status=n.pubStatus==='dropped'?'棄讀':NOTION_STATUS_MAP[n.status||'reading'];
+  var st=n.status||'reading';
+  var status=(st==='reading'||st==='want')&&n.pubStatus==='dropped'?'棄讀':NOTION_STATUS_MAP[st];
   var map={author:[fields.author,n.author||''],status:[fields.status,status],start:[fields.start,n.startDate||''],end:[fields.end,n.finishDate||''],note:[fields.note,n.review||n.intro||''],source:[fields.source,'小說閱讀器']};
+  if(n.rating>0)map.rating=[fields.rating,'⭐⭐⭐⭐⭐'.slice(0,n.rating)]; // 沒評分就不送，避免把 Notion 上已有的評價清掉
   var props={};
   Object.keys(map).forEach(function(k){
     var name=map[k][0],p=mk(k,map[k][1]);
@@ -1751,6 +1804,7 @@ setTimeout(refocusTrap,300);
 // Sync init: pull on load, auto-pull every 5 min
 setTimeout(function(){if(ghPAT())loadFromGH();else setSyncSt('nopat');},1000);
 setInterval(function(){if(ghPAT())loadFromGH();},300000);
+var _lastVisPull=0;document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&ghPAT()&&Date.now()-_lastVisPull>30000){_lastVisPull=Date.now();loadFromGH();}});
 </script>
 </body>
 </html>

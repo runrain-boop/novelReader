@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-10-19T09:32:28.762Z",
+  "updated_at": "2026-10-19T09:33:57.383Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -62,6 +62,8 @@
       "posPidx": 2,
       "posAt": "2026-06-18T09:05:43.000Z",
       "statusAt": "2026-06-14T08:06:47.292Z",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -2736,6 +2738,8 @@
       "posPidx": 0,
       "posAt": "2026-10-11T18:40:40.728Z",
       "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -3691,6 +3695,8 @@
       "posPidx": 0,
       "posAt": "2026-07-27T10:34:58.625Z",
       "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -14150,6 +14156,8 @@
       "posPidx": 0,
       "posAt": "",
       "statusAt": "2026-06-14T08:06:37.319Z",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -19909,6 +19917,8 @@
       "posPidx": 0,
       "posAt": "2026-07-27T10:52:55.500Z",
       "statusAt": "2026-07-02T13:42:09.401Z",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -20792,6 +20802,8 @@
       "posPidx": 0,
       "posAt": "2026-10-04T09:19:10.752Z",
       "statusAt": "2026-06-23T14:01:43.175Z",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -24655,6 +24667,8 @@
       "posPidx": 6,
       "posAt": "2026-07-27T10:51:27.783Z",
       "statusAt": "2026-06-22T23:59:39.252Z",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -29906,6 +29920,8 @@
       "posPidx": 0,
       "posAt": "2026-07-27T10:34:01.023Z",
       "statusAt": "2026-06-23T14:06:05.997Z",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -30520,6 +30536,8 @@
       "posPidx": 0,
       "posAt": "2026-07-29T05:31:17.675Z",
       "statusAt": "2026-06-28T03:07:30.952Z",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -32211,6 +32229,8 @@
       "posPidx": 0,
       "posAt": "2026-08-14T07:25:06.618Z",
       "statusAt": "2026-07-18T10:10:21.303Z",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -33302,6 +33322,8 @@
       "posPidx": 6,
       "posAt": "2026-07-11T06:12:31.018Z",
       "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -42425,6 +42447,8 @@
       "posPidx": 4,
       "posAt": "2026-07-26T18:28:18.463Z",
       "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -44192,6 +44216,8 @@
       "posPidx": 7,
       "posAt": "2026-10-08T12:29:21.227Z",
       "statusAt": "2026-07-29T17:46:06.324Z",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -46483,6 +46509,8 @@
       "posPidx": 0,
       "posAt": "2026-09-02T09:17:11.418Z",
       "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -48390,6 +48418,8 @@
       "posPidx": 2,
       "posAt": "2026-08-14T19:10:00.567Z",
       "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -49421,6 +49451,8 @@
       "posPidx": 0,
       "posAt": "2026-08-14T17:06:44.836Z",
       "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -53764,6 +53796,8 @@
       "posPidx": 0,
       "posAt": "2026-08-27T17:41:41.074Z",
       "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -56363,6 +56397,8 @@
       "posPidx": 0,
       "posAt": "2026-10-19T07:24:09.956Z",
       "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -58566,6 +58602,8 @@
       "posPidx": 2,
       "posAt": "2026-10-08T06:39:13.624Z",
       "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -59741,6 +59779,8 @@
       "posPidx": 0,
       "posAt": "2026-10-11T19:57:49.145Z",
       "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -60880,6 +60920,8 @@
       "posPidx": 0,
       "posAt": "2026-10-12T13:16:34.031Z",
       "statusAt": "2026-10-10T13:12:43.286Z",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -61315,6 +61357,8 @@
       "posPidx": 10,
       "posAt": "2026-10-19T09:17:24.681Z",
       "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -62286,6 +62330,8 @@
       "posPidx": 0,
       "posAt": "2026-10-18T20:09:35.495Z",
       "statusAt": "2026-10-18T20:08:25.919Z",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -63099,8 +63145,10 @@
       "notes": [],
       "posIdx": 1,
       "posPidx": 4,
-      "posAt": "2026-10-19T09:29:53.559Z",
+      "posAt": "2026-10-19T09:33:51.715Z",
       "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
       "addedAt": "2026-10-19T09:18:21.004Z",
       "chapters": [
         {

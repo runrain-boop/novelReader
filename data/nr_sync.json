@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-10-31T07:30:30.109Z",
+  "updated_at": "2026-11-01T02:42:13.358Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -41562,7 +41562,7 @@
       "posPidx": 4,
       "posAt": "2026-07-26T18:28:18.463Z",
       "statusAt": "2026-10-19T09:39:50.794Z",
-      "statusNote": "跟其它本很像又沒什麼新意，讀不下去",
+      "statusNote": "",
       "rating": 0,
       "addedAt": "",
       "chapters": [
@@ -60472,7 +60472,7 @@
       "posPidx": 10,
       "posAt": "2026-10-19T09:17:24.681Z",
       "statusAt": "2026-10-19T09:41:53.830Z",
-      "statusNote": "相同的套路-看不下去",
+      "statusNote": "",
       "rating": 0,
       "addedAt": "",
       "chapters": [
@@ -61446,7 +61446,7 @@
       "posAt": "2026-10-19T09:35:29.670Z",
       "statusAt": "2026-10-18T20:08:25.919Z",
       "statusNote": "",
-      "rating": 4,
+      "rating": 0,
       "addedAt": "",
       "chapters": [
         {
@@ -62260,7 +62260,7 @@
       "notes": [],
       "posIdx": 62,
       "posPidx": 40,
-      "posAt": "2026-10-24T02:26:03.587Z",
+      "posAt": "2026-11-01T02:42:07.141Z",
       "statusAt": "",
       "statusNote": "",
       "rating": 0,

@@ -432,6 +432,9 @@ function bkKey(bi){var bk=G.library[bi==null?G.cur:bi];return bk?(bk.url||bk.bid
 function bkRead(bi){var k=bkKey(bi==null?G.cur:bi);if(!k)return[];if(!G.read[k])G.read[k]=[];return G.read[k];}
 function bkReadLen(bi){var k=bkKey(bi==null?G.cur:bi);return k&&G.read[k]?G.read[k].length:0;}
 function bkMarkRead(chIdx,bi){var k=bkKey(bi==null?G.cur:bi);if(!k)return;if(!G.read[k])G.read[k]=[];if(G.read[k].indexOf(chIdx)<0)G.read[k].push(chIdx);}
+// 修復舊版把 //host/... 接成 https://host//host/... 的章節網址（czbooks 等網站），失敗標記清掉讓它重抓
+function fixChUrl(u){return typeof u==='string'?u.replace(/^(https?:)\/\/([^\/]+)\/\/(\2\/)/,'$1//$3'):u;}
+function repairLibrary(){var n=0;(G.library||[]).forEach(function(b){(b.chapters||[]).forEach(function(c){var f=fixChUrl(c.url);if(f!==c.url){c.url=f;n++;if(c.content&&(c.content==='（無法擷取）'||/^（失敗：/.test(c.content)))c.content=null;}});});return n;}
 function dedupLibrary(){var seen={};G.library=G.library.filter(function(bk){var k=bk.url||bk.bid;if(!k)return true;if(seen[k])return false;seen[k]=true;return true;});}
 var PM={on:false,pages:[],pageIdx:0,chIdx:-1};
 var SK='nr8',PROXY='https://novel-proxy.runrain.workers.dev/',LOCAL_PROXY='http://127.0.0.1:8787/',LOCAL_HOSTS=/(^|\.)xbanxia\.cc$/i;
@@ -1464,7 +1467,7 @@ function _mergeSync(local,remote){
     if(!byKey[k]&&!bk.url&&bk.title){var tk=(bk.title.trim()+'|'+(bk.author||'').trim()).toLowerCase();if(importedTitles[tk])k=importedTitles[tk];}
     if(byKey[k]){
       var lo=byKey[k],re=bk;
-      var chs=lo.chapters.length>=re.chapters.length?lo.chapters:re.chapters;
+      var chs=(lo.addedAt||'')!==(re.addedAt||'')?((lo.addedAt||'')>(re.addedAt||'')?lo.chapters:re.chapters):(lo.chapters.length>=re.chapters.length?lo.chapters:re.chapters); // 重抓過的那份為準，沒重抓才比章節數
       var posF=(lo.posAt||'')>=(re.posAt||'')?{posIdx:lo.posIdx||0,posPidx:lo.posPidx||0,posAt:lo.posAt||''}:{posIdx:re.posIdx||0,posPidx:re.posPidx||0,posAt:re.posAt||''};
       var statusF=(lo.statusAt&&lo.statusAt>=(re.statusAt||''))?{status:lo.status||'reading',statusAt:lo.statusAt,statusNote:lo.statusNote||''}:{status:re.status||lo.status||'reading',statusAt:re.statusAt||'',statusNote:re.statusNote||''};
       // notionPageId 只在「這台裝置」推送成功時才會寫入，其他裝置本地必然是空值——
@@ -1540,7 +1543,7 @@ async function loadFromGH(){
     var inMem={};(G.library||[]).forEach(function(bk){var k=bk.url||bk.bid;if(k){inMem[k]={};(bk.chapters||[]).forEach(function(ch){if(ch.url&&ch.content!=null)inMem[k][ch.url]=ch.content;});}});
     merged.library.forEach(function(bk){var k=bk.url||bk.bid,cm=inMem[k]||{};(bk.chapters||[]).forEach(function(ch){if(ch.url)ch.content=cm[ch.url]!=null?cm[ch.url]:null;});});
     var curKey=G.cur>=0&&G.library[G.cur]?G.library[G.cur].url||G.library[G.cur].bid:null;
-    G.library=merged.library;dedupLibrary();if(curKey){var ni=G.library.findIndex(function(bk){return(bk.url||bk.bid)===curKey;});if(ni>=0)G.cur=ni;}G.read=merged.read;G.deleted=merged.deleted||[];G.deletedAt=merged.deletedAt||{};
+    G.library=merged.library;dedupLibrary();repairLibrary();if(curKey){var ni=G.library.findIndex(function(bk){return(bk.url||bk.bid)===curKey;});if(ni>=0)G.cur=ni;}G.read=merged.read;G.deleted=merged.deleted||[];G.deletedAt=merged.deletedAt||{};
     save();buildShelf();if(G.cur>=0&&G.library[G.cur])buildTOC();
     setSyncSt('ok','上次同步：'+new Date().toLocaleTimeString());
     ctStartup().catch(function(e){setSyncSt('err',e.message);});
@@ -1780,7 +1783,7 @@ function restore(){
       var hasNumKey=Object.keys(G.read).some(function(k){return!isNaN(+k)&&G.library[+k];});
       if(hasNumKey){var nr2={};Object.keys(G.read).forEach(function(k){var ki=+k,bk=!isNaN(ki)&&G.library[ki];if(bk){var nk2=bk.url||bk.bid;if(nk2){if(!nr2[nk2])nr2[nk2]=[];G.read[k].forEach(function(ci){if(nr2[nk2].indexOf(ci)<0)nr2[nk2].push(ci);});}else nr2[k]=G.read[k];}else nr2[k]=G.read[k];});G.read=nr2;}
       updateExpSel();
-      dedupLibrary();
+      dedupLibrary();if(repairLibrary())setTimeout(save,0);
       G.library.forEach(function(n){n.chapters.forEach(function(c){if(c.content&&c.url)idbSet(c.url,c.content);});});}
   }catch(e){console.error('restore error:',e);}
   var pmPref=localStorage.getItem('nr_pmstate');if(pmPref===null)pmPref='1';PM.on=(pmPref==='1');

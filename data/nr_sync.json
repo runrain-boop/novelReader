@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-11-10T09:04:52.028Z",
+  "updated_at": "2026-11-10T09:07:39.451Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -64776,6 +64776,387 @@
           "url": "https://czbooks.net/n/skde6j9c806/bliod?chapterNumber=516"
         }
       ]
+    },
+    {
+      "bid": "bk179430149436924ijq",
+      "title": "信息素變異",
+      "author": "",
+      "intro": "",
+      "url": "https://czbooks.net/n/cpg3hjh",
+      "status": "reading",
+      "pubStatus": "",
+      "startDate": "2026-11-10",
+      "finishDate": "",
+      "review": "",
+      "notionPageId": "",
+      "notionSyncedAt": 0,
+      "metaAt": "",
+      "notes": [],
+      "posIdx": 0,
+      "posPidx": 4,
+      "posAt": "2026-11-10T09:05:16.878Z",
+      "statusAt": "",
+      "statusNote": "",
+      "rating": 0,
+      "addedAt": "2026-11-10T09:04:54.361Z",
+      "chapters": [
+        {
+          "title": "第1章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnag3c3?chapterNumber=1"
+        },
+        {
+          "title": "第2章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnag3fm?chapterNumber=2"
+        },
+        {
+          "title": "第3章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnag3ba?chapterNumber=3"
+        },
+        {
+          "title": "第4章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnag3dn?chapterNumber=4"
+        },
+        {
+          "title": "第5章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnag3k6?chapterNumber=5"
+        },
+        {
+          "title": "第6章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnag3k0?chapterNumber=6"
+        },
+        {
+          "title": "第7章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnage9g?chapterNumber=7"
+        },
+        {
+          "title": "第8章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagep1?chapterNumber=8"
+        },
+        {
+          "title": "第9章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnage66?chapterNumber=9"
+        },
+        {
+          "title": "第10章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnage6b?chapterNumber=10"
+        },
+        {
+          "title": "第11章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagenp?chapterNumber=11"
+        },
+        {
+          "title": "第12章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagen8?chapterNumber=12"
+        },
+        {
+          "title": "第13章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagem2?chapterNumber=13"
+        },
+        {
+          "title": "第14章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnage1p?chapterNumber=14"
+        },
+        {
+          "title": "第15章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnage36?chapterNumber=15"
+        },
+        {
+          "title": "第16章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnageeg?chapterNumber=16"
+        },
+        {
+          "title": "第17章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnage7p?chapterNumber=17"
+        },
+        {
+          "title": "第18章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnage7c?chapterNumber=18"
+        },
+        {
+          "title": "第19章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagej0?chapterNumber=19"
+        },
+        {
+          "title": "第20章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnageaa?chapterNumber=20"
+        },
+        {
+          "title": "第21章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagl4a?chapterNumber=21"
+        },
+        {
+          "title": "第22章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnaglg4?chapterNumber=22"
+        },
+        {
+          "title": "第23章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnaglga?chapterNumber=23"
+        },
+        {
+          "title": "第24章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagl1n?chapterNumber=24"
+        },
+        {
+          "title": "第25章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagl1f?chapterNumber=25"
+        },
+        {
+          "title": "第26章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagl3b?chapterNumber=26"
+        },
+        {
+          "title": "第27章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagle9?chapterNumber=27"
+        },
+        {
+          "title": "第28章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagl7p?chapterNumber=28"
+        },
+        {
+          "title": "第29章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagl78?chapterNumber=29"
+        },
+        {
+          "title": "第30章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnaglj3?chapterNumber=30"
+        },
+        {
+          "title": "第31章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagla4?chapterNumber=31"
+        },
+        {
+          "title": "第32章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnaglal?chapterNumber=32"
+        },
+        {
+          "title": "第33章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnaglhh?chapterNumber=33"
+        },
+        {
+          "title": "第34章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagloj?chapterNumber=34"
+        },
+        {
+          "title": "第35章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagli5?chapterNumber=35"
+        },
+        {
+          "title": "第36章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagl8f?chapterNumber=36"
+        },
+        {
+          "title": "第37章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagl0b?chapterNumber=37"
+        },
+        {
+          "title": "第38章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnaglc1?chapterNumber=38"
+        },
+        {
+          "title": "第39章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagl2m?chapterNumber=39"
+        },
+        {
+          "title": "第40章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagllg?chapterNumber=40"
+        },
+        {
+          "title": "第41章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnaglfn?chapterNumber=41"
+        },
+        {
+          "title": "第42章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnaglbm?chapterNumber=42"
+        },
+        {
+          "title": "第43章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagldi?chapterNumber=43"
+        },
+        {
+          "title": "第44章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnaglkc?chapterNumber=44"
+        },
+        {
+          "title": "第45章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagfp4?chapterNumber=45"
+        },
+        {
+          "title": "第46章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagf6c?chapterNumber=46"
+        },
+        {
+          "title": "第47章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagf4b?chapterNumber=47"
+        },
+        {
+          "title": "第48章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagfmp?chapterNumber=48"
+        },
+        {
+          "title": "第49章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagfg6?chapterNumber=49"
+        },
+        {
+          "title": "第50章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagf3p?chapterNumber=50"
+        },
+        {
+          "title": "第51章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagfem?chapterNumber=51"
+        },
+        {
+          "title": "第52章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagf7e?chapterNumber=52"
+        },
+        {
+          "title": "第53章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagfjh?chapterNumber=53"
+        },
+        {
+          "title": "第54章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagfjc?chapterNumber=54"
+        },
+        {
+          "title": "第55章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagfa2?chapterNumber=55"
+        },
+        {
+          "title": "第56章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagfhg?chapterNumber=56"
+        },
+        {
+          "title": "第57章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagfhd?chapterNumber=57"
+        },
+        {
+          "title": "第58章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagfok?chapterNumber=58"
+        },
+        {
+          "title": "第59章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagfi3?chapterNumber=59"
+        },
+        {
+          "title": "第60章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagf8g?chapterNumber=60"
+        },
+        {
+          "title": "第61章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagf8l?chapterNumber=61"
+        },
+        {
+          "title": "第62章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagf0c?chapterNumber=62"
+        },
+        {
+          "title": "第63章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagf5b?chapterNumber=63"
+        },
+        {
+          "title": "第64章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnagf27?chapterNumber=64"
+        },
+        {
+          "title": "重複章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpna7i4k?chapterNumber=65"
+        },
+        {
+          "title": "番外1",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnaa3f6?chapterNumber=66"
+        },
+        {
+          "title": "第66章 番外2",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnaa3dn?chapterNumber=67"
+        },
+        {
+          "title": "重複章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpna8l2l?chapterNumber=68"
+        },
+        {
+          "title": "重複章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpna0fa8?chapterNumber=69"
+        },
+        {
+          "title": "番外3",
+          "url": "https://czbooks.net/n/cpg3hjh/cpna285h?chapterNumber=70"
+        },
+        {
+          "title": "番外4",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnaf16b?chapterNumber=71"
+        },
+        {
+          "title": "第72章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnado25?chapterNumber=72"
+        },
+        {
+          "title": "第73章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnake39?chapterNumber=73"
+        },
+        {
+          "title": "第74章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnhp60d?chapterNumber=74"
+        },
+        {
+          "title": "第75章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnhmoo7?chapterNumber=75"
+        },
+        {
+          "title": "第76章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnhg3hf?chapterNumber=76"
+        },
+        {
+          "title": "第77章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnhaphj?chapterNumber=77"
+        },
+        {
+          "title": "第78章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnhokhn?chapterNumber=78"
+        },
+        {
+          "title": "第79章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnh5709?chapterNumber=79"
+        },
+        {
+          "title": "第80章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnhbkge?chapterNumber=80"
+        },
+        {
+          "title": "第81章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnhk5mo?chapterNumber=81"
+        },
+        {
+          "title": "第82章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnogame?chapterNumber=82"
+        },
+        {
+          "title": "第83章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnoojoa?chapterNumber=83"
+        },
+        {
+          "title": "第84章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnolk9d?chapterNumber=84"
+        },
+        {
+          "title": "第85章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpni619h?chapterNumber=85"
+        },
+        {
+          "title": "第86章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnim68h?chapterNumber=86"
+        },
+        {
+          "title": "第87章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpni77j3?chapterNumber=87"
+        },
+        {
+          "title": "第88章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpnifco3?chapterNumber=88"
+        },
+        {
+          "title": "第89章",
+          "url": "https://czbooks.net/n/cpg3hjh/cpm6ka87?chapterNumber=89"
+        }
+      ]
     }
   ],
   "read": {
@@ -68778,6 +69159,9 @@
       69
     ],
     "https://czbooks.net/n/skde6j9c806": [
+      0
+    ],
+    "https://czbooks.net/n/cpg3hjh": [
       0
     ]
   },

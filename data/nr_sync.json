@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-11-13T18:18:00.875Z",
+  "updated_at": "2026-11-13T18:18:12.348Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -62690,7 +62690,7 @@
       "author": "蝶之靈",
       "intro": "",
       "url": "https://czbooks.net/n/skde6j9c806",
-      "status": "reading",
+      "status": "want",
       "pubStatus": "",
       "startDate": "2026-11-10",
       "finishDate": "",
@@ -62702,7 +62702,7 @@
       "posIdx": 0,
       "posPidx": 0,
       "posAt": "2026-11-10T09:00:25.988Z",
-      "statusAt": "",
+      "statusAt": "2026-11-13T18:18:08.906Z",
       "statusNote": "",
       "rating": 0,
       "addedAt": "2026-11-10T08:04:21.792Z",

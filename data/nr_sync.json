@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-11-15T11:10:35.121Z",
+  "updated_at": "2026-11-15T11:10:50.028Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -62699,9 +62699,9 @@
       "notionSyncedAt": 0,
       "metaAt": "2026-11-10T09:00:50.737Z",
       "notes": [],
-      "posIdx": 298,
-      "posPidx": 14,
-      "posAt": "2026-11-15T11:10:34.365Z",
+      "posIdx": 299,
+      "posPidx": 0,
+      "posAt": "2026-11-15T11:10:46.502Z",
       "statusAt": "2026-11-13T18:18:08.906Z",
       "statusNote": "",
       "rating": 0,
@@ -72748,7 +72748,8 @@
       295,
       296,
       297,
-      298
+      298,
+      299
     ],
     "https://czbooks.net/n/cpg3hjh": [
       0,

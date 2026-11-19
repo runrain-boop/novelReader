@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-11-19T08:07:12.906Z",
+  "updated_at": "2026-11-19T08:08:01.196Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -64787,17 +64787,17 @@
       "pubStatus": "completed",
       "startDate": "2026-11-10",
       "finishDate": "2026-11-13",
-      "review": "",
-      "notionPageId": "",
-      "notionSyncedAt": 0,
-      "metaAt": "2026-11-19T08:06:13.036Z",
+      "review": "信息素變異的題材，但是這本其實沒有什麼劇情，就是硬要談情說愛吧",
+      "notionPageId": "41dd11e1-256c-81d7-a9a1-e3224595bc51",
+      "notionSyncedAt": 1795075675049,
+      "metaAt": "2026-11-19T08:07:57.494Z",
       "notes": [],
       "posIdx": 0,
       "posPidx": 0,
       "posAt": "2026-11-19T08:06:16.920Z",
       "statusAt": "2026-11-13T18:17:33.760Z",
       "statusNote": "",
-      "rating": 0,
+      "rating": 3,
       "addedAt": "2026-11-10T09:04:54.361Z",
       "chapters": [
         {

@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-11-19T08:04:41.712Z",
+  "updated_at": "2026-11-19T08:04:47.244Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -62691,20 +62691,20 @@
       "intro": "",
       "url": "https://czbooks.net/n/skde6j9c806",
       "status": "done",
-      "pubStatus": "",
+      "pubStatus": "completed",
       "startDate": "2026-11-10",
       "finishDate": "2026-11-15",
       "review": "",
       "notionPageId": "",
       "notionSyncedAt": 0,
-      "metaAt": "2026-11-10T09:00:50.737Z",
+      "metaAt": "2026-11-19T08:04:43.594Z",
       "notes": [],
       "posIdx": 516,
       "posPidx": 62,
       "posAt": "2026-11-19T08:04:23.907Z",
       "statusAt": "2026-11-15T17:26:56.835Z",
       "statusNote": "",
-      "rating": 0,
+      "rating": 4,
       "addedAt": "2026-11-10T08:04:21.792Z",
       "chapters": [
         {

@@ -1,6 +1,6 @@
 {
   "v": 2,
-  "updated_at": "2026-11-23T05:36:44.381Z",
+  "updated_at": "2026-11-23T05:37:01.729Z",
   "library": [
     {
       "bid": "bk17811569900970gan",
@@ -65173,9 +65173,9 @@
       "notionSyncedAt": 0,
       "metaAt": "2026-11-10T09:23:17.511Z",
       "notes": [],
-      "posIdx": 96,
-      "posPidx": 10,
-      "posAt": "2026-11-23T05:36:28.797Z",
+      "posIdx": 97,
+      "posPidx": 0,
+      "posAt": "2026-11-23T05:36:58.274Z",
       "statusAt": "2026-11-13T18:18:12.932Z",
       "statusNote": "",
       "rating": 0,
@@ -74392,7 +74392,8 @@
       93,
       94,
       95,
-      96
+      96,
+      97
     ],
     "https://www.52shuku.net/xiandaidushi/h0RW.html": [
       0,
